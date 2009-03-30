@@ -99,7 +99,7 @@ namespace MPQNav.ADT
                     
                     foreach (MODF lMODF in currentADT._MODFList)
                     {
-                        currentADT.WMOManager.addWMO(lMODF.fileName, this._basePath, lMODF);
+                        currentADT.WMOManager.addWMO(lMODF.FileName, this._basePath, lMODF);
                     }
                     
                     foreach (MDDF lMMDF in currentADT._MDDFList) {

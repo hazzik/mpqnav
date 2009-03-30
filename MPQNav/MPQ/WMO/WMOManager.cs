@@ -101,7 +101,7 @@ namespace MPQNav.MPQ.ADT
                     String currentFileName = currentWMO.name.Substring(0, currentWMO.name.Length - 4) + "_" + wmoGroup.ToString().PadLeft(3, "0".ToCharArray()[0]) + ".wmo";
                     currentWMO.addWMO_Sub(this.processWMOSub(filePath, currentFileName , wmoGroup));
                 }
-                this.transformWMO(new Vector3(currentMODF.orientation_a, currentMODF.orientation_b, currentMODF.orientation_c), currentMODF.position, currentWMO);
+                this.transformWMO(new Vector3(currentMODF.OrientationA, currentMODF.OrientationB, currentMODF.OrientationC), currentMODF.Position, currentWMO);
                 this._wmos.Add(currentWMO);
             }
             else

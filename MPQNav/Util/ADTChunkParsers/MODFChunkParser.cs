@@ -53,12 +53,12 @@ namespace MPQNav.Util.ADTParser
             while (bytesRead < _Size)
             {
                 MODF lMODF = new MODF();
-                lMODF.fileName = WMO.ToArray()[(int)br.ReadUInt32()];
-                lMODF.uniqid = br.ReadUInt32(); // 4 bytes
-                lMODF.position = new Vector3((float)br.ReadSingle(), (float)br.ReadSingle(), (float)br.ReadSingle()); // 12 Bytes
-                lMODF.orientation_a = (float)br.ReadSingle(); // 4 Bytes
-                lMODF.orientation_b = (float)br.ReadSingle(); // 4 Bytes
-                lMODF.orientation_c = (float)br.ReadSingle(); // 4 Bytes
+                lMODF.FileName = WMO.ToArray()[(int)br.ReadUInt32()];
+                lMODF.UniqId = br.ReadUInt32(); // 4 bytes
+                lMODF.Position = new Vector3((float)br.ReadSingle(), (float)br.ReadSingle(), (float)br.ReadSingle()); // 12 Bytes
+                lMODF.OrientationA = (float)br.ReadSingle(); // 4 Bytes
+                lMODF.OrientationB = (float)br.ReadSingle(); // 4 Bytes
+                lMODF.OrientationC = (float)br.ReadSingle(); // 4 Bytes
                 br.ReadBytes(32); // 32 bytes
                 bytesRead += 64; // 64 total bytes
                 _MODF.Add(lMODF);
