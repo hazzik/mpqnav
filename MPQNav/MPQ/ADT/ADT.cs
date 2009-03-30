@@ -144,20 +144,8 @@ namespace MPQNav.ADT
                     float y_pos = _MH2O.heightLevel1;
                     if (_MH2O.used)
                     {
-                        Color clr = Color.Green;
-                        switch (_MH2O.type)
-                        {
-                            case MH2O.FluidType.lake:
-                                clr = Color.Blue;
-                                break;
-                            case MH2O.FluidType.lava:
-                                clr = Color.Red;
-                                break;
-                            case MH2O.FluidType.oceans:
-                                clr = Color.Coral;
-                                break;
-                        }
-                        MH2OHeightMap = _MH2O.GetMapHeightsMatrix();
+                        Color clr = GetColor(_MH2O.type);
+                    	MH2OHeightMap = _MH2O.GetMapHeightsMatrix();
                         MH2ORenderMap = _MH2O.GetRenderBitMapMatrix();
                         for (int r = 0; r < 9; r++)
                         {
@@ -201,7 +189,19 @@ namespace MPQNav.ADT
             }
         }
 
-        public void GenerateVertexAndIndices()
+		private static Color GetColor(MH2O.FluidType fluidType) {
+			switch(fluidType) {
+			case MH2O.FluidType.lake:
+				return Color.Blue;
+			case MH2O.FluidType.lava:
+				return Color.Red;
+			case MH2O.FluidType.oceans:
+				return Color.Coral;
+			}
+			return Color.Green;
+		}
+
+    	public void GenerateVertexAndIndices()
         {
             Vertices = new List<VertexPositionNormalColored>();
             Indicies = new List<int>();
