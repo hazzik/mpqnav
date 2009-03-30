@@ -114,7 +114,10 @@ namespace XnaConsole {
 		/// </summary>
 		/// <returns>Boolean value representing if the console is open</returns>
 		public bool IsOpen() {
-			return State == ConsoleState.Open;
+			if(State.Equals(ConsoleState.Open) || State.Equals(ConsoleState.Open)) {
+				return true;
+			}
+			return false;
 		}
 
 		/// <summary>
@@ -154,20 +157,6 @@ namespace XnaConsole {
 				}
 			}
 
-			return wraplines;
-		}
-
-		/// <summary>
-		/// This takes an array of strings and splits each of them every newline and specified number of columns
-		/// </summary>
-		/// <param name="lines"></param>
-		/// <param name="columns"></param>
-		/// <returns></returns>
-		private List<string> WrapLines(string[] lines, int columns) {
-			var wraplines = new List<string>();
-			foreach(string line in lines) {
-				wraplines.AddRange(WrapLine(line, columns));
-			}
 			return wraplines;
 		}
 
@@ -475,21 +464,16 @@ namespace XnaConsole {
 					return true; //if the key has just been pressed, it automatically counts
 				}
 				keyTimes[key] -= elapsedTime; //count down to next repeat
-				double keyTime = keyTimes[key]; //get the time left
 				if(keyTimes[key] <= 0) //if the time has run out, repeat the letter
 				{
 					keyTimes[key] = repeatInterval; //reset the timer to the repeat interval
 					return true;
 				}
-				else {
-					return false;
-				}
-			}
-				//if the key is not pressed, reset it's time to the first interval, which is usually longer
-			else {
-				keyTimes[key] = firstInterval;
 				return false;
 			}
+				//if the key is not pressed, reset it's time to the first interval, which is usually longer
+			keyTimes[key] = firstInterval;
+			return false;
 		}
 
 		/// <summary>
@@ -503,18 +487,9 @@ namespace XnaConsole {
 
 			foreach(KeyBinding binding in KeyboardHelper.AmericanBindings) {
 				if(KeyPressWithRepeat(binding.Key, elapsedTime)) {
-					if(!shiftPressed && !altPressed) {
-						return binding.UnmodifiedString;
-					}
-					else if(shiftPressed && !altPressed) {
-						return binding.ShiftString;
-					}
-					else if(!shiftPressed && altPressed) {
-						return binding.AltString;
-					}
-					else if(shiftPressed && altPressed) {
-						return binding.ShiftAltString;
-					}
+					return !shiftPressed
+					       	? (!altPressed ? binding.UnmodifiedString : binding.AltString)
+					       	: (altPressed ? binding.ShiftAltString : binding.ShiftString);
 				}
 			}
 
