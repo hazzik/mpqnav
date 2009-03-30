@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.IO;
 using Microsoft.Xna.Framework;
@@ -10,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
+using MPQNav.ADT;
 
 namespace MPQNav.MPQ.ADT
 {
@@ -45,71 +47,60 @@ namespace MPQNav.MPQ.ADT
         {
 
         }
-        /// <summary>
-        /// Add a M2 to this manager.
-        /// </summary>
-        /// <param name="fileName">Full path to the M2 file</param>
-        /// <param name="mddf">MDDF (placement information) for this M2</param>
-        public void add(String fileName, MPQNav.ADT.MDDF mddf)
+
+    	public void Add(string fileName) {
+    		_names.Add(fileName);
+    	}
+
+    	public void Process(String fileName, MPQNav.ADT.MDDF mddf)
         {
-            if (fileName.Substring(fileName.Length - 4, 4) == ".mdx")
-            {
-                fileName = fileName.Substring(0, fileName.Length - 4) + ".m2";
-            }
-            this._names.Add(fileName);
-            this.process(fileName, mddf);
-        }
+			using(var br = new BinaryReader(File.OpenRead(fileName))) {
+				br.BaseStream.Position = 60; //wotlk
+				var numberOfVerts = br.ReadUInt32();
+				var vertsOffset = br.ReadUInt32();
+				var numberOfViews = br.ReadUInt32();
+				//UInt32 viewsOffset = br.ReadUInt32(); //now in skins
 
-        private void process(String fileName, MPQNav.ADT.MDDF mddf)
-        {
+				br.BaseStream.Position = 216; //wotlk
+				var nBoundingTriangles = br.ReadUInt32();
+				var ofsBoundingTriangles = br.ReadUInt32();
+				var nBoundingVertices = br.ReadUInt32();
+				var ofsBoundingVertices = br.ReadUInt32();
 
-            BinaryReader br = new BinaryReader(File.OpenRead(fileName));
-            MPQNav.ADT.M2 currentM2 = new MPQNav.ADT.M2();
+				br.BaseStream.Position = ofsBoundingVertices;
 
-            br.BaseStream.Position = 60; //wotlk
-            UInt32 numberOfVerts = br.ReadUInt32();
-            UInt32 vertsOffset = br.ReadUInt32();
-            UInt32 numberOfViews = br.ReadUInt32();
-            //UInt32 viewsOffset = br.ReadUInt32(); //now in skins
+				var vectors = ReadVectors(br, nBoundingVertices);
+				var tempVertices = vectors.Select(v1 => new VertexPositionNormalColored(v1, Color.Pink, Vector3.Up)).ToList();
 
-            br.BaseStream.Position = 216; //wotlk
-            UInt32 nBoundingTriangles = br.ReadUInt32();
-            UInt32 ofsBoundingTriangles = br.ReadUInt32();
-            UInt32 nBoundingVertices = br.ReadUInt32();
-            UInt32 ofsBoundingVertices = br.ReadUInt32();
+				br.BaseStream.Position = ofsBoundingTriangles;
 
-            br.BaseStream.Position = ofsBoundingVertices;
+				var tempIndices = new List<int>();
+				for(int v = 0; v < nBoundingTriangles; v = v + 3) {
+					Int16 int1 = br.ReadInt16();
+					Int16 int2 = br.ReadInt16();
+					Int16 int3 = br.ReadInt16();
 
-            List<VertexPositionNormalColored> tempVertices = new List<VertexPositionNormalColored>();
-            for (int v = 0; v < nBoundingVertices; v++)
-            {
-                float vert_x = (float)br.ReadSingle() * -1;
-                float vert_z = (float)br.ReadSingle();
-                float vert_y = (float)br.ReadSingle();
-                tempVertices.Add(new VertexPositionNormalColored(new Vector3(vert_x, vert_y, vert_z), Color.Pink, Vector3.Up));
-            }
+					tempIndices.Add((int)int3);
+					tempIndices.Add((int)int2);
+					tempIndices.Add((int)int1);
+				}
 
+				_m2s.Add(transform(tempVertices, tempIndices, mddf));
+			}
+    	}
 
-            br.BaseStream.Position = ofsBoundingTriangles;
+    	private static List<Vector3> ReadVectors(BinaryReader br, uint count) {
+    		var vectors = new List<Vector3>();
+    		for(int v = 0; v < count; v++) {
+    			var x = br.ReadSingle() * -1;
+    			var z = br.ReadSingle();
+    			var y = br.ReadSingle();
+    			vectors.Add(new Vector3(x, y, z));
+    		}
+    		return vectors;
+    	}
 
-            List<int> tempIndices = new List<int>();
-            for (int v = 0; v < nBoundingTriangles; v=v+3)
-            {
-                Int16 int1 = br.ReadInt16();
-                Int16 int2 = br.ReadInt16();
-                Int16 int3 = br.ReadInt16();
-
-                tempIndices.Add((int)int3);
-                tempIndices.Add((int)int2);
-                tempIndices.Add((int)int1);
-            }
-
-            currentM2 = this.transform(tempVertices, tempIndices, mddf);
-            this._m2s.Add(currentM2);
-            br.Close();
-        }
-
-        private MPQNav.ADT.M2 transform(List<VertexPositionNormalColored> vertices, List<int> indicies, MPQNav.ADT.MDDF mddf)
+    	private MPQNav.ADT.M2 transform(IList<VertexPositionNormalColored> vertices, List<int> indicies, MPQNav.ADT.MDDF mddf)
         {
             MPQNav.ADT.M2 currentM2 = new MPQNav.ADT.M2();
             

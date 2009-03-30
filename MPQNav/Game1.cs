@@ -1,16 +1,8 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Collections;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
-using XnaConsole;
 
 namespace MPQNav
 {
@@ -179,11 +171,12 @@ namespace MPQNav
 
         private void InitializeEffect()
         {
-            basicEffect = new BasicEffect(graphics.GraphicsDevice, null);
-            basicEffect.VertexColorEnabled = true;
-            basicEffect.View = view;
-            basicEffect.Projection = proj;
-            this.vertexDeclaration = new VertexDeclaration(graphics.GraphicsDevice, VertexPositionNormalColored.VertexElements);
+            basicEffect = new BasicEffect(graphics.GraphicsDevice, null) {
+            	VertexColorEnabled = true,
+            	View = view,
+            	Projection = proj
+            };
+        	this.vertexDeclaration = new VertexDeclaration(graphics.GraphicsDevice, VertexPositionNormalColored.VertexElements);
 
         }
 

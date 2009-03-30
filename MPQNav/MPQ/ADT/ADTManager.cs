@@ -102,12 +102,15 @@ namespace MPQNav.ADT
                         currentADT.WMOManager.addWMO(lMODF.fileName, this._basePath, lMODF);
                     }
                     
-                    foreach (MDDF lMMDF in currentADT._MDDFList)
-                    {
-                        currentADT._M2Manager.add(_basePath + lMMDF.filePath, lMMDF);
+                    foreach (MDDF lMMDF in currentADT._MDDFList) {
+                    	var fullName = _basePath + lMMDF.filePath;
+                    	currentADT._M2Manager.Add(fullName);
+							  try
+							  {currentADT._M2Manager.Process(fullName, lMMDF);}
+							  catch{}
                     }
 
-                    this.renderCached = false;
+                	this.renderCached = false;
                     currentADT.GenerateVertexAndIndices();
                     currentADT.GenerateVertexAndIndicesH2O();
                     this._ADTs.Add(currentADT);
@@ -122,58 +125,8 @@ namespace MPQNav.ADT
                 throw new Exception("Continent data missing");
             }
         }
-        private void processM2s(UInt32 offsModels, UInt32 offsDoodsDef, BinaryReader br, ADT currentADT)
-        {
-            List<String> m2Names = this.processM2Names(br, offsModels);
-            br.BaseStream.Position = offsDoodsDef + 24;
-            UInt32 chunkSize = br.ReadUInt32();
 
-            int bytesRead = 0;
-            while (bytesRead < chunkSize)
-            {
-                MDDF currentMDDF = new MDDF();
-                currentMDDF.filePath = m2Names[(int)br.ReadUInt32()];
-                currentMDDF.uniqid = br.ReadUInt32(); // 4 bytes
-                currentMDDF.position = new Vector3((float)br.ReadSingle(), (float)br.ReadSingle(), (float)br.ReadSingle()); // 12 Bytes
-                currentMDDF.orientation_a = (float)br.ReadSingle(); // 4 Bytes
-                currentMDDF.orientation_b = (float)br.ReadSingle(); // 4 Bytes
-                currentMDDF.orientation_c = (float)br.ReadSingle(); // 4 Bytes
-                currentMDDF.scale = (float)(br.ReadUInt32() / 1024f); // 4 bytes
-                bytesRead += 36; // 36 total bytes
-                currentADT._MDDFList.Add(currentMDDF);
-                currentADT._M2Manager.add(this._basePath + currentMDDF.filePath, currentMDDF);
-            }
-
-        }
-
-        private List<String> processM2Names(BinaryReader br, UInt32 offset)
-        {
-            List<String> ret = new List<string>();
-            br.BaseStream.Position = offset + 24; // 20 To get to where the list starts, 8 to get off the header.
-
-            UInt32 chunkSize = br.ReadUInt32();
-            long EndPosition = br.BaseStream.Position + chunkSize;
-
-            String m2Name = "";
-            byte[] nextByte = new byte[1];
-            while (br.BaseStream.Position < EndPosition)
-            {
-                nextByte = br.ReadBytes(1);
-                if (nextByte[0] != (byte)0)
-                {
-                    m2Name += System.Text.ASCIIEncoding.ASCII.GetString(nextByte);
-                }
-                else
-                {
-                    // Example: world\wmo\azeroth\buildings\redridge_stable\redridge_stable.wmo
-                    ret.Add(m2Name.ToString());
-                    m2Name = "";
-                }
-            }
-            return ret;
-        }
-        
-        public List<VertexPositionNormalColored> renderingVerticies()
+    	public List<VertexPositionNormalColored> renderingVerticies()
         {
             if (this.renderCached == true)
             {

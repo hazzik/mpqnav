@@ -31,18 +31,33 @@ namespace MPQNav.Collision._2D {
 			point2 = p2;
 			point3 = p3;
 			Vector3 center = centroid();
-			int greaterX = 0;
-			int greaterZ = 0;
-			if(p1.X > center.X) {
-				greaterX++;
-			}
-			if(p2.X > center.X) {
-				greaterX++;
-			}
-			if(p3.X > center.X) {
-				greaterX++;
-			}
 
+			rot = GetRotation(GetGreaterZ(p1, p2, p3, center), GetGreaterX(p1, p2, p3, center));
+
+			lower_bounds_x = Math.Min(Math.Min(point1.X, point2.X), point3.X);
+			upper_bounds_x = Math.Max(Math.Max(point1.X, point2.X), point3.X);
+			lower_bounds_z = Math.Min(Math.Min(point1.Z, point2.Z), point3.Z);
+			upper_bounds_z = Math.Max(Math.Max(point1.Z, point2.Z), point3.Z);
+		}
+
+		private static Rotation GetRotation(int greaterZ, int greaterX) {
+			if(greaterZ == 2 && greaterX == 1) {
+				return Rotation.rotation_1;
+			}
+			if(greaterZ == 2 && greaterX == 2) {
+				return Rotation.rotation_2;
+			}
+			if(greaterZ == 1 && greaterX == 2) {
+				return Rotation.rotation_3;
+			}
+			if(greaterZ == 1 && greaterX == 1) {
+				return Rotation.rotation_4;
+			}
+			return Rotation.rotation_none;
+		}
+
+		private static int GetGreaterZ(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 center) {
+			int greaterZ = 0;
 			if(p1.Z > center.Z) {
 				greaterZ++;
 			}
@@ -52,63 +67,22 @@ namespace MPQNav.Collision._2D {
 			if(p3.Z > center.Z) {
 				greaterZ++;
 			}
-
-			if(greaterZ == 2 && greaterX == 1) {
-				rot = Rotation.rotation_1;
-			}
-			else if(greaterZ == 2 && greaterX == 2) {
-				rot = Rotation.rotation_2;
-			}
-			else if(greaterZ == 1 && greaterX == 2) {
-				rot = Rotation.rotation_3;
-			}
-			else if(greaterZ == 1 && greaterX == 1) {
-				rot = Rotation.rotation_4;
-			}
-			else {
-				rot = Rotation.rotation_none;
-			}
-			calcUpperLower();
+			return greaterZ;
 		}
 
-		private void calcUpperLower() {
-			if(point1.X < point2.X) {
-				lower_bounds_x = point1.X < point3.X ? point1.X : point3.X;
+		private static int GetGreaterX(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 center) {
+			int greaterX = 0;
+			
+			if(p1.X > center.X) {
+				greaterX++;
 			}
-			else {
-				lower_bounds_x = point2.X < point3.X ? point2.X : point3.X;
+			if(p2.X > center.X) {
+				greaterX++;
 			}
-
-			if(point1.X > point2.X) {
-				upper_bounds_x = point1.X > point3.X ? point1.X : point1.X;
+			if(p3.X > center.X) {
+				greaterX++;
 			}
-			else {
-				upper_bounds_x = point2.X > point3.X ? point2.X : point3.X;
-			}
-
-			if(point1.Z < point2.Z) {
-				lower_bounds_z = point1.Z < point3.Z ? point1.Z : point3.Z;
-			}
-			else {
-				lower_bounds_z = point2.Z < point3.Z ? point2.Z : point3.Z;
-			}
-
-			if(point1.Z > point2.Z) {
-				if(point1.Z > point3.Z) {
-					upper_bounds_z = point1.Z;
-				}
-				else {
-					upper_bounds_z = point1.Z;
-				}
-			}
-			else {
-				if(point2.Z > point3.Z) {
-					upper_bounds_z = point2.Z;
-				}
-				else {
-					upper_bounds_z = point3.Z;
-				}
-			}
+			return greaterX;
 		}
 
 		public float getSlope() {
