@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using MPQNav.MPQ.ADT;
 using MPQNav.Util;
@@ -105,9 +106,13 @@ namespace MPQNav.ADT {
 			}
 
 			foreach(var mmdf in currentADT._MDDFList) {
-				currentADT._M2Manager.Add(_basePath + mmdf.FilePath);
+				var fileName = _basePath + mmdf.FilePath;
+				if(fileName.Substring(fileName.Length - 4) == ".mdx") {
+					fileName = fileName.Substring(0, fileName.Length - 4) + ".m2";
+				}
+				currentADT._M2Manager.Add(fileName);
 				try {
-					currentADT._M2Manager.Process(_basePath + mmdf.FilePath, mmdf);
+					currentADT._M2Manager.Process(fileName, mmdf);
 				}
 				catch {
 				}

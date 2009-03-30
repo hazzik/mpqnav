@@ -161,8 +161,8 @@ namespace MPQNav
         {
             // TODO: Add your initialization logic here
             //this.ParseAdt();
-            graphics.PreferredBackBufferWidth = 1024;
-            graphics.PreferredBackBufferHeight = 768;
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
             this.InitializeEffect();
@@ -253,18 +253,20 @@ namespace MPQNav
         {
             this.renderIndices = manager.renderingIndices();
             this.renderVerticies = manager.renderingVerticies();
-            if (this.renderIndices.Count > 0)
-            {
-                graphics.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalColored>(
-                        PrimitiveType.TriangleList,
-                        renderVerticies.ToArray(),
-                        0,   // vertex buffer offset to add to each element of the index buffer
-                        renderVerticies.ToArray().Length,   // number of vertices to draw
-                        renderIndices.ToArray(),
-                        0,   // first index element to read
-                        renderIndices.ToArray().Length / 3    // number of primitives to draw
-                    );
-            }
+        	if(this.renderIndices.Count <= 0) {
+        		return;
+        	}
+        	var vertexData = renderVerticies.ToArray();
+        	var indexData = renderIndices.ToArray();
+        	graphics.GraphicsDevice.DrawUserIndexedPrimitives(
+        		PrimitiveType.TriangleList,
+        		vertexData,
+        		0, // vertex buffer offset to add to each element of the index buffer
+        		vertexData.Length, // number of vertices to draw
+        		indexData,
+        		0, // first index element to read
+        		indexData.Length / 3 // number of primitives to draw
+        		);
         }
 
         private void DrawCameraState()

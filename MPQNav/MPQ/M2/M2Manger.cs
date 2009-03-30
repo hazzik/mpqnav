@@ -33,12 +33,12 @@ namespace MPQNav.MPQ.ADT {
 		/// <summary>
 		/// List of indices for rendering
 		/// </summary>
-		public List<int> indicies = new List<int>();
+		public List<int> _indicies = new List<int>();
 
 		/// <summary>
 		/// List of vertices for rendering
 		/// </summary>
-		public List<VertexPositionNormalColored> vertices = new List<VertexPositionNormalColored>();
+		public List<VertexPositionNormalColored> _vertices = new List<VertexPositionNormalColored>();
 
 		#endregion
 
@@ -94,7 +94,7 @@ namespace MPQNav.MPQ.ADT {
 			return vectors;
 		}
 
-		private M2 transform(IList<VertexPositionNormalColored> vertices, List<int> indicies, MDDF mddf) {
+		private M2 transform(IList<VertexPositionNormalColored> vertices, IEnumerable<int> indicies, MDDF mddf) {
 			var currentM2 = new M2();
 
 			// Real world positions for a transform
@@ -104,14 +104,15 @@ namespace MPQNav.MPQ.ADT {
 
 			// First we scale
 			for(int i = 0; i < vertices.Count; i++) {
+				var vertex = vertices[i];
 				float pos_x = (mddf.Position.X - 17066.666666666656f) * -1;
 				float pos_y = mddf.Position.Y;
 				float pos_z = (mddf.Position.Z - 17066.666666666656f) * -1;
 				var origin = new Vector3(pos_x, pos_y, pos_z);
 
-				float my_x = vertices[i].Position.X + pos_x;
-				float my_y = vertices[i].Position.Y + pos_y;
-				float my_z = vertices[i].Position.Z + pos_z;
+				float my_x = vertex.Position.X + pos_x;
+				float my_y = vertex.Position.Y + pos_y;
+				float my_z = vertex.Position.Z + pos_z;
 				var baseVertex = new Vector3(my_x, my_y, my_z);
 
 				Matrix scaleMatrix = Matrix.CreateScale(mddf.Scale);
