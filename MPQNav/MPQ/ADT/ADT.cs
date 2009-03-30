@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
+using MPQNav.MPQ.ADT;
 
 namespace MPQNav.ADT
 {
@@ -42,7 +43,7 @@ namespace MPQNav.ADT
         /// <summary>
         /// The Manager for all WMOs used by this ADT
         /// </summary>
-        public MPQ.ADT.WMOManager _WMOManager = new MPQNav.MPQ.ADT.WMOManager();
+        private MPQ.ADT.WMOManager _wmoManager = new MPQNav.MPQ.ADT.WMOManager();
         /// <summary>
         /// The manager for all M2s used by this ADT
         /// </summary>
@@ -103,21 +104,24 @@ namespace MPQNav.ADT
         }
         #endregion
 
-        public void addWMOName(String name)
-        {
-            if (this._WMOManager == null)
-            {
-                this._WMOManager = new MPQNav.MPQ.ADT.WMOManager();
-            }
-            this._WMOManager.addFileName(name);
-        }
+		  public void addWMOName(String name) {
+		  	WMOManager.addFileName(name);
+		  }
 
-        public String getWMOName(int index)
-        {
-            return this._WMOManager.getFilename(index);
-        }
+		  public WMOManager WMOManager {
+			  get {
+				  if(_wmoManager == null) {
+					  _wmoManager = new WMOManager();
+				  }
+				  return _wmoManager;
+			  }
+		  }
 
-        public void GenerateVertexAndIndicesH2O()
+		  public String getWMOName(int index) {
+		  	return this.WMOManager.getFilename(index);
+		  }
+
+    	public void GenerateVertexAndIndicesH2O()
         {
             H2OVertices = new List<VertexPositionNormalColored>();
             H2OIndicies = new List<int>();
@@ -339,7 +343,7 @@ namespace MPQNav.ADT
 
         public void addWMO(String filename, String filepath, MODF currentMODF)
         {
-            this._WMOManager.addWMO(filename, filepath, currentMODF);
+            this.WMOManager.addWMO(filename, filepath, currentMODF);
         }
 
 
