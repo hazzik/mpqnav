@@ -68,10 +68,10 @@ namespace MPQNav.Util.ADTParser
             {
                 MCIN lMCIN = new MCIN();
 
-                lMCIN.offset = br.ReadUInt32();
-                lMCIN.size = br.ReadUInt32();
-                lMCIN.flags = br.ReadUInt32();
-                lMCIN.asyncId = br.ReadUInt32();
+                lMCIN.Offset = br.ReadUInt32();
+                lMCIN.Size = br.ReadUInt32();
+                lMCIN.Flags = br.ReadUInt32();
+                lMCIN.AsyncId = br.ReadUInt32();
                 _MCIN[i] = lMCIN;
             }
             return _MCIN;

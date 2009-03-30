@@ -61,7 +61,7 @@ namespace MPQNav.Util.ADTParser
             {
                 for (int x = 0; x < 16; x++)
                 {
-                    MCNK[x, y] = processMCNK(MCIN[count].offset);
+                    MCNK[x, y] = processMCNK(MCIN[count].Offset);
                     count++;
                 }
             }

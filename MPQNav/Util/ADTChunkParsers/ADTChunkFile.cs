@@ -61,7 +61,7 @@ namespace MPQNav.Util
             MCINChunkParser chkCIN = new MCINChunkParser(br, _MHDR.offsInfo + _MHDR.Base);
             lMCIN = chkCIN.Parse();
 
-            MCNKChunkParser chkCNK = new MCNKChunkParser(br, lMCIN[0].offset);
+            MCNKChunkParser chkCNK = new MCNKChunkParser(br, lMCIN[0].Offset);
             currentADT.addMCNK(chkCNK.Parse(lMCIN));
 
             List<string> lMWMOList;

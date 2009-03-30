@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace MPQNav.ADT
-{
-    class MCIN
-    {
-/*000h*/  public UInt32 offset;
-/*004h*/  public UInt32 size;
-/*008h*/  public UInt32 flags;
-/*00Ch*/  public UInt32 asyncId;		
-/*010h*/  		
-
-    }
+namespace MPQNav.ADT {
+	internal class MCIN {
+/*000h*/
+		public uint Offset { get; set; }
+/*004h*/
+		public uint Size { get; set; }
+/*008h*/
+		public uint Flags { get; set; }
+/*00Ch*/
+		public uint AsyncId { get; set; }
+/*010h*/
+	}
 }
