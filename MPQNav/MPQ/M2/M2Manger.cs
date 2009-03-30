@@ -112,9 +112,9 @@ namespace MPQNav.MPQ.ADT
             // First we scale
             for (int i = 0; i < vertices.Count; i++)
             {
-                float pos_x = (mddf.position.X - 17066.666666666656f) * -1;
-                float pos_y = mddf.position.Y;
-                float pos_z = (mddf.position.Z - 17066.666666666656f) * -1;
+                float pos_x = (mddf.Position.X - 17066.666666666656f) * -1;
+                float pos_y = mddf.Position.Y;
+                float pos_z = (mddf.Position.Z - 17066.666666666656f) * -1;
                 Vector3 origin = new Vector3(pos_x, pos_y, pos_z);
 
                 float my_x = (float)vertices[i].Position.X + pos_x;
@@ -122,22 +122,22 @@ namespace MPQNav.MPQ.ADT
                 float my_z = (float)vertices[i].Position.Z + pos_z;
                 Vector3 baseVertex = new Vector3(my_x, my_y, my_z);
 
-                Matrix scaleMatrix = Matrix.CreateScale(mddf.scale);
+                Matrix scaleMatrix = Matrix.CreateScale(mddf.Scale);
 
                 Vector3 scaledVector = Vector3.Transform(baseVertex - origin, scaleMatrix);
                 currentM2._Vertices.Add(new VertexPositionNormalColored(scaledVector, Color.Red, Vector3.Up));
             }
             currentM2._AABB = new MPQNav.Collision._3D.AABB(currentM2._Vertices);
-            currentM2._OBB = new MPQNav.Collision._3D.OBB(currentM2._AABB.center, currentM2._AABB.extents, Matrix.CreateRotationY(mddf.orientation_b - 90));
+            currentM2._OBB = new MPQNav.Collision._3D.OBB(currentM2._AABB.center, currentM2._AABB.extents, Matrix.CreateRotationY(mddf.OrientationB - 90));
 
             List<VertexPositionNormalColored> tempVertices = new List<VertexPositionNormalColored>();
 
             for (int i = 0; i < currentM2._Vertices.Count; i++)
             {
 
-                float pos_x = (mddf.position.X - 17066.666666666656f) * -1;
-                float pos_y = mddf.position.Y;
-                float pos_z = (mddf.position.Z - 17066.666666666656f) * -1;
+                float pos_x = (mddf.Position.X - 17066.666666666656f) * -1;
+                float pos_y = mddf.Position.Y;
+                float pos_z = (mddf.Position.Z - 17066.666666666656f) * -1;
                 Vector3 origin = new Vector3(pos_x, pos_y, pos_z);
 
                 float my_x = (float)vertices[i].Position.X + pos_x;
@@ -146,9 +146,9 @@ namespace MPQNav.MPQ.ADT
                 Vector3 baseVertex = new Vector3(my_x, my_y, my_z);
 
                 // Creation the rotations
-                float a = mddf.orientation_a * -1 * rad;
-                float b = (mddf.orientation_b - 90) * rad;
-                float c = mddf.orientation_c * rad;
+                float a = mddf.OrientationA * -1 * rad;
+                float b = (mddf.OrientationB - 90) * rad;
+                float c = mddf.OrientationC * rad;
 
                 // Fancy things to rotate our model
                 Matrix rotateY = Matrix.CreateRotationY(b);

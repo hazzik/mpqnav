@@ -58,27 +58,27 @@ namespace MPQNav.Util
 
 
             ADT.MCIN[] lMCIN;
-            MCINChunkParser chkCIN = new MCINChunkParser(br, _MHDR.offsInfo + _MHDR.Base);
+            MCINChunkParser chkCIN = new MCINChunkParser(br, _MHDR.OffsInfo + _MHDR.Base);
             lMCIN = chkCIN.Parse();
 
             MCNKChunkParser chkCNK = new MCNKChunkParser(br, lMCIN[0].Offset);
             currentADT.addMCNK(chkCNK.Parse(lMCIN));
 
             List<string> lMWMOList;
-            MWMOChunkParser chkWMO = new MWMOChunkParser(br, _MHDR.offsMapObejcts + _MHDR.Base);
+            MWMOChunkParser chkWMO = new MWMOChunkParser(br, _MHDR.OffsMapObejcts + _MHDR.Base);
             lMWMOList = chkWMO.Parse();
 
-            MODFChunkParser chkODF = new MODFChunkParser(br, _MHDR.offsObjectsDef + _MHDR.Base);
+            MODFChunkParser chkODF = new MODFChunkParser(br, _MHDR.OffsObjectsDef + _MHDR.Base);
             currentADT._MODFList = chkODF.Parse(lMWMOList);
 
             List<string> lMMDXList;
-            MMDXChunkParser chkMMDX = new MMDXChunkParser(br, _MHDR.offsModels + _MHDR.Base);
+            MMDXChunkParser chkMMDX = new MMDXChunkParser(br, _MHDR.OffsModels + _MHDR.Base);
             lMMDXList = chkMMDX.Parse();
 
-            MDDFChunkParser chkMMDF = new MDDFChunkParser(br, _MHDR.offsDoodsDef + _MHDR.Base);
+            MDDFChunkParser chkMMDF = new MDDFChunkParser(br, _MHDR.OffsDoodsDef + _MHDR.Base);
             currentADT._MDDFList = chkMMDF.Parse(lMMDXList);
 
-            long ofsMH2O = _MHDR.offsMH2O;
+            long ofsMH2O = _MHDR.OffsMH2O;
 
             if (ofsMH2O != 0)
                 ofsMH2O += _MHDR.Base;

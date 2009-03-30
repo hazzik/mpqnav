@@ -103,7 +103,7 @@ namespace MPQNav.ADT
                     }
                     
                     foreach (MDDF lMMDF in currentADT._MDDFList) {
-                    	var fullName = _basePath + lMMDF.filePath;
+                    	var fullName = _basePath + lMMDF.FilePath;
                     	currentADT._M2Manager.Add(fullName);
 							  try
 							  {currentADT._M2Manager.Process(fullName, lMMDF);}

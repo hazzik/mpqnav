@@ -53,13 +53,13 @@ namespace MPQNav.Util.ADTParser
             while (bytesRead < _Size)
             {
                 MDDF lMDDF = new MDDF();
-                lMDDF.filePath = MDX.ToArray()[(int)br.ReadUInt32()];
-                lMDDF.uniqid = br.ReadUInt32(); // 4 bytes
-                lMDDF.position = new Vector3((float)br.ReadSingle(), (float)br.ReadSingle(), (float)br.ReadSingle()); // 12 Bytes
-                lMDDF.orientation_a = (float)br.ReadSingle(); // 4 Bytes
-                lMDDF.orientation_b = (float)br.ReadSingle(); // 4 Bytes
-                lMDDF.orientation_c = (float)br.ReadSingle(); // 4 Bytes
-                lMDDF.scale = (float)(br.ReadUInt32() / 1024f); // 4 bytes
+                lMDDF.FilePath = MDX.ToArray()[(int)br.ReadUInt32()];
+                lMDDF.UniqId = br.ReadUInt32(); // 4 bytes
+                lMDDF.Position = new Vector3((float)br.ReadSingle(), (float)br.ReadSingle(), (float)br.ReadSingle()); // 12 Bytes
+                lMDDF.OrientationA = (float)br.ReadSingle(); // 4 Bytes
+                lMDDF.OrientationB = (float)br.ReadSingle(); // 4 Bytes
+                lMDDF.OrientationC = (float)br.ReadSingle(); // 4 Bytes
+                lMDDF.Scale = (float)(br.ReadUInt32() / 1024f); // 4 bytes
                 bytesRead += 36; // 36 total bytes
                 _MDDF.Add(lMDDF);
                 //currentADT.addWMO(currentMODF.fileName, this._basePath, currentMODF);

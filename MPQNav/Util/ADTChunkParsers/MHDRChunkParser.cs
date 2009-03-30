@@ -51,22 +51,22 @@ namespace MPQNav.Util.ADTParser
             //long pMHDRData = br.BaseStream.Position;
             br.BaseStream.Position = _pStart;
             _MHDR.Base = (UInt32)_pStart;
-            _MHDR.pad = br.ReadUInt32();
-            _MHDR.offsInfo = br.ReadUInt32();
-            _MHDR.offsTex = br.ReadUInt32();
-            _MHDR.offsModels = br.ReadUInt32();
-            _MHDR.offsModelsIds = br.ReadUInt32();
-            _MHDR.offsMapObejcts = br.ReadUInt32();
-            _MHDR.offsMapObejctsIds = br.ReadUInt32();
-            _MHDR.offsDoodsDef = br.ReadUInt32();
-            _MHDR.offsObjectsDef = br.ReadUInt32();
-            _MHDR.offsFlightBoundary = br.ReadUInt32();
-            _MHDR.offsMH2O = br.ReadUInt32();
-            _MHDR.pad3 = br.ReadUInt32();
-            _MHDR.pad4 = br.ReadUInt32();
-            _MHDR.pad5 = br.ReadUInt32();
-            _MHDR.pad6 = br.ReadUInt32();
-            _MHDR.pad7 = br.ReadUInt32();
+            _MHDR.Pad = br.ReadUInt32();
+            _MHDR.OffsInfo = br.ReadUInt32();
+            _MHDR.OffsTex = br.ReadUInt32();
+            _MHDR.OffsModels = br.ReadUInt32();
+            _MHDR.OffsModelsIds = br.ReadUInt32();
+            _MHDR.OffsMapObejcts = br.ReadUInt32();
+            _MHDR.OffsMapObejctsIds = br.ReadUInt32();
+            _MHDR.OffsDoodsDef = br.ReadUInt32();
+            _MHDR.OffsObjectsDef = br.ReadUInt32();
+            _MHDR.OffsFlightBoundary = br.ReadUInt32();
+            _MHDR.OffsMH2O = br.ReadUInt32();
+            _MHDR.Pad3 = br.ReadUInt32();
+            _MHDR.Pad4 = br.ReadUInt32();
+            _MHDR.Pad5 = br.ReadUInt32();
+            _MHDR.Pad6 = br.ReadUInt32();
+            _MHDR.Pad7 = br.ReadUInt32();
 
             return _MHDR;
         }

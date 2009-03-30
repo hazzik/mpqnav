@@ -191,11 +191,11 @@ namespace MPQNav.ADT
 
 		private static Color GetColor(MH2O.FluidType fluidType) {
 			switch(fluidType) {
-			case MH2O.FluidType.lake:
+			case MH2O.FluidType.Lake:
 				return Color.Blue;
-			case MH2O.FluidType.lava:
+			case MH2O.FluidType.Lava:
 				return Color.Red;
-			case MH2O.FluidType.oceans:
+			case MH2O.FluidType.Oceans:
 				return Color.Coral;
 			}
 			return Color.Green;
