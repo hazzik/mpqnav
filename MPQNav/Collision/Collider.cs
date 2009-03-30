@@ -251,7 +251,7 @@ namespace MPQNav.Collision
                 
                 switch (t.rot)
                 {
-                    case MPQNav.Collision._2D.Triangle.rotation.rotation_1:
+                    case MPQNav.Collision._2D.Triangle.Rotation.rotation_1:
                         //
                         // 000
                         // 00
@@ -270,20 +270,20 @@ namespace MPQNav.Collision
                         }
                         break;
 
-                    case MPQNav.Collision._2D.Triangle.rotation.rotation_2:
+                    case MPQNav.Collision._2D.Triangle.Rotation.rotation_2:
 
                         break;
 
 
-                    case MPQNav.Collision._2D.Triangle.rotation.rotation_3:
+                    case MPQNav.Collision._2D.Triangle.Rotation.rotation_3:
 
                         break;
 
-                    case MPQNav.Collision._2D.Triangle.rotation.rotation_4:
+                    case MPQNav.Collision._2D.Triangle.Rotation.rotation_4:
 
                         break;
 
-                    case MPQNav.Collision._2D.Triangle.rotation.rotation_none:
+                    case MPQNav.Collision._2D.Triangle.Rotation.rotation_none:
                         Console.WriteLine("I screwed up");
                         break;
                 }
