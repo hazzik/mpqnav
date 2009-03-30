@@ -107,7 +107,7 @@ namespace MPQNav
             int defaultMapX = int.Parse(System.Configuration.ConfigurationSettings.AppSettings["defaultMapX"]);
             int defaultMapY = int.Parse(System.Configuration.ConfigurationSettings.AppSettings["defaultMapY"]);
 
-            MPQNav.ADT.ADTManager.continent_type continent = (MPQNav.ADT.ADTManager.continent_type)Enum.Parse(typeof(MPQNav.ADT.ADTManager.continent_type), defaultContinent, true);
+            MPQNav.ADT.ADTManager.ContinentType continent = (MPQNav.ADT.ADTManager.ContinentType)Enum.Parse(typeof(MPQNav.ADT.ADTManager.ContinentType), defaultContinent, true);
 
             manager = new MPQNav.ADT.ADTManager(continent, mpqPath);
 

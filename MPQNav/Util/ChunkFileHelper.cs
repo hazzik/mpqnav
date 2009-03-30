@@ -1,28 +1,17 @@
-﻿namespace MPQNav.Util
-{
+﻿using System;
+using System.IO;
 
+namespace MPQNav.Util {
+	internal abstract class ChunkParser {
+		protected string _Name;
+		protected long _pStart;
+		protected uint _Size;
+		protected BinaryReader br;
 
-    abstract class ChunkParser
-    {
-        protected string _Name;
-        protected long _pStart;
-        protected uint _Size;
-        protected System.IO.BinaryReader br;
+		public abstract string Name { get; }
 
-        public abstract string Name
-        {
-            get;
-        }
+		public abstract long AbsoluteStart { get; }
 
-        public abstract long AbsoluteStart
-        {
-            get;
-        }
-
-        public abstract uint Size
-        {
-            get;
-        }
-
-    }
+		public abstract uint Size { get; }
+	}
 }

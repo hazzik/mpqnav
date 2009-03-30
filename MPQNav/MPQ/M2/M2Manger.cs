@@ -1,76 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
 using MPQNav.ADT;
+using MPQNav.Collision._3D;
 
-namespace MPQNav.MPQ.ADT
-{
-    class M2Manger
-    {
-        #region variables
-        /// <summary>
-        /// List of filenames managed by this M2Manager
-        /// </summary>
-        private List<String> _names = new List<String>();
-        /// <summary>
-        /// List of WMOs managed by this WMOManager
-        /// </summary>
-        public List<MPQNav.ADT.M2> _m2s = new List<MPQNav.ADT.M2>();
-        /// <summary>
-        /// 1 degree = 0.0174532925 radians
-        /// </summary>
-        private float rad = 0.0174532925f;
-        #endregion
+namespace MPQNav.MPQ.ADT {
+	internal class M2Manger {
+		#region variables
 
-        #region rendering variables
-        /// <summary>
-        /// List of vertices for rendering
-        /// </summary>
-        public List<VertexPositionNormalColored> vertices = new List<VertexPositionNormalColored>();
-        /// <summary>
-        /// List of indices for rendering
-        /// </summary>
-        public List<int> indicies = new List<int>();
-        #endregion
+		/// <summary>
+		/// List of filenames managed by this M2Manager
+		/// </summary>
+		private readonly List<String> _names = new List<String>();
 
-        public M2Manger()
-        {
+		/// <summary>
+		/// List of WMOs managed by this WMOManager
+		/// </summary>
+		public List<M2> _m2s = new List<M2>();
 
-        }
+		/// <summary>
+		/// 1 degree = 0.0174532925 radians
+		/// </summary>
+		private float rad = 0.0174532925f;
 
-    	public void Add(string fileName) {
-    		_names.Add(fileName);
-    	}
+		#endregion
 
-    	public void Process(String fileName, MPQNav.ADT.MDDF mddf)
-        {
+		#region rendering variables
+
+		/// <summary>
+		/// List of indices for rendering
+		/// </summary>
+		public List<int> indicies = new List<int>();
+
+		/// <summary>
+		/// List of vertices for rendering
+		/// </summary>
+		public List<VertexPositionNormalColored> vertices = new List<VertexPositionNormalColored>();
+
+		#endregion
+
+		public void Add(string fileName) {
+			_names.Add(fileName);
+		}
+
+		public void Process(String fileName, MDDF mddf) {
 			using(var br = new BinaryReader(File.OpenRead(fileName))) {
 				br.BaseStream.Position = 60; //wotlk
-				var numberOfVerts = br.ReadUInt32();
-				var vertsOffset = br.ReadUInt32();
-				var numberOfViews = br.ReadUInt32();
+				uint numberOfVerts = br.ReadUInt32();
+				uint vertsOffset = br.ReadUInt32();
+				uint numberOfViews = br.ReadUInt32();
 				//UInt32 viewsOffset = br.ReadUInt32(); //now in skins
 
 				br.BaseStream.Position = 216; //wotlk
-				var nBoundingTriangles = br.ReadUInt32();
-				var ofsBoundingTriangles = br.ReadUInt32();
-				var nBoundingVertices = br.ReadUInt32();
-				var ofsBoundingVertices = br.ReadUInt32();
+				uint nBoundingTriangles = br.ReadUInt32();
+				uint ofsBoundingTriangles = br.ReadUInt32();
+				uint nBoundingVertices = br.ReadUInt32();
+				uint ofsBoundingVertices = br.ReadUInt32();
 
 				br.BaseStream.Position = ofsBoundingVertices;
 
-				var vectors = ReadVectors(br, nBoundingVertices);
-				var tempVertices = vectors.Select(v1 => new VertexPositionNormalColored(v1, Color.Pink, Vector3.Up)).ToList();
+				List<Vector3> vectors = ReadVectors(br, nBoundingVertices);
+				List<VertexPositionNormalColored> tempVertices =
+					vectors.Select(v1 => new VertexPositionNormalColored(v1, Color.Pink, Vector3.Up)).ToList();
 
 				br.BaseStream.Position = ofsBoundingTriangles;
 
@@ -80,91 +74,86 @@ namespace MPQNav.MPQ.ADT
 					Int16 int2 = br.ReadInt16();
 					Int16 int3 = br.ReadInt16();
 
-					tempIndices.Add((int)int3);
-					tempIndices.Add((int)int2);
-					tempIndices.Add((int)int1);
+					tempIndices.Add(int3);
+					tempIndices.Add(int2);
+					tempIndices.Add(int1);
 				}
 
 				_m2s.Add(transform(tempVertices, tempIndices, mddf));
 			}
-    	}
+		}
 
-    	private static List<Vector3> ReadVectors(BinaryReader br, uint count) {
-    		var vectors = new List<Vector3>();
-    		for(int v = 0; v < count; v++) {
-    			var x = br.ReadSingle() * -1;
-    			var z = br.ReadSingle();
-    			var y = br.ReadSingle();
-    			vectors.Add(new Vector3(x, y, z));
-    		}
-    		return vectors;
-    	}
+		private static List<Vector3> ReadVectors(BinaryReader br, uint count) {
+			var vectors = new List<Vector3>();
+			for(int v = 0; v < count; v++) {
+				float x = br.ReadSingle() * -1;
+				float z = br.ReadSingle();
+				float y = br.ReadSingle();
+				vectors.Add(new Vector3(x, y, z));
+			}
+			return vectors;
+		}
 
-    	private MPQNav.ADT.M2 transform(IList<VertexPositionNormalColored> vertices, List<int> indicies, MPQNav.ADT.MDDF mddf)
-        {
-            MPQNav.ADT.M2 currentM2 = new MPQNav.ADT.M2();
-            
-            // Real world positions for a transform
-            
-            currentM2._Vertices.Clear();
-            currentM2._Indices.Clear();
+		private M2 transform(IList<VertexPositionNormalColored> vertices, List<int> indicies, MDDF mddf) {
+			var currentM2 = new M2();
 
-            // First we scale
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                float pos_x = (mddf.Position.X - 17066.666666666656f) * -1;
-                float pos_y = mddf.Position.Y;
-                float pos_z = (mddf.Position.Z - 17066.666666666656f) * -1;
-                Vector3 origin = new Vector3(pos_x, pos_y, pos_z);
+			// Real world positions for a transform
 
-                float my_x = (float)vertices[i].Position.X + pos_x;
-                float my_y = (float)vertices[i].Position.Y + pos_y;
-                float my_z = (float)vertices[i].Position.Z + pos_z;
-                Vector3 baseVertex = new Vector3(my_x, my_y, my_z);
+			currentM2.Vertices.Clear();
+			currentM2.Indices.Clear();
 
-                Matrix scaleMatrix = Matrix.CreateScale(mddf.Scale);
+			// First we scale
+			for(int i = 0; i < vertices.Count; i++) {
+				float pos_x = (mddf.Position.X - 17066.666666666656f) * -1;
+				float pos_y = mddf.Position.Y;
+				float pos_z = (mddf.Position.Z - 17066.666666666656f) * -1;
+				var origin = new Vector3(pos_x, pos_y, pos_z);
 
-                Vector3 scaledVector = Vector3.Transform(baseVertex - origin, scaleMatrix);
-                currentM2._Vertices.Add(new VertexPositionNormalColored(scaledVector, Color.Red, Vector3.Up));
-            }
-            currentM2._AABB = new MPQNav.Collision._3D.AABB(currentM2._Vertices);
-            currentM2._OBB = new MPQNav.Collision._3D.OBB(currentM2._AABB.center, currentM2._AABB.extents, Matrix.CreateRotationY(mddf.OrientationB - 90));
+				float my_x = vertices[i].Position.X + pos_x;
+				float my_y = vertices[i].Position.Y + pos_y;
+				float my_z = vertices[i].Position.Z + pos_z;
+				var baseVertex = new Vector3(my_x, my_y, my_z);
 
-            List<VertexPositionNormalColored> tempVertices = new List<VertexPositionNormalColored>();
+				Matrix scaleMatrix = Matrix.CreateScale(mddf.Scale);
 
-            for (int i = 0; i < currentM2._Vertices.Count; i++)
-            {
+				Vector3 scaledVector = Vector3.Transform(baseVertex - origin, scaleMatrix);
+				currentM2.Vertices.Add(new VertexPositionNormalColored(scaledVector, Color.Red, Vector3.Up));
+			}
+			currentM2.AABB = new AABB(currentM2.Vertices);
+			currentM2.OBB = new OBB(currentM2.AABB.center, currentM2.AABB.extents, Matrix.CreateRotationY(mddf.OrientationB - 90));
 
-                float pos_x = (mddf.Position.X - 17066.666666666656f) * -1;
-                float pos_y = mddf.Position.Y;
-                float pos_z = (mddf.Position.Z - 17066.666666666656f) * -1;
-                Vector3 origin = new Vector3(pos_x, pos_y, pos_z);
+			var tempVertices = new List<VertexPositionNormalColored>();
 
-                float my_x = (float)vertices[i].Position.X + pos_x;
-                float my_y = (float)vertices[i].Position.Y + pos_y;
-                float my_z = (float)vertices[i].Position.Z + pos_z;
-                Vector3 baseVertex = new Vector3(my_x, my_y, my_z);
+			for(int i = 0; i < currentM2.Vertices.Count; i++) {
+				float pos_x = (mddf.Position.X - 17066.666666666656f) * -1;
+				float pos_y = mddf.Position.Y;
+				float pos_z = (mddf.Position.Z - 17066.666666666656f) * -1;
+				var origin = new Vector3(pos_x, pos_y, pos_z);
 
-                // Creation the rotations
-                float a = mddf.OrientationA * -1 * rad;
-                float b = (mddf.OrientationB - 90) * rad;
-                float c = mddf.OrientationC * rad;
+				float my_x = vertices[i].Position.X + pos_x;
+				float my_y = vertices[i].Position.Y + pos_y;
+				float my_z = vertices[i].Position.Z + pos_z;
+				var baseVertex = new Vector3(my_x, my_y, my_z);
 
-                // Fancy things to rotate our model
-                Matrix rotateY = Matrix.CreateRotationY(b);
-                Matrix rotateZ = Matrix.CreateRotationZ(a);
-                Matrix rotateX = Matrix.CreateRotationX(c);
+				// Creation the rotations
+				float a = mddf.OrientationA * -1 * rad;
+				float b = (mddf.OrientationB - 90) * rad;
+				float c = mddf.OrientationC * rad;
 
-                Vector3 rotatedVector = Vector3.Transform(baseVertex - origin, rotateY);
-                //rotatedVector = Vector3.Transform(rotatedVector, rotateZ);
-                //rotatedVector = Vector3.Transform(rotatedVector, rotateX);
-                Vector3 finalVector = rotatedVector + origin;
-                tempVertices.Add(new VertexPositionNormalColored(finalVector,Color.Red,Vector3.Up));
-            }
-            currentM2._Indices.AddRange(indicies);
-            currentM2._Vertices = tempVertices;
-            return currentM2;
-        }
+				// Fancy things to rotate our model
+				Matrix rotateY = Matrix.CreateRotationY(b);
+				Matrix rotateZ = Matrix.CreateRotationZ(a);
+				Matrix rotateX = Matrix.CreateRotationX(c);
 
-    }
+				Vector3 rotatedVector = Vector3.Transform(baseVertex - origin, rotateY);
+				//rotatedVector = Vector3.Transform(rotatedVector, rotateZ);
+				//rotatedVector = Vector3.Transform(rotatedVector, rotateX);
+				Vector3 finalVector = rotatedVector + origin;
+				tempVertices.Add(new VertexPositionNormalColored(finalVector, Color.Red, Vector3.Up));
+			}
+			currentM2.Indices.AddRange(indicies);
+			currentM2.Vertices = tempVertices;
+			return currentM2;
+		}
+	}
 }
