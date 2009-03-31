@@ -17,7 +17,7 @@ namespace MPQNav.Util.ADTParser {
 		}
 
 		/// <summary>
-		/// Parse all MH2O element from file strem
+		/// Parse all MH2O element from file stream
 		/// </summary>
 		public override MH2O[,] Parse() {
 			return processMH2Os();

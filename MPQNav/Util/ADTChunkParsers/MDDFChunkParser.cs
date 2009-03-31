@@ -15,7 +15,7 @@ namespace MPQNav.Util.ADTParser {
 		}
 
 		/// <summary>
-		/// Parse MDDF element from file strem
+		/// Parse MDDF element from file stream
 		/// </summary>
 		public override MDDF[] Parse() {
 			var _MDDF = new List<MDDF>();

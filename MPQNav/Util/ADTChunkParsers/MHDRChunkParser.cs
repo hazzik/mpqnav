@@ -10,7 +10,7 @@ namespace MPQNav.Util.ADTParser {
 		}
 
 		/// <summary>
-		/// Parse MHDR element from file strem
+		/// Parse MHDR element from file stream
 		/// </summary>
 		public override MHDR Parse() {
 			//long pMHDRData = br.BaseStream.Position;

@@ -14,7 +14,7 @@ namespace MPQNav.Util.ADTParser {
 		}
 
 		/// <summary>
-		/// Parse MODF element from file strem
+		/// Parse MODF element from file stream
 		/// </summary>
 		public override List<MODF> Parse() {
 			Reader.BaseStream.Position = AbsoluteStart;

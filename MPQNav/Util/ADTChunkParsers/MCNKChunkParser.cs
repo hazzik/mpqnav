@@ -22,7 +22,7 @@ namespace MPQNav.Util.ADTParser {
 		}
 
 		/// <summary>
-		/// Parse all MCNK element from file strem
+		/// Parse all MCNK element from file stream
 		/// </summary>
 		public override MCNK[,] Parse() {
 			var MCNK = new MCNK[16,16];

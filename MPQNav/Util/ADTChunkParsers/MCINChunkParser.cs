@@ -17,7 +17,7 @@ namespace MPQNav.Util.ADTParser {
 		}
 
 		/// <summary>
-		/// Parse all MCIN element from file strem
+		/// Parse all MCIN element from file stream
 		/// </summary>
 		public override MCIN[] Parse() {
 			Reader.BaseStream.Position = AbsoluteStart;
