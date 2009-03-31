@@ -103,25 +103,13 @@ namespace MPQNav.MPQ.ADT {
 
 			#region Nested type: MONR
 
-			public class MONR {
-				public Vector3[] Normals { get; set; }
-			}
-
 			#endregion
 
 			#region Nested type: MOVI
 
-			public class MOVI {
-				public short[] Indices { get; set; }
-			}
-
 			#endregion
 
 			#region Nested type: MOVT
-
-			public class MOVT {
-				public List<Vector3> Vertices { get; set; }
-			}
 
 			#endregion
 		}
@@ -152,7 +140,7 @@ namespace MPQNav.MPQ.ADT {
 
 					this.addVertex(finalVector);
 				}
-				for(int index = 0; index < currentSub._MOVI.Indices.Count; index++) {
+				for(int index = 0; index < currentSub._MOVI.Indices.Length; index++) {
 					this.addIndex(currentSub._MOVI.Indices[index] + offset);
 				}
 				offset = this.Vertices.Count;

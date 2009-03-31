@@ -111,82 +111,23 @@ namespace MPQNav.MPQ.ADT {
 				throw new Exception("File does not exist: " + path);
 			}
 			var currentWMOSub = new WMO.WMO_Sub(group_index);
-			var br = new BinaryReader(File.OpenRead(path));
+			
+			using(var reader = new BinaryReader(File.OpenRead(path))) {
+				var offsMOVI = (int)FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition;
+				//MPQ.findChunk(br, "IVOM");
 
-			var offsMOVI = (int)FileChunkHelper.SearchChunk(br, "MOVI").StartPosition;
-			//MPQ.findChunk(br, "IVOM");
+				var offsMOVT = (int)FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition;
+				//MPQ.findChunk(br, "TVOM");
 
-			var offsMOVT = (int)FileChunkHelper.SearchChunk(br, "MOVT").StartPosition;
-			//MPQ.findChunk(br, "TVOM");
+				var offsMONR = (int)FileChunkHelper.SearchChunk(reader, "MONR").StartPosition;
+				//MPQ.findChunk(br, "RNOM");
 
-			var offsMONR = (int)FileChunkHelper.SearchChunk(br, "MONR").StartPosition;
-			//MPQ.findChunk(br, "RNOM");
+				currentWMOSub._MOVI = new MOVIChunkParser(reader, offsMOVI).Parse();
+				currentWMOSub._MOVT = new MOVTChunkParser(reader, offsMOVT).Parse();
+				currentWMOSub._MONR = new MONRChunkParser(reader, offsMONR).Parse();
+			}
 
-			var offsMOTV = (int)FileChunkHelper.SearchChunk(br, "MOVT").StartPosition;
-			//MPQ.findChunk(br, "VTOM");
-			processMOVI(br, offsMOVI, offsMOVT, currentWMOSub);
-			processMOVT(br, offsMOVT, offsMONR, currentWMOSub);
-			processMONR(br, offsMONR, offsMOTV, currentWMOSub);
 			return currentWMOSub;
-		}
-
-		/// <summary>
-		/// WMO Vertex Index List
-		/// </summary>
-		/// <param name="br">Binary Reader with the WMO Loaded</param>
-		/// <param name="start_offset">Starting offset in the reader for the MOVI Chunk</param>
-		/// <param name="end_offset">Ending offset in the reader for the MOVI Chunk</param>
-		/// <param name="currentWMOSUB">Current working WMO_Sub</param>
-		public void processMOVI(BinaryReader br, int start_offset, int end_offset, WMO.WMO_Sub currentWMOSUB) {
-			br.BaseStream.Position = start_offset + 8;
-			var result = new List<short>();
-			while(br.BaseStream.Position < end_offset) {
-				short one = br.ReadInt16();
-				short two = br.ReadInt16();
-				short three = br.ReadInt16();
-				result.Add(three);
-				result.Add(two);
-				result.Add(one);
-			}
-			currentWMOSUB._MOVI.Indices = result.ToArray();
-		}
-
-		/// <summary>
-		/// WMO Vertex List
-		/// </summary>
-		/// <param name="br">Binary reader with the WMO Loaded</param>
-		/// <param name="start_offset">Starting offset in the binary reader for the MOVT Chunk</param>
-		/// <param name="end_offset">Ending offset in the binary reader for the MOVT Chunk</param>
-		/// <param name="currentWMOSUB">Current working WMO_Sub</param>
-		public void processMOVT(BinaryReader br, int start_offset, int end_offset, WMO.WMO_Sub currentWMOSUB) {
-			br.BaseStream.Position = start_offset + 8;
-			var result = new List<Vector3>();
-			while(br.BaseStream.Position < end_offset) {
-				float vect_x = (br.ReadSingle() * -1);
-				float vect_z = br.ReadSingle();
-				float vect_y = br.ReadSingle();
-				result.Add(new Vector3(vect_x, vect_y, vect_z));
-			}
-			currentWMOSUB._MOVT.Vertices = result;
-		}
-
-		/// <summary>
-		/// WMO Normal Information
-		/// </summary>
-		/// <param name="br">Binary reader with the WMO loaded</param>
-		/// <param name="start_offset">Starting offset for the MONR chunk</param>
-		/// <param name="end_offset">Ending offset for the MONR Chunk</param>
-		/// <param name="currentWMOSUB">Current working WMO Sub</param>
-		public void processMONR(BinaryReader br, int start_offset, int end_offset, WMO.WMO_Sub currentWMOSUB) {
-			br.BaseStream.Position = start_offset + 8;
-			var result = new List<Vector3>();
-			while(br.BaseStream.Position < end_offset) {
-				float vect_x = (br.ReadSingle() * -1);
-				float vect_z = br.ReadSingle();
-				float vect_y = br.ReadSingle();
-				result.Add(new Vector3(vect_x, vect_y, vect_z));
-			}
-			currentWMOSUB._MONR.Normals = result.ToArray();
 		}
 
 		/// <summary>
