@@ -10,6 +10,7 @@ namespace MPQNav.Util {
 			Array.Reverse(bytes);
 			return Encoding.ASCII.GetString(bytes);
 		}
+
 		public static string ReadCString(this BinaryReader reader) {
 			return ReadCString(reader, Encoding.UTF8);
 		}
@@ -22,7 +23,5 @@ namespace MPQNav.Util {
 			}
 			return encoding.GetString(buff.ToArray());
 		}
-
 	}
 }
-

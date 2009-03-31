@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 //using IronPython.Hosting;
 //using IronPython.Runtime.Exceptions;
 //using IronPython.Modules;
@@ -93,7 +94,7 @@ namespace XnaConsole {
 			consoleXSize = Game.Window.ClientBounds.Right - Game.Window.ClientBounds.Left - 20;
 			consoleYSize = font.LineSpacing * LinesDisplayed + 20;
 			lineWidth = (int)(consoleXSize / font.MeasureString("a").X) - 2;
-				//calculate number of letters that fit on a line, using "a" as example character
+			//calculate number of letters that fit on a line, using "a" as example character
 
 			State = ConsoleState.Closed;
 			StateStartTime = 0;
@@ -409,7 +410,7 @@ namespace XnaConsole {
 			}
 			//calculate the number of letters that fit on a line
 			lineWidth = (int)(consoleXSize / font.MeasureString("a").X) - 2;
-				//remeasure lineWidth, incase the screen size changes
+			//remeasure lineWidth, incase the screen size changes
 
 			#endregion
 
@@ -431,7 +432,7 @@ namespace XnaConsole {
 
 			int j = 0;
 			List<string> lines = Render(OutputBuffer + InputBuffer);
-				//show them in the proper order, because we're drawing from the bottom
+			//show them in the proper order, because we're drawing from the bottom
 			foreach(string str in lines) {
 				//draw each line at an offset determined by the line height and line count
 				j++;
@@ -471,7 +472,7 @@ namespace XnaConsole {
 				}
 				return false;
 			}
-				//if the key is not pressed, reset it's time to the first interval, which is usually longer
+			//if the key is not pressed, reset it's time to the first interval, which is usually longer
 			keyTimes[key] = firstInterval;
 			return false;
 		}

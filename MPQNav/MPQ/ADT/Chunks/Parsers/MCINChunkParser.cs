@@ -24,11 +24,11 @@ namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 			var mcins = new MCIN[256];
 			for(var i = 0; i < 256; i++) {
 				var mcin = new MCIN {
-				                    	Offset = Reader.ReadUInt32(),
-				                    	Size = Reader.ReadUInt32(),
-				                    	Flags = Reader.ReadUInt32(),
-				                    	AsyncId = Reader.ReadUInt32()
-				                    };
+					Offset = Reader.ReadUInt32(),
+					Size = Reader.ReadUInt32(),
+					Flags = Reader.ReadUInt32(),
+					AsyncId = Reader.ReadUInt32()
+				};
 				mcins[i] = mcin;
 			}
 			return mcins;

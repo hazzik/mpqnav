@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+
 [assembly: AssemblyTitle("MPQNav")]
 [assembly: AssemblyProduct("MPQNav")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("Zoodia")]
-
 [assembly: AssemblyCopyright("Copyright © Zoodia 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -17,9 +17,11 @@ using System.Runtime.InteropServices;
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
+
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
+
 [assembly: Guid("ba4ffe3c-6ac7-4d49-9c26-0f22f10ec872")]
 
 
@@ -30,4 +32,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
+
 [assembly: AssemblyVersion("1.0.0.0")]

@@ -187,7 +187,8 @@ namespace MPQNav.ADT {
 			renderCached = true;
 		}
 
-		public static void Optimize(VertexPositionNormalColored[] vertices, int[] indices, out VertexPositionNormalColored[] outVertices, out int[] outindices) {
+		public static void Optimize(VertexPositionNormalColored[] vertices, int[] indices,
+		                            out VertexPositionNormalColored[] outVertices, out int[] outindices) {
 			var hash = new Dictionary<VertexPositionNormalColored, int>();
 			var resultIndices = new List<int>();
 			for(int i = 0; i < indices.Length; i++) {

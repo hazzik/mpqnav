@@ -2,7 +2,7 @@
 using System.IO;
 
 namespace MPQNav.Util {
-	internal abstract class ChunkParser<T>:ParserBase<T> {
+	internal abstract class ChunkParser<T> : ParserBase<T> {
 		protected ChunkParser(string name, BinaryReader reader, long absoluteStart)
 			: base(reader) {
 			Name = name;

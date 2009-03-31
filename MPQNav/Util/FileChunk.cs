@@ -14,7 +14,7 @@ namespace MPQNav.Util {
 			br.BaseStream.Position = 0;
 
 			var keepSearch = true;
-			var nextLine = br.ReadBytes(2);	
+			var nextLine = br.ReadBytes(2);
 			try {
 				while(keepSearch) {
 					var nextLine2 = br.ReadBytes(2);

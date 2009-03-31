@@ -11,7 +11,7 @@ namespace MPQNav.MPQ.WMO.Chunks.Parsers {
 
 		public override MOVI Parse() {
 			Reader.BaseStream.Position = AbsoluteStart;
-			
+
 			var result = new List<short>();
 			while(Reader.BaseStream.Position < AbsoluteStart + Size) {
 				short one = Reader.ReadInt16();

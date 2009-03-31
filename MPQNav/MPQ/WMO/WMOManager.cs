@@ -91,7 +91,8 @@ namespace MPQNav.MPQ.ADT {
 			currentWMO.createAABB(new Vector3(bb1_x, bb1_y, bb1_z), new Vector3(bb2_x, bb2_y, bb2_z));
 			currentWMO.TotalGroups = (int)groupsCount;
 			for(int wmoGroup = 0; wmoGroup < groupsCount; wmoGroup++) {
-				var currentFileName = string.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
+				var currentFileName = string.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4),
+				                                    wmoGroup);
 				currentWMO.addWMO_Sub(processWMOSub(filePath + currentFileName, wmoGroup));
 			}
 			var position = currentMODF.Position;
@@ -112,7 +113,7 @@ namespace MPQNav.MPQ.ADT {
 				throw new Exception("File does not exist: " + path);
 			}
 			var currentWMOSub = new WMO.WMO_Sub(group_index);
-			
+
 			using(var reader = new BinaryReader(File.OpenRead(path))) {
 				var offsMOVI = (int)FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition;
 				//MPQ.findChunk(br, "IVOM");

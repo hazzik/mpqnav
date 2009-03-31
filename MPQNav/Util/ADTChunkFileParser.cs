@@ -24,7 +24,7 @@ namespace MPQNav.Util {
 				return new ADTChunkFileParser(fileName, reader).Parse();
 			}
 		}
-		
+
 		/// <summary>
 		/// Digs through an ADT and parses out all the information in it. 
 		/// </summary>

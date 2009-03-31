@@ -12,7 +12,7 @@ namespace MPQNav.MPQ.WMO.Chunks.Parsers {
 
 		public override MOVT Parse() {
 			Reader.BaseStream.Position = AbsoluteStart;
-			
+
 			var result = new List<Vector3>();
 			while(Reader.BaseStream.Position < AbsoluteStart + Size) {
 				float vect_x = (Reader.ReadSingle() * -1);

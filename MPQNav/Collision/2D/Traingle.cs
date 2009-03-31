@@ -72,7 +72,7 @@ namespace MPQNav.Collision._2D {
 
 		private static int GetGreaterX(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 center) {
 			int greaterX = 0;
-			
+
 			if(p1.X > center.X) {
 				greaterX++;
 			}
