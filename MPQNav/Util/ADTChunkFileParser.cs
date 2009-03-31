@@ -1,4 +1,3 @@
-﻿using System;
 using System.IO;
 using MPQNav.MPQ.ADT.Chunks;
 using MPQNav.MPQ.ADT.Chunks.Parsers;
