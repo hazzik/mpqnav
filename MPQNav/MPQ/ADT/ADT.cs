@@ -32,7 +32,7 @@ namespace MPQNav.ADT {
 		/// <summary>
 		/// List of MDDF Chunks which are placement information for M2s
 		/// </summary>
-		public List<MDDF> _MDDFList = new List<MDDF>(); // NEW
+		public MDDF[] _MDDFList = new MDDF[0];
 
 		/// <summary>
 		/// Array of MH20 chunks which give the ADT FLUID vertex information for this ADT

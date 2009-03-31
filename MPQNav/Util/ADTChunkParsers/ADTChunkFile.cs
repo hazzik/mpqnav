@@ -30,8 +30,6 @@ namespace MPQNav.Util {
 		/// <summary>
 		/// Digs through an ADT and parses out all the information in it. 
 		/// </summary>
-		/// <param name="x">X offset of the ADT in the 64 x 64 grid</param>
-		/// <param name="y">Y offset of the ADT in the 64 x 64 grid</param>
 		/// <param name="br">Binary reader loaded with the ADT file</param>
 		/// <param name="currentADT">ADT to be processed</param>
 		private static void ParseADT(BinaryReader br, ADT.ADT currentADT) {
@@ -65,14 +63,7 @@ namespace MPQNav.Util {
 
 			currentADT._MDDFList = new MDDFChunkParser(br, mhdr.OffsDoodsDef + mhdr.Base, mmdxs).Parse();
 
-			long ofsMH2O = mhdr.OffsMH2O;
-
-			if(ofsMH2O != 0) {
-				ofsMH2O += mhdr.Base;
-			}
-
-			var chkH20 = new MH2OChunkParser(br, ofsMH2O);
-			var mh2os = chkH20.Parse();
+			var mh2os = mhdr.OffsMH2O != 0 ? new MH2OChunkParser(br, mhdr.OffsMH2O + mhdr.Base).Parse() : new MH2O[0,0];
 
 			currentADT.addMH2O(mh2os);
 			currentADT.GenerateVertexAndIndices();

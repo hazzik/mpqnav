@@ -1,65 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Microsoft.Xna.Framework;
 using MPQNav.ADT;
 
 namespace MPQNav.Util.ADTParser {
-	internal class MDDFChunkParser : ChunkParser {
+	internal class MDDFChunkParser : ChunkParser<MDDF[]> {
 		private readonly string[] _mmdxs;
 
-		public MDDFChunkParser(BinaryReader br, long pAbsoluteStart, string[] mmdxs) {
-			this.br = br;
-			_Name = "MDDF";
-			br.BaseStream.Position = pAbsoluteStart + 4;
-			_Size = br.ReadUInt32();
-			_pStart = pAbsoluteStart + 8;
+		public MDDFChunkParser(BinaryReader br, long pAbsoluteStart, string[] mmdxs)
+			: base("MDDF", br, pAbsoluteStart) {
 			_mmdxs = mmdxs;
-		}
-
-		/// <summary>
-		/// Return the chunk Name
-		/// </summary>
-		public override string Name {
-			get { return _Name; }
-		}
-
-		/// <summary>
-		/// Return the absolute position of MDDF chunk in the file stream
-		/// </summary>
-		public override long AbsoluteStart {
-			get { return _pStart; }
-		}
-
-		/// <summary>
-		/// Return the size of MDDF chunk
-		/// </summary>
-		public override uint Size {
-			get { return _Size; }
 		}
 
 		/// <summary>
 		/// Parse MDDF element from file strem
 		/// </summary>
-		public List<MDDF> Parse() {
+		public override MDDF[] Parse() {
 			var _MDDF = new List<MDDF>();
-			br.BaseStream.Position = _pStart;
+			Reader.BaseStream.Position = AbsoluteStart;
 			int bytesRead = 0;
-			while(bytesRead < _Size) {
+			while(bytesRead < Size) {
 				var lMDDF = new MDDF {
-					FilePath = _mmdxs[(int)br.ReadUInt32()],
-					UniqId = br.ReadUInt32(),
-					Position = new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()),
-					OrientationA = br.ReadSingle(),
-					OrientationB = br.ReadSingle(),
-					OrientationC = br.ReadSingle(),
-					Scale = (br.ReadUInt32() / 1024f)
+					FilePath = _mmdxs[(int)Reader.ReadUInt32()],
+					UniqId = Reader.ReadUInt32(),
+					Position = new Vector3(Reader.ReadSingle(), Reader.ReadSingle(), Reader.ReadSingle()),
+					OrientationA = Reader.ReadSingle(),
+					OrientationB = Reader.ReadSingle(),
+					OrientationC = Reader.ReadSingle(),
+					Scale = (Reader.ReadUInt32() / 1024f)
 				};
 				bytesRead += 36; // 36 total bytes
 				_MDDF.Add(lMDDF);
 				//currentADT.addWMO(currentMODF.fileName, this._basePath, currentMODF);
 			}
-			return _MDDF;
+			return _MDDF.ToArray();
 		}
 	}
 }
