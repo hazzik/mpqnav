@@ -104,8 +104,8 @@ namespace MPQNav.ADT {
 		}
 
 		public void GenerateVertexAndIndicesH2O() {
-			H2OVertices = new List<VertexPositionNormalColored>();
-			H2OIndicies = new List<int>();
+			var vertices = new List<VertexPositionNormalColored>();
+			var indices = new List<int>();
 			float[,] MH2OHeightMap = null;
 			bool[,] MH2ORenderMap = null;
 			float offset_x = (533.33333f / 16) / 8;
@@ -134,7 +134,7 @@ namespace MPQNav.ADT {
 									y_pos = MH2OHeightMap[r - _MH2O.yOffset, c - _MH2O.xOffset]; // +_MH2O.heightLevel1;
 									var position = new Vector3(x_pos, y_pos, z_pos);
 
-									H2OVertices.Add(new VertexPositionNormalColored(position, clr, Vector3.Up));
+									vertices.Add(new VertexPositionNormalColored(position, clr, Vector3.Up));
 									_TempVertexCounter++;
 								}
 							}
@@ -147,12 +147,12 @@ namespace MPQNav.ADT {
 
 								//if ((MH2ORenderMap[row, c]) || ((_MH2O.height == 8) && (_MH2O.width == 8)))
 								{
-									H2OIndicies.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col));
-									H2OIndicies.Add(VertexCounter + (row * (_MH2O.width + 1) + col));
-									H2OIndicies.Add(VertexCounter + (row * (_MH2O.width + 1) + col + 1));
-									H2OIndicies.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col + 1));
-									H2OIndicies.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col));
-									H2OIndicies.Add(VertexCounter + (row * (_MH2O.width + 1) + col + 1));
+									indices.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col));
+									indices.Add(VertexCounter + (row * (_MH2O.width + 1) + col));
+									indices.Add(VertexCounter + (row * (_MH2O.width + 1) + col + 1));
+									indices.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col + 1));
+									indices.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col));
+									indices.Add(VertexCounter + (row * (_MH2O.width + 1) + col + 1));
 								}
 							}
 						}
@@ -160,6 +160,8 @@ namespace MPQNav.ADT {
 					}
 				}
 			}
+			H2OVertices = vertices;
+			H2OIndicies = indices;
 		}
 
 		private static Color GetColor(MH2O.FluidType fluidType) {
@@ -224,8 +226,8 @@ namespace MPQNav.ADT {
 					}
 
 					//this.Indices.AddRange(triangleListIndices);
-					float offset_x = (533.33333f / 16) / 8;
-					float offset_z = (533.33333f / 16) / 8;
+					const float offset_x = (533.33333f / 16) / 8;
+					const float offset_z = (533.33333f / 16) / 8;
 
 					float[,] LowResMap = lMCNK._MCVT.GetLowResMapMatrix();
 					Vector3[,] LowResNormal = lMCNK._MCNR.GetLowResNormalMatrix();
@@ -234,7 +236,7 @@ namespace MPQNav.ADT {
 						for(int c = 0; c < 9; c++) {
 							float x_pos = lMCNK.x - (c * offset_x);
 							float z_pos = lMCNK.z - (r * offset_z);
-							float _y = LowResMap[r, c] + lMCNK.y;
+							float y_pos = LowResMap[r, c] + lMCNK.y;
 
 							Color _clr = Color.Green;
 
@@ -244,7 +246,7 @@ namespace MPQNav.ADT {
 							if(angle > 50.0) {
 								_clr = Color.Brown;
 							}
-							var position = new Vector3(x_pos, _y, z_pos);
+							var position = new Vector3(x_pos, y_pos, z_pos);
 							Vertices.Add(new VertexPositionNormalColored(position, _clr, Vector3.Up));
 						}
 					}
