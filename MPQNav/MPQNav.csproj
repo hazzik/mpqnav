@@ -78,12 +78,12 @@
     <Compile Include="Console\MpqConsole.cs" />
     <Compile Include="Console\XnaConsole.cs" />
     <Compile Include="IParser.cs" />
-    <Compile Include="MPQ\ADT\MDDF.cs" />
-    <Compile Include="MPQ\ADT\MCIN.cs" />
-    <Compile Include="MPQ\ADT\MCNK.cs" />
-    <Compile Include="MPQ\ADT\MH2O.cs" />
-    <Compile Include="MPQ\ADT\MHDR.cs" />
-    <Compile Include="MPQ\ADT\MODF.cs" />
+    <Compile Include="MPQ\ADT\Chunks\MDDF.cs" />
+    <Compile Include="MPQ\ADT\Chunks\MCIN.cs" />
+    <Compile Include="MPQ\ADT\Chunks\MCNK.cs" />
+    <Compile Include="MPQ\ADT\Chunks\MH2O.cs" />
+    <Compile Include="MPQ\ADT\Chunks\MHDR.cs" />
+    <Compile Include="MPQ\ADT\Chunks\MODF.cs" />
     <Compile Include="Collision\2D\Traingle.cs" />
     <Compile Include="MPQ\ADT\ADT.cs" />
     <Compile Include="MPQ\ADT\ADTManager.cs" />
@@ -102,18 +102,18 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Util\ADTChunkParsers\ADTChunkFile.cs" />
-    <Compile Include="Util\ADTChunkParsers\MMDXChunkParser.cs" />
-    <Compile Include="Util\ADTChunkParsers\MDDFChunkParser.cs" />
-    <Compile Include="Util\ADTChunkParsers\MVERChunkParser.cs" />
-    <Compile Include="Util\ADTChunkParsers\MWMOChunkParser.cs" />
-    <Compile Include="Util\ADTChunkParsers\MCINChunkParser.cs" />
-    <Compile Include="Util\ADTChunkParsers\MCNKChunkParser.cs" />
-    <Compile Include="Util\ADTChunkParsers\MODFChunkParser.cs" />
+    <Compile Include="MPQ\ADT\Chunks\Parsers\MMDXChunkParser.cs" />
+    <Compile Include="MPQ\ADT\Chunks\Parsers\MDDFChunkParser.cs" />
+    <Compile Include="MPQ\ADT\Chunks\Parsers\MVERChunkParser.cs" />
+    <Compile Include="MPQ\ADT\Chunks\Parsers\MWMOChunkParser.cs" />
+    <Compile Include="MPQ\ADT\Chunks\Parsers\MCINChunkParser.cs" />
+    <Compile Include="MPQ\ADT\Chunks\Parsers\MCNKChunkParser.cs" />
+    <Compile Include="MPQ\ADT\Chunks\Parsers\MODFChunkParser.cs" />
     <Compile Include="Util\BinaryReaderExtensions.cs" />
     <Compile Include="Util\ChunkParser.cs" />
     <Compile Include="Util\FileChunk.cs" />
-    <Compile Include="Util\ADTChunkParsers\MHDRChunkParser.cs" />
-    <Compile Include="Util\ADTChunkParsers\MH2OChunkParser.cs" />
+    <Compile Include="MPQ\ADT\Chunks\Parsers\MHDRChunkParser.cs" />
+    <Compile Include="MPQ\ADT\Chunks\Parsers\MH2OChunkParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
