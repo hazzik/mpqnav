@@ -99,6 +99,7 @@
     <Compile Include="Util\ADTChunkParsers\MCINChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MCNKChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MODFChunkParser.cs" />
+    <Compile Include="Util\BinaryReaderExtensions.cs" />
     <Compile Include="Util\ChunkFileHelper.cs" />
     <Compile Include="Util\FileChunk.cs" />
     <Compile Include="Util\ADTChunkParsers\MHDRChunkParser.cs" />

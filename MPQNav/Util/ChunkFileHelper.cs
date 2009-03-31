@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
-using MPQNav.ADT;
 
 namespace MPQNav.Util {
 	internal abstract class ChunkParser<T> {
@@ -9,9 +7,7 @@ namespace MPQNav.Util {
 			Name = name;
 			Reader = reader;
 			Reader.BaseStream.Position = absoluteStart;
-			var bytes = Reader.ReadBytes(4);
-			Array.Reverse(bytes);
-			var name1 = Encoding.ASCII.GetString(bytes);
+			string name1 = Reader.ReadStringReversed(4);
 			if(name1 != Name) {
 				throw new Exception("invalide chunk");
 			}
