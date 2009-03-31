@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MPQNav.ADT;
 
 namespace MPQNav
 {
@@ -86,8 +88,8 @@ namespace MPQNav
 
         KeyboardState oldKeyState;
 
-        private List<VertexPositionNormalColored> renderVerticies = new List<VertexPositionNormalColored>();
-        private List<int> renderIndices = new List<int>();
+    	private VertexPositionNormalColored[] renderVerticies;
+    	private int[] renderIndices;
 
         SpriteBatch spriteBatch;
         SpriteFont spriteFont;
@@ -95,34 +97,32 @@ namespace MPQNav
         /// <summary>
         /// Constructor for the game.
         /// </summary>
-        public Game1()
-        {
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-            
-            
-            String mpqPath = System.Configuration.ConfigurationSettings.AppSettings["mpqPath"];
-            //String mpqFile = "c:\\Program Files\\World of Warcraft\\Data\\common.MPQ";
-            String defaultContinent = System.Configuration.ConfigurationSettings.AppSettings["defaultContinent"];
-            int defaultMapX = int.Parse(System.Configuration.ConfigurationSettings.AppSettings["defaultMapX"]);
-            int defaultMapY = int.Parse(System.Configuration.ConfigurationSettings.AppSettings["defaultMapY"]);
+        public Game1() {
+        	graphics = new GraphicsDeviceManager(this);
+        	Content.RootDirectory = "Content";
 
-            MPQNav.ADT.ADTManager.ContinentType continent = (MPQNav.ADT.ADTManager.ContinentType)Enum.Parse(typeof(MPQNav.ADT.ADTManager.ContinentType), defaultContinent, true);
 
-            manager = new MPQNav.ADT.ADTManager(continent, mpqPath);
+        	String mpqPath = System.Configuration.ConfigurationSettings.AppSettings["mpqPath"];
+        	//String mpqFile = "c:\\Program Files\\World of Warcraft\\Data\\common.MPQ";
+        	String defaultContinent = System.Configuration.ConfigurationSettings.AppSettings["defaultContinent"];
+        	int defaultMapX = int.Parse(System.Configuration.ConfigurationSettings.AppSettings["defaultMapX"]);
+        	int defaultMapY = int.Parse(System.Configuration.ConfigurationSettings.AppSettings["defaultMapY"]);
 
-            manager.loadADT(defaultMapX, defaultMapY);
+        	MPQNav.ADT.ADTManager.ContinentType continent = (MPQNav.ADT.ADTManager.ContinentType)Enum.Parse(typeof(MPQNav.ADT.ADTManager.ContinentType), defaultContinent, true);
 
-            this.renderIndices = manager.renderingIndices();
-            this.renderVerticies = manager.renderingVerticies();
-            if (this.renderIndices.Count > 0)
-            {
-                this.avatarPosition = renderVerticies[0].Position;
-                this.avatarYaw = 90;
-            }
+        	manager = new MPQNav.ADT.ADTManager(continent, mpqPath);
+
+        	manager.loadADT(defaultMapX, defaultMapY);
+
+       	renderVerticies = manager.renderingVerticies();
+        	renderIndices = manager.renderingIndices();
+        	if(this.renderIndices.Length > 0) {
+        		this.avatarPosition = renderVerticies[0].Position;
+        		this.avatarYaw = 90;
+        	}
         }
 
-        /// <summary>
+    	/// <summary>
         /// Executes a console command.
         /// </summary>
         public void DoCommand()
@@ -249,27 +249,22 @@ namespace MPQNav
             base.Draw(gameTime);
         }
 
-        private void Render()
-        {
-            this.renderIndices = manager.renderingIndices();
-            this.renderVerticies = manager.renderingVerticies();
-        	if(this.renderIndices.Count <= 0) {
-        		return;
-        	}
-        	var vertexData = renderVerticies.ToArray();
-        	var indexData = renderIndices.ToArray();
-        	graphics.GraphicsDevice.DrawUserIndexedPrimitives(
-        		PrimitiveType.TriangleList,
-        		vertexData,
-        		0, // vertex buffer offset to add to each element of the index buffer
-        		vertexData.Length, // number of vertices to draw
-        		indexData,
-        		0, // first index element to read
-        		indexData.Length / 3 // number of primitives to draw
-        		);
-        }
+		  private void Render() {
+		  	renderVerticies = manager.renderingVerticies();
+		  	renderIndices = manager.renderingIndices();
 
-        private void DrawCameraState()
+		  	graphics.GraphicsDevice.DrawUserIndexedPrimitives(
+		  		PrimitiveType.TriangleList,
+		  		renderVerticies.ToArray(),
+		  		0, // vertex buffer offset to add to each element of the index buffer
+		  		renderVerticies.Length, // number of vertices to draw
+		  		renderIndices.ToArray(),
+		  		0, // first index element to read
+		  		renderIndices.Length / 3 // number of primitives to draw
+		  		);
+		  }
+
+    	private void DrawCameraState()
         {
             graphics.GraphicsDevice.RenderState.CullMode = CullMode.None;
             graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;

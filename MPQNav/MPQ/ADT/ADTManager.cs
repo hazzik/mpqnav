@@ -44,14 +44,14 @@ namespace MPQNav.ADT {
 		/// </summary>
 		private readonly Boolean loaded;
 
-		private List<int> indicesCachedADT = new List<int>();
+		private int[] indicesCachedADT;
 
 		/// <summary>
 		/// Boolean variable representing if all the rendering data has been cached.
 		/// </summary>
 		private Boolean renderCached;
 
-		private List<VertexPositionNormalColored> verticesCachedADT = new List<VertexPositionNormalColored>();
+		private VertexPositionNormalColored[] verticesCachedADT;
 
 		#endregion
 
@@ -92,9 +92,9 @@ namespace MPQNav.ADT {
 			if(!Directory.Exists(dir)) {
 				throw new Exception("Continent data missing");
 			}
-			var file = string.Format("{0}{1}{2}\\{2}_{3}_{4}.adt", _basePath, _adtPath, _continent, x, y);
+			var file = String.Format("{0}{1}{2}\\{2}_{3}_{4}.adt", _basePath, _adtPath, _continent, x, y);
 			if(!File.Exists(file)) {
-				throw new Exception(string.Format("ADT Doesn't exist: {0}", file));
+				throw new Exception(String.Format("ADT Doesn't exist: {0}", file));
 			}
 
 			ADT currentADT = ADTChunkFileParser.LoadADT(file);
@@ -122,7 +122,7 @@ namespace MPQNav.ADT {
 			_ADTs.Add(currentADT);
 		}
 
-		public List<VertexPositionNormalColored> renderingVerticies() {
+		public VertexPositionNormalColored[] renderingVerticies() {
 			if(renderCached) {
 				return verticesCachedADT;
 			}
@@ -131,7 +131,7 @@ namespace MPQNav.ADT {
 		}
 
 
-		public List<int> renderingIndices() {
+		public int[] renderingIndices() {
 			if(renderCached) {
 				return indicesCachedADT;
 			}
@@ -181,13 +181,26 @@ namespace MPQNav.ADT {
 					offset = tempVertices.Count;
 				}
 			}
-			indicesCachedADT.Clear();
-			indicesCachedADT = tempIndicies;
 
-			verticesCachedADT.Clear();
-			verticesCachedADT = tempVertices;
+			Optimize(tempVertices.ToArray(), tempIndicies.ToArray(), out verticesCachedADT, out indicesCachedADT);
 
 			renderCached = true;
+		}
+
+		public static void Optimize(VertexPositionNormalColored[] vertices, int[] tempIndices, out VertexPositionNormalColored[] cVertices, out int[] cIndices) {
+			IDictionary<VertexPositionNormalColored, int> hash = new Dictionary<VertexPositionNormalColored, int>();
+			var indices = new List<int>();
+			for(int i = 0; i < tempIndices.Length; i++) {
+				var vertex = vertices[tempIndices[i]];
+				int index;
+				if(!hash.TryGetValue(vertex, out index)) {
+					index = hash.Count;
+					hash.Add(vertex, index);
+				}
+				indices.Add(index);
+			}
+			cVertices = hash.Keys.ToArray();
+			cIndices = indices.ToArray();
 		}
 	}
 }
