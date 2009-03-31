@@ -1,8 +1,7 @@
-using System;
 using System.IO;
 
-namespace MPQNav.Util {
-	internal abstract class ParserBase<T> : IParser<T> {
+namespace MPQNav {
+	public abstract class ParserBase<T> : IParser<T> {
 		protected ParserBase(BinaryReader reader) {
 			Reader = reader;
 		}
