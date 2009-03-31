@@ -187,20 +187,20 @@ namespace MPQNav.ADT {
 			renderCached = true;
 		}
 
-		public static void Optimize(VertexPositionNormalColored[] vertices, int[] tempIndices, out VertexPositionNormalColored[] cVertices, out int[] cIndices) {
-			IDictionary<VertexPositionNormalColored, int> hash = new Dictionary<VertexPositionNormalColored, int>();
-			var indices = new List<int>();
-			for(int i = 0; i < tempIndices.Length; i++) {
-				var vertex = vertices[tempIndices[i]];
+		public static void Optimize(VertexPositionNormalColored[] vertices, int[] indices, out VertexPositionNormalColored[] outVertices, out int[] outindices) {
+			var hash = new Dictionary<VertexPositionNormalColored, int>();
+			var resultIndices = new List<int>();
+			for(int i = 0; i < indices.Length; i++) {
+				var vertex = vertices[indices[i]];
 				int index;
 				if(!hash.TryGetValue(vertex, out index)) {
 					index = hash.Count;
 					hash.Add(vertex, index);
 				}
-				indices.Add(index);
+				resultIndices.Add(index);
 			}
-			cVertices = hash.Keys.ToArray();
-			cIndices = indices.ToArray();
+			outVertices = hash.Keys.ToArray();
+			outindices = resultIndices.ToArray();
 		}
 	}
 }
