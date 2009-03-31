@@ -104,11 +104,7 @@ namespace MPQNav.MPQ.ADT {
 			#region Nested type: MONR
 
 			public class MONR {
-				private readonly List<Vector3> _normalsList = new List<Vector3>();
-
-				public List<Vector3> NormalsList {
-					get { return _normalsList; }
-				}
+				public Vector3[] Normals { get; set; }
 			}
 
 			#endregion
@@ -116,11 +112,7 @@ namespace MPQNav.MPQ.ADT {
 			#region Nested type: MOVI
 
 			public class MOVI {
-				private readonly List<short> _indiciesList = new List<short>();
-
-				public List<short> IndiciesList {
-					get { return _indiciesList; }
-				}
+				public short[] Indices { get; set; }
 			}
 
 			#endregion
@@ -128,11 +120,7 @@ namespace MPQNav.MPQ.ADT {
 			#region Nested type: MOVT
 
 			public class MOVT {
-				private readonly List<Vector3> _verticiesList = new List<Vector3>();
-
-				public List<Vector3> VerticiesList {
-					get { return _verticiesList; }
-				}
+				public List<Vector3> Vertices { get; set; }
 			}
 
 			#endregion
@@ -157,15 +145,15 @@ namespace MPQNav.MPQ.ADT {
 
 			for(int i = 0; i < WmoSubList.Count; i++) {
 				WMO.WMO_Sub currentSub = getWMO_Sub(i);
-				for(int v = 0; v < currentSub._MOVT.VerticiesList.Count; v++) {
-					Vector3 baseVertex = currentSub._MOVT.VerticiesList[v] + origin;
+				for(int v = 0; v < currentSub._MOVT.Vertices.Count; v++) {
+					Vector3 baseVertex = currentSub._MOVT.Vertices[v] + origin;
 					Vector3 rotatedVector = Vector3.Transform(baseVertex - origin, rotateY);
 					Vector3 finalVector = rotatedVector + origin;
 
 					this.addVertex(finalVector);
 				}
-				for(int index = 0; index < currentSub._MOVI.IndiciesList.Count; index++) {
-					this.addIndex(currentSub._MOVI.IndiciesList[index] + offset);
+				for(int index = 0; index < currentSub._MOVI.Indices.Count; index++) {
+					this.addIndex(currentSub._MOVI.Indices[index] + offset);
 				}
 				offset = this.Vertices.Count;
 			}

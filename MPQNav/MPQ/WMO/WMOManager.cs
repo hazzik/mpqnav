@@ -90,8 +90,7 @@ namespace MPQNav.MPQ.ADT {
 			currentWMO.createAABB(new Vector3(bb1_x, bb1_y, bb1_z), new Vector3(bb2_x, bb2_y, bb2_z));
 			currentWMO.TotalGroups = (int)groupsCount;
 			for(int wmoGroup = 0; wmoGroup < groupsCount; wmoGroup++) {
-				var currentFileName = string.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4),
-				                                       wmoGroup);
+				var currentFileName = string.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
 				currentWMO.addWMO_Sub(processWMOSub(filePath + currentFileName, wmoGroup));
 			}
 			var position = currentMODF.Position;
@@ -140,15 +139,16 @@ namespace MPQNav.MPQ.ADT {
 		/// <param name="currentWMOSUB">Current working WMO_Sub</param>
 		public void processMOVI(BinaryReader br, int start_offset, int end_offset, WMO.WMO_Sub currentWMOSUB) {
 			br.BaseStream.Position = start_offset + 8;
+			var result = new List<short>();
 			while(br.BaseStream.Position < end_offset) {
 				short one = br.ReadInt16();
 				short two = br.ReadInt16();
 				short three = br.ReadInt16();
-
-				currentWMOSUB._MOVI.IndiciesList.Add(three);
-				currentWMOSUB._MOVI.IndiciesList.Add(two);
-				currentWMOSUB._MOVI.IndiciesList.Add(one);
+				result.Add(three);
+				result.Add(two);
+				result.Add(one);
 			}
+			currentWMOSUB._MOVI.Indices = result.ToArray();
 		}
 
 		/// <summary>
@@ -160,12 +160,14 @@ namespace MPQNav.MPQ.ADT {
 		/// <param name="currentWMOSUB">Current working WMO_Sub</param>
 		public void processMOVT(BinaryReader br, int start_offset, int end_offset, WMO.WMO_Sub currentWMOSUB) {
 			br.BaseStream.Position = start_offset + 8;
+			var result = new List<Vector3>();
 			while(br.BaseStream.Position < end_offset) {
 				float vect_x = (br.ReadSingle() * -1);
 				float vect_z = br.ReadSingle();
 				float vect_y = br.ReadSingle();
-				currentWMOSUB._MOVT.VerticiesList.Add(new Vector3(vect_x, vect_y, vect_z));
+				result.Add(new Vector3(vect_x, vect_y, vect_z));
 			}
+			currentWMOSUB._MOVT.Vertices = result;
 		}
 
 		/// <summary>
@@ -177,12 +179,14 @@ namespace MPQNav.MPQ.ADT {
 		/// <param name="currentWMOSUB">Current working WMO Sub</param>
 		public void processMONR(BinaryReader br, int start_offset, int end_offset, WMO.WMO_Sub currentWMOSUB) {
 			br.BaseStream.Position = start_offset + 8;
+			var result = new List<Vector3>();
 			while(br.BaseStream.Position < end_offset) {
 				float vect_x = (br.ReadSingle() * -1);
 				float vect_z = br.ReadSingle();
 				float vect_y = br.ReadSingle();
-				currentWMOSUB._MONR.NormalsList.Add(new Vector3(vect_x, vect_y, vect_z));
+				result.Add(new Vector3(vect_x, vect_y, vect_z));
 			}
+			currentWMOSUB._MONR.Normals = result.ToArray();
 		}
 
 		/// <summary>

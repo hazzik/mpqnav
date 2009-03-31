@@ -222,7 +222,7 @@ namespace MPQNav.ADT {
 						}
 					}
 
-					//this.Indicies.AddRange(triangleListIndices);
+					//this.Indices.AddRange(triangleListIndices);
 					float offset_x = (533.33333f / 16) / 8;
 					float offset_z = (533.33333f / 16) / 8;
 
