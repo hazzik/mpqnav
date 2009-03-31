@@ -98,6 +98,7 @@
     <Compile Include="Util\ADTChunkParsers\ADTChunkFile.cs" />
     <Compile Include="Util\ADTChunkParsers\MMDXChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MDDFChunkParser.cs" />
+    <Compile Include="Util\ADTChunkParsers\MVERChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MWMOChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MCINChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MCNKChunkParser.cs" />

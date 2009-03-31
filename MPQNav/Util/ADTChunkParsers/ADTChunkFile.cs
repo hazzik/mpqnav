@@ -31,21 +31,11 @@ namespace MPQNav.Util {
 		/// </summary>
 		public override ADT.ADT Parse() {
 			var currentADT = new ADT.ADT(_fileName);
-			if(!FileChunkHelper.SearchChunk(Reader, "MVER").ChunkFound) {
-				throw new Exception("Not valid ADT File");
-			}
-			Reader.BaseStream.Position += 4;
-			currentADT._Version = Reader.ReadInt32();
 
-			var ret = FileChunkHelper.SearchChunk(Reader, "MHDR");
+			var mver = new MVERChunkParser(Reader, 0).Parse();
+			currentADT._Version = mver;
 
-			if(!ret.ChunkFound) {
-				throw new Exception("Not valid ADT File");
-			}
-
-			long pMHDRData = ret.ChunkStartPosition;
-
-			var mhdr = new MHDRChunkParser(Reader, pMHDRData).Parse();
+			var mhdr = new MHDRChunkParser(Reader, Reader.BaseStream.Position).Parse();
 
 			var mcins = new MCINChunkParser(Reader, mhdr.OffsInfo + mhdr.Base).Parse();
 

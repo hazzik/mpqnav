@@ -114,16 +114,16 @@ namespace MPQNav.MPQ.ADT {
 			var currentWMOSub = new WMO.WMO_Sub(group_index);
 			var br = new BinaryReader(File.OpenRead(path));
 
-			var offsMOVI = (int)FileChunkHelper.SearchChunk(br, "MOVI").ChunkStartPosition;
+			var offsMOVI = (int)FileChunkHelper.SearchChunk(br, "MOVI").StartPosition;
 			//MPQ.findChunk(br, "IVOM");
 
-			var offsMOVT = (int)FileChunkHelper.SearchChunk(br, "MOVT").ChunkStartPosition;
+			var offsMOVT = (int)FileChunkHelper.SearchChunk(br, "MOVT").StartPosition;
 			//MPQ.findChunk(br, "TVOM");
 
-			var offsMONR = (int)FileChunkHelper.SearchChunk(br, "MONR").ChunkStartPosition;
+			var offsMONR = (int)FileChunkHelper.SearchChunk(br, "MONR").StartPosition;
 			//MPQ.findChunk(br, "RNOM");
 
-			var offsMOTV = (int)FileChunkHelper.SearchChunk(br, "MOVT").ChunkStartPosition;
+			var offsMOTV = (int)FileChunkHelper.SearchChunk(br, "MOVT").StartPosition;
 			//MPQ.findChunk(br, "VTOM");
 			processMOVI(br, offsMOVI, offsMOVT, currentWMOSub);
 			processMOVT(br, offsMOVT, offsMONR, currentWMOSub);
