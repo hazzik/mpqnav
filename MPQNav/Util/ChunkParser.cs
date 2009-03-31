@@ -2,10 +2,10 @@
 using System.IO;
 
 namespace MPQNav.Util {
-	internal abstract class ChunkParser<T> {
-		protected ChunkParser(string name, BinaryReader reader, long absoluteStart) {
+	internal abstract class ChunkParser<T>:ParserBase<T> {
+		protected ChunkParser(string name, BinaryReader reader, long absoluteStart)
+			: base(reader) {
 			Name = name;
-			Reader = reader;
 			Reader.BaseStream.Position = absoluteStart;
 			string name1 = Reader.ReadStringReversed(4);
 			if(name1 != Name) {
@@ -14,8 +14,6 @@ namespace MPQNav.Util {
 			Size = Reader.ReadUInt32();
 			AbsoluteStart = Reader.BaseStream.Position;
 		}
-
-		public BinaryReader Reader { get; private set; }
 
 		/// <summary>
 		/// Return the chunk Name
@@ -31,10 +29,5 @@ namespace MPQNav.Util {
 		/// Return the size of MCIN chunk
 		/// </summary>
 		public uint Size { get; private set; }
-
-		/// <summary>
-		/// Parse all {T} element from file stream
-		/// </summary>
-		public abstract T Parse();
 	}
 }

@@ -27,7 +27,7 @@ namespace MPQNav.ADT {
 		/// <summary>
 		/// Array of MCNK chunks which give the ADT vertex information for this ADT
 		/// </summary>
-		private MCNK[,] _MCNKArray;
+		public MCNK[,] _MCNKArray;
 
 		/// <summary>
 		/// List of MDDF Chunks which are placement information for M2s
@@ -37,7 +37,7 @@ namespace MPQNav.ADT {
 		/// <summary>
 		/// Array of MH20 chunks which give the ADT FLUID vertex information for this ADT
 		/// </summary>
-		private MH2O[,] _MH2OArray;
+		public MH2O[,] _MH2OArray;
 
 		/// <summary>
 		/// List of MODF Chunks which are placement information for WMOs
@@ -91,21 +91,6 @@ namespace MPQNav.ADT {
 			_y = Int32.Parse(fName_split[2].Substring(0, (fName_split[2].Length - 4)));
 		}
 
-		/// <summary>
-		/// Creates a new instance of the ADT class
-		/// </summary>
-		/// <param name="fName">Filename of just the ADT</param>
-		/// <param name="xOffset">X offset of the ADT in the 64 x 64 grid</param>
-		/// <param name="yOffset">Y offset of the ADT in teh 64 x 64 grid</param>
-		/// <example>ADT myADT = new ADT("Azeroth_32_32.adt",32,32);</example>
-		public ADT(String fName, int xOffset, int yOffset) {
-			String[] fName_split = fName.Split(Convert.ToChar("_"));
-			_continent = (ADTManager.ContinentType)Enum.Parse(typeof(ADTManager.ContinentType), fName_split[0], true);
-			_FileName = fName;
-			_x = xOffset;
-			_y = yOffset;
-		}
-
 		#endregion
 
 		public WMOManager WMOManager {
@@ -115,14 +100,6 @@ namespace MPQNav.ADT {
 				}
 				return _wmoManager;
 			}
-		}
-
-		public void addWMOName(String name) {
-			WMOManager.addFileName(name);
-		}
-
-		public String getWMOName(int index) {
-			return WMOManager.getFilename(index);
 		}
 
 		public void GenerateVertexAndIndicesH2O() {
@@ -272,47 +249,6 @@ namespace MPQNav.ADT {
 					}
 				}
 			}
-		}
-
-
-		/// <summary>
-		/// Add a MCNK Chunk to the ADT.
-		/// </summary>
-		/// <param name="xOffset">X offset of the MCNK in the ADT</param>
-		/// <param name="yOffset">Y Offset of the MCNK in the ADT</param>
-		/// <param name="MCNK">MCNK to be added</param>
-		/// <example>this.addMCNK(1,1,myMCNK);</example>
-		public void addMCNK(int xOffset, int yOffset, MCNK MCNK) {
-			_MCNKArray[xOffset, yOffset] = MCNK;
-		}
-
-
-		/// <summary>
-		/// Add a MCNK Chunk to the ADT.
-		/// </summary>
-		/// <param name="MCNK">MCNKs to be added</param>
-		public void addMCNK(MCNK[,] MCNK) {
-			_MCNKArray = MCNK;
-		}
-
-		public void addMH2O(MH2O[,] _MH2O) {
-			_MH2OArray = _MH2O;
-		}
-
-		public void addMH2O(int xOffset, int yOffset, MH2O MH2O) {
-			_MH2OArray[xOffset, yOffset] = MH2O;
-		}
-
-		public void addMODF(MODF modf) {
-			_MODFList.Add(modf);
-		}
-
-		public int MODFCount() {
-			return _MODFList.Count;
-		}
-
-		public void addWMO(String filename, String filepath, MODF currentMODF) {
-			WMOManager.addWMO(filename, filepath, currentMODF);
 		}
 	}
 }

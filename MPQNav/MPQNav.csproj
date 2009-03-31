@@ -93,14 +93,16 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Util\ADTChunkParsers\ADTChunkFile.cs" />
+    <Compile Include="Util\ADTChunkParsers\IParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MMDXChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MDDFChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MWMOChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MCINChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MCNKChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MODFChunkParser.cs" />
+    <Compile Include="Util\ADTChunkParsers\ParserBase.cs" />
     <Compile Include="Util\BinaryReaderExtensions.cs" />
-    <Compile Include="Util\ChunkFileHelper.cs" />
+    <Compile Include="Util\ChunkParser.cs" />
     <Compile Include="Util\FileChunk.cs" />
     <Compile Include="Util\ADTChunkParsers\MHDRChunkParser.cs" />
     <Compile Include="Util\ADTChunkParsers\MH2OChunkParser.cs" />

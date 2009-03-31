@@ -97,9 +97,7 @@ namespace MPQNav.ADT {
 				throw new Exception(string.Format("ADT Doesn't exist: {0}", file));
 			}
 
-			var ADTprs = new ADTChunkFileParser();
-
-			ADT currentADT = ADTprs.loadADT(file);
+			ADT currentADT = ADTChunkFileParser.LoadADT(file);
 
 			foreach(var modf in currentADT._MODFList) {
 				currentADT.WMOManager.addWMO(modf.FileName, _basePath, modf);

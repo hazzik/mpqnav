@@ -1,45 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using MPQNav.ADT;
 using MPQNav.Util.ADTParser;
 
 namespace MPQNav.Util {
-	internal class ADTChunkFileParser {
-		//private ADT.ADT ADTResult();
+	internal class ADTChunkFileParser : ParserBase<ADT.ADT> {
+		private readonly string _fileName;
+
+		public ADTChunkFileParser(string fileName, BinaryReader reader)
+			: base(reader) {
+			_fileName = fileName;
+		}
 
 		/// <summary>
 		/// Loads an ADT into the manager.
 		/// </summary>
-		/// <param name="FilePath">File Path to the file</param>
-		public ADT.ADT loadADT(string FilePath) {
-			ADT.ADT currentADT = null;
-			if(File.Exists(FilePath)) {
-				string FileName = FilePath.Split('\\')[FilePath.Split('\\').Length - 1];
-				FileStream fs = File.OpenRead(FilePath);
-
-				currentADT = new ADT.ADT(FileName);
-				ParseADT(new BinaryReader(fs), currentADT);
+		/// <param name="filePath">File Path to the file</param>
+		public static ADT.ADT LoadADT(string filePath) {
+			if(!File.Exists(filePath)) {
+				return null;
 			}
-			else {
-				//throw new Exception("ADT Doesn't exist: " + this._basePath + "\\World\\Maps\\" + this._continent + "\\" + this._continent + "_" + x.ToString().PadLeft(2, Convert.ToChar("0")) + "_" + y.ToString().PadLeft(2, Convert.ToChar("0")) + ".adt");
+			var fileName = Path.GetFileName(filePath);
+			using(var reader = new BinaryReader(File.OpenRead(filePath))) {
+				return new ADTChunkFileParser(fileName, reader).Parse();
 			}
-			return currentADT;
 		}
-
+		
 		/// <summary>
 		/// Digs through an ADT and parses out all the information in it. 
 		/// </summary>
-		/// <param name="br">Binary reader loaded with the ADT file</param>
-		/// <param name="currentADT">ADT to be processed</param>
-		private static void ParseADT(BinaryReader br, ADT.ADT currentADT) {
-			if(!FileChunkHelper.SearchChunk(br, "MVER").ChunkFound) {
+		public override ADT.ADT Parse() {
+			var currentADT = new ADT.ADT(_fileName);
+			if(!FileChunkHelper.SearchChunk(Reader, "MVER").ChunkFound) {
 				throw new Exception("Not valid ADT File");
 			}
-			br.BaseStream.Position += 4;
-			currentADT._Version = br.ReadInt32();
+			Reader.BaseStream.Position += 4;
+			currentADT._Version = Reader.ReadInt32();
 
-			var ret = FileChunkHelper.SearchChunk(br, "MHDR");
+			var ret = FileChunkHelper.SearchChunk(Reader, "MHDR");
 
 			if(!ret.ChunkFound) {
 				throw new Exception("Not valid ADT File");
@@ -47,27 +45,29 @@ namespace MPQNav.Util {
 
 			long pMHDRData = ret.ChunkStartPosition;
 
-			var mhdr = new MHDRChunkParser(br, pMHDRData).Parse();
+			var mhdr = new MHDRChunkParser(Reader, pMHDRData).Parse();
 
-			var mcins = new MCINChunkParser(br, mhdr.OffsInfo + mhdr.Base).Parse();
+			var mcins = new MCINChunkParser(Reader, mhdr.OffsInfo + mhdr.Base).Parse();
 
-			var mcnk = new MCNKChunkParser(br, mcins[0].Offset, mcins).Parse();
+			var mcnk = new MCNKChunkParser(Reader, mcins[0].Offset, mcins).Parse();
 
-			currentADT.addMCNK(mcnk);
+			currentADT._MCNKArray = mcnk;
 
-			var mwmos = new MWMOChunkParser(br, mhdr.OffsMapObejcts + mhdr.Base).Parse();
+			var mwmos = new MWMOChunkParser(Reader, mhdr.OffsMapObejcts + mhdr.Base).Parse();
 
-			currentADT._MODFList = new MODFChunkParser(br, mhdr.OffsObjectsDef + mhdr.Base, mwmos).Parse();
+			currentADT._MODFList = new MODFChunkParser(Reader, mhdr.OffsObjectsDef + mhdr.Base, mwmos).Parse();
 
-			var mmdxs = new MMDXChunkParser(br, mhdr.OffsModels + mhdr.Base).Parse();
+			var mmdxs = new MMDXChunkParser(Reader, mhdr.OffsModels + mhdr.Base).Parse();
 
-			currentADT._MDDFList = new MDDFChunkParser(br, mhdr.OffsDoodsDef + mhdr.Base, mmdxs).Parse();
+			currentADT._MDDFList = new MDDFChunkParser(Reader, mhdr.OffsDoodsDef + mhdr.Base, mmdxs).Parse();
 
-			var mh2os = mhdr.OffsMH2O != 0 ? new MH2OChunkParser(br, mhdr.OffsMH2O + mhdr.Base).Parse() : new MH2O[0,0];
+			var mh2os = mhdr.OffsMH2O != 0 ? new MH2OChunkParser(Reader, mhdr.OffsMH2O + mhdr.Base).Parse() : new MH2O[0,0];
 
-			currentADT.addMH2O(mh2os);
+			currentADT._MH2OArray = mh2os;
+
 			currentADT.GenerateVertexAndIndices();
 			currentADT.GenerateVertexAndIndicesH2O();
+			return currentADT;
 		}
 	}
 }

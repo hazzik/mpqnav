@@ -39,7 +39,6 @@ namespace MPQNav.Util.ADTParser {
 		/// <summary>
 		/// Processes an individual MCNK Chunk
 		/// </summary>
-		/// <param name="br">Binary Reader with the ADT loaded</param>
 		/// <param name="offset">Offset to the MCNK Chunk</param>
 		/// <returns>MCNK Filled with information</returns>
 		private MCNK processMCNK(UInt32 offset) {
