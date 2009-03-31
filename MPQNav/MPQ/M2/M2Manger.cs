@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MPQNav.ADT;
 using MPQNav.Collision._3D;
+using MPQNav.MPQ.ADT.Chunks;
 
 namespace MPQNav.MPQ.ADT {
 	internal class M2Manger {

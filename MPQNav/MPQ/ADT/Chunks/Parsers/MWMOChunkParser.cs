@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using MPQNav.Util;
 
-namespace MPQNav.Util.ADTParser {
+namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 	internal class MWMOChunkParser : ChunkParser<string[]> {
 		public MWMOChunkParser(BinaryReader br, long pAbsoluteStart)
 			: base("MWMO", br, pAbsoluteStart) {

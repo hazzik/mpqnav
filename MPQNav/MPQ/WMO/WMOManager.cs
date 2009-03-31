@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
-using MPQNav.ADT;
+using MPQNav.MPQ.ADT.Chunks;
+using MPQNav.MPQ.WMO.Chunks.Parsers;
 using MPQNav.Util;
 
 namespace MPQNav.MPQ.ADT {

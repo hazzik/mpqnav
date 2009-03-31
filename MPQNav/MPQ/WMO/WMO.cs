@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MPQNav.Collision._3D;
+using MPQNav.MPQ.WMO.Chunks;
 
 namespace MPQNav.MPQ.ADT {
 	/// <summary>

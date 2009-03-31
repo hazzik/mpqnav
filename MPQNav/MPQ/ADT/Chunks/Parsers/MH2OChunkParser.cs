@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using MPQNav.ADT;
+using MPQNav.Util;
 
-namespace MPQNav.Util.ADTParser {
+namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 	/// <summary>
 	/// MH2O Chunk perser
 	/// </summary>

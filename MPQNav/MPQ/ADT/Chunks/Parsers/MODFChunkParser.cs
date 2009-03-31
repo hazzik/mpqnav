@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
-using MPQNav.ADT;
+using MPQNav.Util;
 
-namespace MPQNav.Util.ADTParser {
+namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 	internal class MODFChunkParser : ChunkParser<List<MODF>> {
 		private readonly string[] _mwmos;
 
@@ -22,13 +22,13 @@ namespace MPQNav.Util.ADTParser {
 			int bytesRead = 0;
 			while(bytesRead < Size) {
 				var lMODF = new MODF {
-					FileName = _mwmos[(int)Reader.ReadUInt32()],
-					UniqId = Reader.ReadUInt32(),
-					Position = new Vector3(Reader.ReadSingle(), Reader.ReadSingle(), Reader.ReadSingle()),
-					OrientationA = Reader.ReadSingle(),
-					OrientationB = Reader.ReadSingle(),
-					OrientationC = Reader.ReadSingle()
-				};
+				                     	FileName = _mwmos[(int)Reader.ReadUInt32()],
+				                     	UniqId = Reader.ReadUInt32(),
+				                     	Position = new Vector3(Reader.ReadSingle(), Reader.ReadSingle(), Reader.ReadSingle()),
+				                     	OrientationA = Reader.ReadSingle(),
+				                     	OrientationB = Reader.ReadSingle(),
+				                     	OrientationC = Reader.ReadSingle()
+				                     };
 				Reader.ReadBytes(32); // 32 bytes
 				bytesRead += 64; // 64 total bytes
 				_MODF.Add(lMODF);

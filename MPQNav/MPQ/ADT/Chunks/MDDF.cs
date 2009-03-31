@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace MPQNav.ADT {
+namespace MPQNav.MPQ.ADT.Chunks {
 	/// <summary>
 	/// MDDF Chunk Class - Placement information for M2 Models
 	/// </summary>

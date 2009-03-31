@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MPQNav.ADT {
+namespace MPQNav.MPQ.ADT.Chunks {
 	/// <summary>
 	/// Contains offsets (relative to 0x14) for some other chunks that appear in the file. Since the file follows a well-defined structure, this is redundant information.
 	/// </summary>

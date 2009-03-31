@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using MPQNav.ADT;
-using MPQNav.Util.ADTParser;
+using MPQNav.MPQ.ADT.Chunks;
+using MPQNav.MPQ.ADT.Chunks.Parsers;
 
 namespace MPQNav.Util {
 	internal class ADTChunkFileParser : ParserBase<ADT.ADT> {

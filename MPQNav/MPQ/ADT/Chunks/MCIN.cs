@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MPQNav.ADT {
+namespace MPQNav.MPQ.ADT.Chunks {
 	internal class MCIN {
 /*000h*/
 		public uint Offset { get; set; }

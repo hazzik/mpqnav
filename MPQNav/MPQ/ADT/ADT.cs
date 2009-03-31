@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MPQNav.MPQ.ADT;
+using MPQNav.MPQ.ADT.Chunks;
 
 namespace MPQNav.ADT {
 	internal class ADT {

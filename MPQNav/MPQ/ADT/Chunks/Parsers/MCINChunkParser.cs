@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using MPQNav.ADT;
+using MPQNav.Util;
 
-namespace MPQNav.Util.ADTParser {
+namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 	/// <summary>
 	/// MCIN Chunk perser
 	/// </summary>
@@ -24,11 +24,11 @@ namespace MPQNav.Util.ADTParser {
 			var mcins = new MCIN[256];
 			for(var i = 0; i < 256; i++) {
 				var mcin = new MCIN {
-					Offset = Reader.ReadUInt32(),
-					Size = Reader.ReadUInt32(),
-					Flags = Reader.ReadUInt32(),
-					AsyncId = Reader.ReadUInt32()
-				};
+				                    	Offset = Reader.ReadUInt32(),
+				                    	Size = Reader.ReadUInt32(),
+				                    	Flags = Reader.ReadUInt32(),
+				                    	AsyncId = Reader.ReadUInt32()
+				                    };
 				mcins[i] = mcin;
 			}
 			return mcins;

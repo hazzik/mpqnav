@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MPQNav.ADT {
+namespace MPQNav.MPQ.ADT.Chunks {
 	/// <summary>
 	/// MH20 Chunk - Fluid information for the MCNK
 	/// </summary>
@@ -20,7 +20,7 @@ namespace MPQNav.ADT {
 		public float heightLevel1; //	The global liquid-height of this chunk.
 
 		public float heightLevel2;
-		             //	Which is always in there twice. Blizzard knows why. (Actually these values are not always identical, I think they define the highest and lowest points in the heightmap)
+		//	Which is always in there twice. Blizzard knows why. (Actually these values are not always identical, I think they define the highest and lowest points in the heightmap)
 
 		public float[] heights; //this will contain all heights of fluid
 
@@ -29,7 +29,7 @@ namespace MPQNav.ADT {
 		public FluidType type; //Seems to be the type of liquid (0 for normal "Lake" water, 1 for Lava and 2 for ocean water)
 
 		public bool used;
-		            //1 if this chunk has liquids, 0 if not. Maybe there are more values. If 0, the other fields are 0 too.
+		//1 if this chunk has liquids, 0 if not. Maybe there are more values. If 0, the other fields are 0 too.
 
 		public byte width; //The width of the liquid square (1-8)
 		public byte xOffset; //The X offset of the liquid square (0-7)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using MPQNav.Util;
 
-namespace MPQNav.MPQ.ADT {
+namespace MPQNav.MPQ.WMO.Chunks.Parsers {
 	internal class MOVIChunkParser : ChunkParser<MOVI> {
 		public MOVIChunkParser(BinaryReader reader, long absoluteStart)
 			: base("MOVI", reader, absoluteStart) {

@@ -2,8 +2,9 @@
 using System.IO;
 using Microsoft.Xna.Framework;
 using MPQNav.ADT;
+using MPQNav.Util;
 
-namespace MPQNav.Util.ADTParser {
+namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 	/// <summary>
 	/// MCNK Chunk perser
 	/// </summary>
