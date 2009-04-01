@@ -17,29 +17,6 @@ namespace MPQNav.MPQ.ADT {
 		/// </summary>
 		public List<WMO> _wmos = new List<WMO>();
 
-		/// <summary>
-		/// 1 degree = 0.0174532925 radians
-		/// </summary>
-		private const float rad = 0.0174532925f;
-
-		#endregion
-
-		#region rendering variables
-
-		/// <summary>
-		/// List of indices for rendering
-		/// </summary>
-		public List<int> indicies = new List<int>();
-
-		/// <summary>
-		/// List of vertices for rendering
-		/// </summary>
-		public List<VertexPositionNormalColored> vertices = new List<VertexPositionNormalColored>();
-
-		#endregion
-
-		#region consructors
-
 		#endregion
 
 		/// <summary>
@@ -47,6 +24,7 @@ namespace MPQNav.MPQ.ADT {
 		/// </summary>
 		/// <param name="modf">MODF (placement informatio for this WMO)</param>
 		public void AddWMO(MODF modf) {
+			
 			if(!File.Exists(MpqNavSettings.MpqPath + modf.FileName)) {
 				throw new Exception("File does not exist: " + MpqNavSettings.MpqPath + modf.FileName);
 			}
@@ -63,7 +41,7 @@ namespace MPQNav.MPQ.ADT {
 				var currentFileName = string.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
 				currentWMO.addWMO_Sub(ProcessWMOSub(currentFileName, wmoGroup));
 			}
-			currentWMO.Transform(modf.Position, modf.Rotation, rad);
+			currentWMO.Transform(modf.Position, modf.Rotation, MathHelper.ToRadians(1));
 			_wmos.Add(currentWMO);
 		}
 
