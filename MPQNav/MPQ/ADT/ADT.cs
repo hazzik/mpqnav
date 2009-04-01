@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MPQNav.Collision._3D;
 using MPQNav.MPQ.ADT;
 using MPQNav.MPQ.ADT.Chunks;
+using MPQNav.MPQ.ADT.Chunks.Parsers;
+using MPQNav.MPQ.WMO.Chunks.Parsers;
+using MPQNav.Util;
 
 namespace MPQNav.ADT {
 	internal class ADT {
@@ -52,11 +57,6 @@ namespace MPQNav.ADT {
 		public Int32 _Version;
 
 		/// <summary>
-		/// The Manager for all WMOs used by this ADT
-		/// </summary>
-		private WMOManager _wmoManager = new WMOManager();
-
-		/// <summary>
 		/// The X offset of the map in the 64 x 64 grid
 		/// </summary>
 		private int _x;
@@ -93,15 +93,6 @@ namespace MPQNav.ADT {
 		}
 
 		#endregion
-
-		public WMOManager WMOManager {
-			get {
-				if(_wmoManager == null) {
-					_wmoManager = new WMOManager();
-				}
-				return _wmoManager;
-			}
-		}
 
 		public void GenerateVertexAndIndicesH2O() {
 			var vertices = new List<VertexPositionNormalColored>();
@@ -256,14 +247,68 @@ namespace MPQNav.ADT {
 
 		public void LoadWMO() {
 			foreach(var modf in _MODFList) {
-				WMOManager.AddWMO(modf);
+				AddWMO(modf);
 			}
+		}
+
+		/// <summary>
+		/// Adds a WMO to the manager
+		/// </summary>
+		/// <param name="modf">MODF (placement informatio for this WMO)</param>
+		public void AddWMO(MODF modf) {
+			if(!File.Exists(MpqNavSettings.MpqPath + modf.FileName)) {
+				throw new Exception("File does not exist: " + MpqNavSettings.MpqPath + modf.FileName);
+			}
+
+			var br = new BinaryReader(File.OpenRead(MpqNavSettings.MpqPath + modf.FileName));
+			var version = new MVERChunkParser(br, br.BaseStream.Position).Parse();
+			var mohd = new MOHDChunkParser(br, br.BaseStream.Position).Parse();
+
+			var currentWMO = new WMO();
+			currentWMO.Name = modf.FileName;
+			currentWMO.AABB = new AABB(mohd.BoundingBox1, mohd.BoundingBox2);
+			currentWMO.TotalGroups = (int)mohd.GroupsCount;
+			for(int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++) {
+				var currentFileName = String.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
+				currentWMO.addWMO_Sub(ProcessWMOSub(currentFileName, wmoGroup));
+			}
+			currentWMO.Transform(modf.Position, modf.Rotation, MathHelper.ToRadians(1));
+			WMOs.Add(currentWMO);
+		}
+
+		private readonly IList<WMO> _wmos = new List<WMO>();
+
+		public IList<WMO> WMOs {
+			get { return _wmos; }
 		}
 
 		public void LoadM2() {
 			foreach(var mmdf in _MDDFList) {
 				_M2Manager.AddM2(mmdf);
 			}
+		}
+
+		/// <summary>
+		/// Gets a WMO_Sub from the WMO Group file
+		/// </summary>
+		/// <param name="wmoGroup">Current index in the WMO Group</param>
+		/// <param name="fileName">Full Filename of the WMO_Sub</param>
+		/// <returns></returns>
+		public static WMO.WMO_Sub ProcessWMOSub(string fileName, int wmoGroup) {
+			var path = MpqNavSettings.MpqPath + fileName;
+			if(!File.Exists(path)) {
+				throw new Exception("File does not exist: " + path);
+			}
+
+			var currentWMOSub = new WMO.WMO_Sub(wmoGroup);
+
+			using(var reader = new BinaryReader(File.OpenRead(path))) {
+				currentWMOSub._MOVI = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
+				currentWMOSub._MOVT = new MOVTChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition).Parse();
+				currentWMOSub._MONR = new MONRChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MONR").StartPosition).Parse();
+			}
+
+			return currentWMOSub;
 		}
 	}
 }

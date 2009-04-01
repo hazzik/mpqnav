@@ -126,7 +126,7 @@ namespace MPQNav.ADT {
 				}
 				offset = tempVertices.Count;
 				// Handle the WMOs
-				foreach(WMO w in a.WMOManager.WMOs) {
+				foreach(WMO w in a.WMOs) {
 					for(int v = 0; v < w.Vertices.Count; v++) {
 						tempVertices.Add(w.Vertices[v]);
 					}
