@@ -16,11 +16,6 @@ namespace MPQNav.ADT {
 		private const string AdtPath = "World\\Maps\\";
 
 		/// <summary>
-		/// Base directory for all MPQ data.
-		/// </summary>
-		private readonly string _basePath = "C:\\temp\\mpq\\";
-
-		/// <summary>
 		/// List of all ADTs managed by this ADT manager
 		/// </summary>
 		private readonly List<ADT> _ADTs = new List<ADT>();
@@ -52,10 +47,10 @@ namespace MPQNav.ADT {
 		/// Creates a new instance of the ADT manager.
 		/// </summary>
 		/// <param name="c">Continent of the ADT</param>
-		/// <param name="dataDirectory">Base directory for all MPQ data WITH TRAILING SLASHES</param>
 		/// <example>ADTManager myADTManager = new ADTManager(continent.Azeroth, "C:\\mpq\\");</example>
 		public ADTManager(ContinentType c) {
 			_continent = c;
+			loaded = true;
 		}
 
 		#endregion
@@ -84,9 +79,9 @@ namespace MPQNav.ADT {
 				currentADT = new ADTChunkFileParser(Path.GetFileName(file), reader).Parse();
 			}
 
-			currentADT.LoadWMO(MpqNavSettings.MpqPath);
+			currentADT.LoadWMO();
 
-			currentADT.LoadM2(MpqNavSettings.MpqPath);
+			currentADT.LoadM2();
 
 			renderCached = false;
 			currentADT.GenerateVertexAndIndices();
@@ -95,19 +90,17 @@ namespace MPQNav.ADT {
 		}
 
 		public VertexPositionNormalColored[] renderingVerticies() {
-			if(renderCached) {
-				return verticesCachedADT;
+			if(!renderCached) {
+				buildVerticiesAndIndicies();
 			}
-			buildVerticiesAndIndicies();
 			return verticesCachedADT;
 		}
 
 
 		public int[] renderingIndices() {
-			if(renderCached) {
-				return indicesCachedADT;
+			if(!renderCached) {
+				buildVerticiesAndIndicies();
 			}
-			buildVerticiesAndIndicies();
 			return indicesCachedADT;
 		}
 

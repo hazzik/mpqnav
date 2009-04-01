@@ -32,7 +32,6 @@ namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 				Reader.ReadBytes(32); // 32 bytes
 				bytesRead += 64; // 64 total bytes
 				_MODF.Add(lMODF);
-				//currentADT.addWMO(currentMODF.fileName, this._basePath, currentMODF);
 			}
 			return _MODF;
 		}

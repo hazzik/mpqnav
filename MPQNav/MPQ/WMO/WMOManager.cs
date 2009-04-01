@@ -56,19 +56,15 @@ namespace MPQNav.MPQ.ADT {
 		/// <summary>
 		/// Adds a WMO to the manager
 		/// </summary>
-		/// <param name="fileName">Filename of the WMO from the Adt - i.e. world\wmo\azeroth\buildings\redridge_stable\redridge_stable.wmo</param>
-		/// <param name="filePath">Base path to where the MPQ is extract - i.e. c:\mpq\</param>
-		/// <param name="currentMODF">MODF (placement informatio for this WMO)</param>
-		public void addWMO(String fileName, String filePath, MODF currentMODF) {
-			if(!File.Exists(filePath + fileName)) {
-				throw new Exception("File does not exist: " + filePath + fileName);
+		/// <param name="modf">MODF (placement informatio for this WMO)</param>
+		public void AddWMO(MODF modf) {
+			if(!File.Exists(MpqNavSettings.MpqPath + modf.FileName)) {
+				throw new Exception("File does not exist: " + MpqNavSettings.MpqPath + modf.FileName);
 			}
 
-			addFileName(fileName);
+			addFileName(modf.FileName);
 
-			var br = new BinaryReader(File.OpenRead(filePath + fileName));
-			var currentWMO = new WMO();
-			currentWMO.Name = fileName;
+			var br = new BinaryReader(File.OpenRead(MpqNavSettings.MpqPath + modf.FileName));
 			br.ReadBytes(20); // Skip the header
 			UInt32 nTextures = br.ReadUInt32();
 			UInt32 groupsCount = br.ReadUInt32(); // This is the number of "sub-wmos" or group files that we need to read
@@ -88,15 +84,16 @@ namespace MPQNav.MPQ.ADT {
 			float bb2_z = br.ReadSingle();
 			float bb2_y = br.ReadSingle();
 
+			var currentWMO = new WMO();
+			currentWMO.Name = modf.FileName;
 			currentWMO.createAABB(new Vector3(bb1_x, bb1_y, bb1_z), new Vector3(bb2_x, bb2_y, bb2_z));
 			currentWMO.TotalGroups = (int)groupsCount;
 			for(int wmoGroup = 0; wmoGroup < groupsCount; wmoGroup++) {
-				var currentFileName = string.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4),
-				                                    wmoGroup);
-				currentWMO.addWMO_Sub(processWMOSub(filePath + currentFileName, wmoGroup));
+				var currentFileName = string.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
+				currentWMO.addWMO_Sub(processWMOSub(MpqNavSettings.MpqPath + currentFileName, wmoGroup));
 			}
-			var position = currentMODF.Position;
-			var rotation = new Vector3(currentMODF.OrientationA, currentMODF.OrientationB, currentMODF.OrientationC);
+			var position = modf.Position;
+			var rotation = new Vector3(modf.OrientationA, modf.OrientationB, modf.OrientationC);
 			currentWMO.Transform(position, rotation, rad);
 			_wmos.Add(currentWMO);
 		}
@@ -115,18 +112,9 @@ namespace MPQNav.MPQ.ADT {
 			var currentWMOSub = new WMO.WMO_Sub(group_index);
 
 			using(var reader = new BinaryReader(File.OpenRead(path))) {
-				var offsMOVI = (int)FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition;
-				//MPQ.findChunk(br, "IVOM");
-
-				var offsMOVT = (int)FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition;
-				//MPQ.findChunk(br, "TVOM");
-
-				var offsMONR = (int)FileChunkHelper.SearchChunk(reader, "MONR").StartPosition;
-				//MPQ.findChunk(br, "RNOM");
-
-				currentWMOSub._MOVI = new MOVIChunkParser(reader, offsMOVI).Parse();
-				currentWMOSub._MOVT = new MOVTChunkParser(reader, offsMOVT).Parse();
-				currentWMOSub._MONR = new MONRChunkParser(reader, offsMONR).Parse();
+				currentWMOSub._MOVI = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
+				currentWMOSub._MOVT = new MOVTChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition).Parse();
+				currentWMOSub._MONR = new MONRChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MONR").StartPosition).Parse();
 			}
 
 			return currentWMOSub;

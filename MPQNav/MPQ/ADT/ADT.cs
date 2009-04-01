@@ -254,24 +254,15 @@ namespace MPQNav.ADT {
 			}
 		}
 
-		public void LoadWMO(string path) {
+		public void LoadWMO() {
 			foreach(var modf in _MODFList) {
-				WMOManager.addWMO(modf.FileName, path, modf);
+				WMOManager.AddWMO(modf);
 			}
 		}
 
-		public void LoadM2(string path) {
+		public void LoadM2() {
 			foreach(var mmdf in _MDDFList) {
-				string fileName = path + mmdf.FilePath;
-				if(fileName.Substring(fileName.Length - 4) == ".mdx") {
-					fileName = fileName.Substring(0, fileName.Length - 4) + ".m2";
-				}
-				_M2Manager.Add(fileName);
-				try {
-					_M2Manager.Process(fileName, mmdf);
-				}
-				catch {
-				}
+				_M2Manager.AddM2(mmdf);
 			}
 		}
 	}

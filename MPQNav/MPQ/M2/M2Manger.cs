@@ -43,10 +43,6 @@ namespace MPQNav.MPQ.ADT {
 
 		#endregion
 
-		public void Add(string fileName) {
-			_names.Add(fileName);
-		}
-
 		public void Process(String fileName, MDDF mddf) {
 			using(var br = new BinaryReader(File.OpenRead(fileName))) {
 				br.BaseStream.Position = 60; //wotlk
@@ -156,6 +152,19 @@ namespace MPQNav.MPQ.ADT {
 			currentM2.Indices.AddRange(indicies);
 			currentM2.Vertices = tempVertices;
 			return currentM2;
+		}
+
+		public void AddM2(MDDF mmdf) {
+			string fileName = MpqNavSettings.MpqPath + mmdf.FilePath;
+			if(fileName.Substring(fileName.Length - 4) == ".mdx") {
+				fileName = fileName.Substring(0, fileName.Length - 4) + ".m2";
+			}
+			_names.Add(fileName);
+			try {
+				Process(fileName, mmdf);
+			}
+			catch {
+			}
 		}
 	}
 }
