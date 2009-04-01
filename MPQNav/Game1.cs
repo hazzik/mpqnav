@@ -103,20 +103,10 @@ namespace MPQNav {
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
+			manager = new ADTManager(MpqNavSettings.DefaultContinent);
 
-			String mpqPath = System.Configuration.ConfigurationSettings.AppSettings["mpqPath"];
-			//String mpqFile = "c:\\Program Files\\World of Warcraft\\Data\\common.MPQ";
-			String defaultContinent = System.Configuration.ConfigurationSettings.AppSettings["defaultContinent"];
-			int defaultMapX = int.Parse(System.Configuration.ConfigurationSettings.AppSettings["defaultMapX"]);
-			int defaultMapY = int.Parse(System.Configuration.ConfigurationSettings.AppSettings["defaultMapY"]);
-
-			MPQNav.ADT.ADTManager.ContinentType continent =
-				(MPQNav.ADT.ADTManager.ContinentType)Enum.Parse(typeof(MPQNav.ADT.ADTManager.ContinentType), defaultContinent, true);
-
-			manager = new MPQNav.ADT.ADTManager(continent, mpqPath);
-
-			manager.loadADT(defaultMapX, defaultMapY);
-
+			manager.loadADT(MpqNavSettings.DefaultMapX, MpqNavSettings.DefaultMapY);
+			
 			renderVerticies = manager.renderingVerticies();
 			renderIndices = manager.renderingIndices();
 			if(this.renderIndices.Length > 0) {

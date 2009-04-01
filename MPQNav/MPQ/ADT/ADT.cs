@@ -12,7 +12,7 @@ namespace MPQNav.ADT {
 		/// <summary>
 		/// The continent of the ADT
 		/// </summary>
-		private ADTManager.ContinentType _continent;
+		private ContinentType _continent;
 
 		/// <summary>
 		/// Filename of the ADT
@@ -86,7 +86,7 @@ namespace MPQNav.ADT {
 		/// <example>ADT myADT = new ADT("Azeroth_32_32.adt");</example>
 		public ADT(String fName) {
 			String[] fName_split = fName.Split(Convert.ToChar("_"));
-			_continent = (ADTManager.ContinentType)Enum.Parse(typeof(ADTManager.ContinentType), fName_split[0], true);
+			_continent = (ContinentType)Enum.Parse(typeof(ContinentType), fName_split[0], true);
 			_FileName = fName;
 			_x = Int32.Parse(fName_split[1]);
 			_y = Int32.Parse(fName_split[2].Substring(0, (fName_split[2].Length - 4)));
@@ -166,12 +166,12 @@ namespace MPQNav.ADT {
 
 		private static Color GetColor(MH2O.FluidType fluidType) {
 			switch(fluidType) {
-			case MH2O.FluidType.Lake:
-				return Color.Blue;
-			case MH2O.FluidType.Lava:
-				return Color.Red;
-			case MH2O.FluidType.Oceans:
-				return Color.Coral;
+				case MH2O.FluidType.Lake:
+					return Color.Blue;
+				case MH2O.FluidType.Lava:
+					return Color.Red;
+				case MH2O.FluidType.Oceans:
+					return Color.Coral;
 			}
 			return Color.Green;
 		}
@@ -250,6 +250,27 @@ namespace MPQNav.ADT {
 							Vertices.Add(new VertexPositionNormalColored(position, _clr, Vector3.Up));
 						}
 					}
+				}
+			}
+		}
+
+		public void LoadWMO(string path) {
+			foreach(var modf in _MODFList) {
+				WMOManager.addWMO(modf.FileName, path, modf);
+			}
+		}
+
+		public void LoadM2(string path) {
+			foreach(var mmdf in _MDDFList) {
+				string fileName = path + mmdf.FilePath;
+				if(fileName.Substring(fileName.Length - 4) == ".mdx") {
+					fileName = fileName.Substring(0, fileName.Length - 4) + ".m2";
+				}
+				_M2Manager.Add(fileName);
+				try {
+					_M2Manager.Process(fileName, mmdf);
+				}
+				catch {
 				}
 			}
 		}

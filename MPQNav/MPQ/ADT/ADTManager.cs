@@ -13,16 +13,7 @@ namespace MPQNav.ADT {
 	internal class ADTManager {
 		#region variables
 
-		/// <summary>
-		/// Enumeration of the different continents available.
-		/// </summary>
-		public enum ContinentType {
-			Azeroth,
-			Kalimdor,
-			Outland
-		}
-
-		private const string _adtPath = "World\\Maps\\";
+		private const string AdtPath = "World\\Maps\\";
 
 		/// <summary>
 		/// Base directory for all MPQ data.
@@ -63,17 +54,8 @@ namespace MPQNav.ADT {
 		/// <param name="c">Continent of the ADT</param>
 		/// <param name="dataDirectory">Base directory for all MPQ data WITH TRAILING SLASHES</param>
 		/// <example>ADTManager myADTManager = new ADTManager(continent.Azeroth, "C:\\mpq\\");</example>
-		public ADTManager(ContinentType c, String dataDirectory) {
+		public ADTManager(ContinentType c) {
 			_continent = c;
-			if(Directory.Exists(dataDirectory)) {
-				loaded = true;
-				_basePath = dataDirectory;
-			}
-			else {
-				MessageBox.Show("Invalid data directory entered. Please exit and update your app.CONFIG file",
-				                "Invalid Data Directory");
-//                throw new Exception("Invalid data directory entered.");
-			}
 		}
 
 		#endregion
@@ -88,33 +70,23 @@ namespace MPQNav.ADT {
 				MessageBox.Show("ADT Manager not loaded, aborting loading ADT file.", "ADT Manager not loaded.");
 				return;
 			}
-			var dir = _basePath + _adtPath + _continent;
+			var dir = MpqNavSettings.MpqPath + AdtPath + _continent;
 			if(!Directory.Exists(dir)) {
 				throw new Exception("Continent data missing");
 			}
-			var file = String.Format("{0}{1}{2}\\{2}_{3}_{4}.adt", _basePath, _adtPath, _continent, x, y);
+			var file = String.Format("{0}{1}{2}\\{2}_{3}_{4}.adt", MpqNavSettings.MpqPath, AdtPath, _continent, x, y);
 			if(!File.Exists(file)) {
 				throw new Exception(String.Format("ADT Doesn't exist: {0}", file));
 			}
 
-			ADT currentADT = ADTChunkFileParser.LoadADT(file);
-
-			foreach(var modf in currentADT._MODFList) {
-				currentADT.WMOManager.addWMO(modf.FileName, _basePath, modf);
+			ADT currentADT;
+			using(var reader = new BinaryReader(File.OpenRead(file))) {
+				currentADT = new ADTChunkFileParser(Path.GetFileName(file), reader).Parse();
 			}
 
-			foreach(var mmdf in currentADT._MDDFList) {
-				var fileName = _basePath + mmdf.FilePath;
-				if(fileName.Substring(fileName.Length - 4) == ".mdx") {
-					fileName = fileName.Substring(0, fileName.Length - 4) + ".m2";
-				}
-				currentADT._M2Manager.Add(fileName);
-				try {
-					currentADT._M2Manager.Process(fileName, mmdf);
-				}
-				catch {
-				}
-			}
+			currentADT.LoadWMO(MpqNavSettings.MpqPath);
+
+			currentADT.LoadM2(MpqNavSettings.MpqPath);
 
 			renderCached = false;
 			currentADT.GenerateVertexAndIndices();
@@ -203,5 +175,14 @@ namespace MPQNav.ADT {
 			outVertices = hash.Keys.ToArray();
 			outindices = resultIndices.ToArray();
 		}
+	}
+
+	/// <summary>
+	/// Enumeration of the different continents available.
+	/// </summary>
+	public enum ContinentType {
+		Azeroth,
+		Kalimdor,
+		Outland
 	}
 }

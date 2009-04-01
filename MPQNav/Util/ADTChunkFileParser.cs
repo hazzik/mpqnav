@@ -12,20 +12,6 @@ namespace MPQNav.Util {
 		}
 
 		/// <summary>
-		/// Loads an ADT into the manager.
-		/// </summary>
-		/// <param name="filePath">File Path to the file</param>
-		public static ADT.ADT LoadADT(string filePath) {
-			if(!File.Exists(filePath)) {
-				return null;
-			}
-			var fileName = Path.GetFileName(filePath);
-			using(var reader = new BinaryReader(File.OpenRead(filePath))) {
-				return new ADTChunkFileParser(fileName, reader).Parse();
-			}
-		}
-
-		/// <summary>
 		/// Digs through an ADT and parses out all the information in it. 
 		/// </summary>
 		public override ADT.ADT Parse() {
