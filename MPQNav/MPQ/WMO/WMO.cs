@@ -10,23 +10,19 @@ namespace MPQNav.MPQ.ADT {
 	/// Class for the WMO Group File
 	/// </summary>
 	internal class WMO {
+		private readonly IList<int> _indices = new List<int>();
+		private readonly IList<VertexPositionNormalColored> _vertices = new List<VertexPositionNormalColored>();
+		private readonly List<WMO_Sub> _wmoSubList = new List<WMO_Sub>();
+
 		/// <summary>
 		/// The Orientated Bounding Box for this WMO
 		/// </summary>
 		public OBB _OBB;
 
 		public WMO() {
-			Indices = new List<int>();
-			Vertices = new List<VertexPositionNormalColored>();
-			WmoSubList = new List<WMO_Sub>();
-			TotalGroups = 1;
 		}
 
 		public WMO(String name) {
-			Indices = new List<int>();
-			Vertices = new List<VertexPositionNormalColored>();
-			WmoSubList = new List<WMO_Sub>();
-			TotalGroups = 1;
 			Name = name;
 		}
 
@@ -48,73 +44,28 @@ namespace MPQNav.MPQ.ADT {
 		/// <summary>
 		/// List containg all the WMO Sub-Chunks for this WMO Group File
 		/// </summary>
-		public List<WMO_Sub> WmoSubList { get; set; }
+		public List<WMO_Sub> WmoSubList {
+			get { return _wmoSubList; }
+		}
 
 		/// <summary>
 		/// List of vertices used for rendering this WMO in World Space
 		/// </summary>
-		public List<VertexPositionNormalColored> Vertices { get; set; }
+		public IList<VertexPositionNormalColored> Vertices {
+			get { return _vertices; }
+		}
 
 		/// <summary>
 		/// List of indicies used for rendering this WMO in World Space
 		/// </summary>
-		public List<int> Indices { get; set; }
-
-		public void addWMO_Sub(WMO_Sub wmoSub) {
-			WmoSubList.Add(wmoSub);
+		public IList<int> Indices {
+			get { return _indices; }
 		}
 
-		public WMO_Sub getWMO_Sub(int index) {
-			return WmoSubList[index];
-		}
-
-		public void clearCollisionData() {
+		public void Transform(Vector3 position, Vector3 rotation, float rad) {
 			_OBB = new OBB();
 			Vertices.Clear();
 			Indices.Clear();
-		}
-
-		public void addVertex(Vector3 vec) {
-			Vertices.Add(new VertexPositionNormalColored(vec, Color.Yellow, Vector3.Up));
-		}
-
-		public void addIndex(int index) {
-			Indices.Add(index);
-		}
-
-		public void addIndex(short index) {
-			Indices.Add(index);
-		}
-
-		#region Nested type: WMO_Sub
-
-		public class WMO_Sub {
-			public int _index;
-			public MONR _MONR = new MONR();
-			public MOVI _MOVI = new MOVI();
-			public MOVT _MOVT = new MOVT();
-
-			public WMO_Sub(int index) {
-				_index = index;
-			}
-
-			#region Nested type: MONR
-
-			#endregion
-
-			#region Nested type: MOVI
-
-			#endregion
-
-			#region Nested type: MOVT
-
-			#endregion
-		}
-
-		#endregion
-
-		public void Transform(Vector3 position, Vector3 rotation, float rad) {
-			this.clearCollisionData();
 
 			float pos_x = (position.X - 17066.666666666656f) * -1;
 			float pos_y = position.Y;
@@ -129,22 +80,37 @@ namespace MPQNav.MPQ.ADT {
 			int offset = 0;
 
 			for(int i = 0; i < WmoSubList.Count; i++) {
-				WMO.WMO_Sub currentSub = getWMO_Sub(i);
+				WMO_Sub currentSub = WmoSubList[i];
 				for(int v = 0; v < currentSub._MOVT.Vertices.Count; v++) {
 					Vector3 baseVertex = currentSub._MOVT.Vertices[v] + origin;
 					Vector3 rotatedVector = Vector3.Transform(baseVertex - origin, rotateY);
 					Vector3 finalVector = rotatedVector + origin;
 
-					this.addVertex(finalVector);
+					Vertices.Add(new VertexPositionNormalColored(finalVector, Color.Yellow, Vector3.Up));
 				}
 				for(int index = 0; index < currentSub._MOVI.Indices.Length; index++) {
-					this.addIndex(currentSub._MOVI.Indices[index] + offset);
+					Indices.Add(currentSub._MOVI.Indices[index] + offset);
 				}
-				offset = this.Vertices.Count;
+				offset = Vertices.Count;
 			}
 
 			// Generate the OBB
-			this._OBB = new OBB(this.AABB.center, this.AABB.extents, rotateY);
+			_OBB = new OBB(AABB.center, AABB.extents, rotateY);
 		}
+
+		#region Nested type: WMO_Sub
+
+		public class WMO_Sub {
+			public int _index;
+			public MONR _MONR = new MONR();
+			public MOVI _MOVI = new MOVI();
+			public MOVT _MOVT = new MOVT();
+
+			public WMO_Sub(int index) {
+				_index = index;
+			}
+		}
+
+		#endregion
 	}
 }

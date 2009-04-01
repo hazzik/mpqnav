@@ -270,7 +270,7 @@ namespace MPQNav.ADT {
 			currentWMO.TotalGroups = (int)mohd.GroupsCount;
 			for(int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++) {
 				var currentFileName = String.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
-				currentWMO.addWMO_Sub(ProcessWMOSub(currentFileName, wmoGroup));
+				currentWMO.WmoSubList.Add(ProcessWMOSub(currentFileName, wmoGroup));
 			}
 			currentWMO.Transform(modf.Position, modf.Rotation, MathHelper.ToRadians(1));
 			WMOs.Add(currentWMO);
