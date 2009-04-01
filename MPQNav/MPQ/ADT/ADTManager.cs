@@ -84,8 +84,8 @@ namespace MPQNav.ADT {
 			currentADT.LoadM2();
 
 			renderCached = false;
-			currentADT.GenerateVertexAndIndices();
-			currentADT.GenerateVertexAndIndicesH2O();
+			currentADT.TriangeList = currentADT.GenerateVertexAndIndices();
+			currentADT.TriangeListH2O = currentADT.GenerateVertexAndIndicesH2O();
 			_ADTs.Add(currentADT);
 		}
 
@@ -106,48 +106,22 @@ namespace MPQNav.ADT {
 
 		public void buildVerticiesAndIndicies() {
 			// Cycle through each ADT
-			var tempVertices = new List<VertexPositionNormalColored>();
-			var tempIndicies = new List<int>();
-			int offset = 0;
+			var triangleListCollection = new TriangleListCollection();
 			foreach(ADT a in _ADTs) {
 				// Handle the ADTs
-				for(int v = 0; v < a.Vertices.Count; v++) {
-					tempVertices.Add(a.Vertices[v]);
-				}
-				for(int i = 0; i < a.Indices.Count; i++) {
-					tempIndicies.Add(a.Indices[i] + offset);
-				}
-				offset = tempVertices.Count;
-				for(int v = 0; v < a.H2OVertices.Count; v++) {
-					tempVertices.Add(a.H2OVertices[v]);
-				}
-				for(int i = 0; i < a.H2OIndices.Count; i++) {
-					tempIndicies.Add(a.H2OIndices[i] + offset);
-				}
-				offset = tempVertices.Count;
+				triangleListCollection.Add(a.TriangeListH2O);
+				triangleListCollection.Add(a.TriangeList);
 				// Handle the WMOs
 				foreach(WMO w in a.WMOs) {
-					for(int v = 0; v < w.Vertices.Count; v++) {
-						tempVertices.Add(w.Vertices[v]);
-					}
-					for(int i = 0; i < w.Indices.Count; i++) {
-						tempIndicies.Add(w.Indices[i] + offset);
-					}
-					offset = tempVertices.Count;
+					triangleListCollection.Add(w.TriangleList);
 				}
 				// Handle the M2s
 				foreach(M2 m in a._M2Manager._m2s) {
-					for(int v = 0; v < m.Vertices.Count; v++) {
-						tempVertices.Add(m.Vertices[v]);
-					}
-					for(int i = 0; i < m.Indices.Count; i++) {
-						tempIndicies.Add(m.Indices[i] + offset);
-					}
-					offset = tempVertices.Count;
+					triangleListCollection.Add(m.TriangleList);
 				}
 			}
 
-			Optimize(tempVertices.ToArray(), tempIndicies.ToArray(), out verticesCachedADT, out indicesCachedADT);
+			Optimize(triangleListCollection.Vertices.ToArray(), triangleListCollection.Indices.ToArray(), out verticesCachedADT, out indicesCachedADT);
 
 			renderCached = true;
 		}

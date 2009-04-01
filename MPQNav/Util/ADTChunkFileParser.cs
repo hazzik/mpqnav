@@ -40,8 +40,6 @@ namespace MPQNav.Util {
 
 			currentADT._MH2OArray = mh2os;
 
-			currentADT.GenerateVertexAndIndices();
-			currentADT.GenerateVertexAndIndicesH2O();
 			return currentADT;
 		}
 	}

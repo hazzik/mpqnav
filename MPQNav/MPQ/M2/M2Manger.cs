@@ -91,13 +91,13 @@ namespace MPQNav.MPQ.ADT {
 			return vectors;
 		}
 
-		private M2 transform(IList<VertexPositionNormalColored> vertices, IEnumerable<int> indicies, MDDF mddf) {
+		private M2 transform(IList<VertexPositionNormalColored> vertices, IList<int> indicies, MDDF mddf) {
 			var currentM2 = new M2();
 
 			// Real world positions for a transform
 
-			currentM2.Vertices.Clear();
-			currentM2.Indices.Clear();
+			currentM2.TriangleList.Vertices.Clear();
+			currentM2.TriangleList.Indices.Clear();
 
 			// First we scale
 			for(int i = 0; i < vertices.Count; i++) {
@@ -115,14 +115,14 @@ namespace MPQNav.MPQ.ADT {
 				Matrix scaleMatrix = Matrix.CreateScale(mddf.Scale);
 
 				Vector3 scaledVector = Vector3.Transform(baseVertex - origin, scaleMatrix);
-				currentM2.Vertices.Add(new VertexPositionNormalColored(scaledVector, Color.Red, Vector3.Up));
+				currentM2.TriangleList.Vertices.Add(new VertexPositionNormalColored(scaledVector, Color.Red, Vector3.Up));
 			}
-			currentM2.AABB = new AABB(currentM2.Vertices);
+			currentM2.AABB = new AABB(currentM2.TriangleList.Vertices);
 			currentM2.OBB = new OBB(currentM2.AABB.center, currentM2.AABB.extents, Matrix.CreateRotationY(mddf.OrientationB - 90));
 
 			var tempVertices = new List<VertexPositionNormalColored>();
 
-			for(int i = 0; i < currentM2.Vertices.Count; i++) {
+			for(int i = 0; i < currentM2.TriangleList.Vertices.Count; i++) {
 				float pos_x = (mddf.Position.X - 17066.666666666656f) * -1;
 				float pos_y = mddf.Position.Y;
 				float pos_z = (mddf.Position.Z - 17066.666666666656f) * -1;
@@ -149,8 +149,8 @@ namespace MPQNav.MPQ.ADT {
 				Vector3 finalVector = rotatedVector + origin;
 				tempVertices.Add(new VertexPositionNormalColored(finalVector, Color.Red, Vector3.Up));
 			}
-			currentM2.Indices.AddRange(indicies);
-			currentM2.Vertices = tempVertices;
+			currentM2.TriangleList.Indices = indicies;
+			currentM2.TriangleList.Vertices = tempVertices;
 			return currentM2;
 		}
 

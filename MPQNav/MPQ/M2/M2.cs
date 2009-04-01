@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using MPQNav.Collision._3D;
+using MPQNav.MPQ.ADT;
 
 namespace MPQNav.ADT {
 	internal class M2 {
-		public M2() {
-			Indices = new List<int>();
-			Vertices = new List<VertexPositionNormalColored>();
-		}
-
 		/// <summary>
 		/// AABB For the WMO
 		/// </summary>
@@ -19,14 +15,10 @@ namespace MPQNav.ADT {
 		/// </summary>
 		public OBB OBB { get; set; }
 
-		/// <summary>
-		/// List of vertices used for rendering this M2 in World Space
-		/// </summary>
-		public List<VertexPositionNormalColored> Vertices { get; set; }
+		private readonly TriangleList _triangleList = new TriangleList();
 
-		/// <summary>
-		/// List of indicies used for rendering this M2 in World Space
-		/// </summary>
-		public List<int> Indices { get; set; }
+		public TriangleList TriangleList {
+			get { return _triangleList; }
+		}
 	}
 }

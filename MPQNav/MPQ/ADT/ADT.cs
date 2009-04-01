@@ -12,7 +12,7 @@ using MPQNav.MPQ.WMO.Chunks.Parsers;
 using MPQNav.Util;
 
 namespace MPQNav.ADT {
-	internal class ADT : ITriangleList {
+	internal class ADT {
 		#region Variables
 
 		/// <summary>
@@ -71,8 +71,6 @@ namespace MPQNav.ADT {
 
 		#region Rendering Variables
 
-		private List<int> _h2OIndices; // = new List<int>();
-		private List<VertexPositionNormalColored> _h2OVertices; // = new List<VertexPositionNormalColored>();
 		private IList<int> _indices; // = new List<int>();
 		private IList<VertexPositionNormalColored> _vertices; // = new List<VertexPositionNormalColored>();
 
@@ -101,27 +99,11 @@ namespace MPQNav.ADT {
 			get { return _wmos; }
 		}
 
-		public List<int> H2OIndices {
-			get { return _h2OIndices; }
-		}
+		public TriangleList TriangeListH2O { get; set; }
 
-		public List<VertexPositionNormalColored> H2OVertices {
-			get { return _h2OVertices; }
-		}
+		public TriangleList TriangeList { get; set; }
 
-		#region ITriangleList Members
-
-		public IList<int> Indices {
-			get { return _indices; }
-		}
-
-		public IList<VertexPositionNormalColored> Vertices {
-			get { return _vertices; }
-		}
-
-		#endregion
-
-		public void GenerateVertexAndIndicesH2O() {
+		public TriangleList GenerateVertexAndIndicesH2O() {
 			var vertices = new List<VertexPositionNormalColored>();
 			var indices = new List<int>();
 			float[,] MH2OHeightMap = null;
@@ -178,8 +160,10 @@ namespace MPQNav.ADT {
 					}
 				}
 			}
-			_h2OVertices = vertices;
-			_h2OIndices = indices;
+			return new TriangleList {
+			                        	Indices = indices,
+			                        	Vertices = vertices,
+			                        };
 		}
 
 		private static Color GetColor(MH2O.FluidType fluidType) {
@@ -194,9 +178,9 @@ namespace MPQNav.ADT {
 			return Color.Green;
 		}
 
-		public void GenerateVertexAndIndices() {
-			_vertices = new List<VertexPositionNormalColored>();
-			_indices = new List<int>();
+		public TriangleList GenerateVertexAndIndices() {
+			var vertices = new List<VertexPositionNormalColored>();
+			var indices = new List<int>();
 
 
 			for(int My = 0; My < 16; My++) {
@@ -222,9 +206,9 @@ namespace MPQNav.ADT {
                                 *9  10 11
                                 */
 
-								Indices.Add(_vertices.Count + ((row + 1) * (8 + 1) + col)); //9 ... 10
-								Indices.Add(_vertices.Count + (row * (8 + 1) + col)); //0 ... 1
-								Indices.Add(_vertices.Count + (row * (8 + 1) + col + 1)); //1 ... 2
+								indices.Add(vertices.Count + ((row + 1) * (8 + 1) + col)); //9 ... 10
+								indices.Add(vertices.Count + (row * (8 + 1) + col)); //0 ... 1
+								indices.Add(vertices.Count + (row * (8 + 1) + col + 1)); //1 ... 2
 
 								/*This 3 index add the low triangle
                                  *
@@ -234,9 +218,9 @@ namespace MPQNav.ADT {
                                  *9--10--11
                                  */
 
-								Indices.Add(_vertices.Count + ((row + 1) * (8 + 1) + col + 1));
-								Indices.Add(_vertices.Count + ((row + 1) * (8 + 1) + col));
-								Indices.Add(_vertices.Count + (row * (8 + 1) + col + 1));
+								indices.Add(vertices.Count + ((row + 1) * (8 + 1) + col + 1));
+								indices.Add(vertices.Count + ((row + 1) * (8 + 1) + col));
+								indices.Add(vertices.Count + (row * (8 + 1) + col + 1));
 							}
 
 							#endregion
@@ -265,11 +249,15 @@ namespace MPQNav.ADT {
 								_clr = Color.Brown;
 							}
 							var position = new Vector3(x_pos, y_pos, z_pos);
-							_vertices.Add(new VertexPositionNormalColored(position, _clr, Vector3.Up));
+							vertices.Add(new VertexPositionNormalColored(position, _clr, Vector3.Up));
 						}
 					}
 				}
 			}
+			return new TriangleList {
+			                        	Indices = indices,
+			                        	Vertices = vertices,
+			                        };
 		}
 
 		public void LoadWMO() {

@@ -9,7 +9,7 @@ namespace MPQNav.MPQ.ADT {
 	/// <summary>
 	/// Class for the WMO Group File
 	/// </summary>
-	internal class WMO : ITriangleList {
+	internal class WMO {
 		private readonly TriangleList _triangleList = new TriangleList();
 		private readonly List<WMO_Sub> _wmoSubList = new List<WMO_Sub>();
 
@@ -51,28 +51,10 @@ namespace MPQNav.MPQ.ADT {
 			get { return _triangleList; }
 		}
 
-		#region ITriangleList Members
-
-		/// <summary>
-		/// List of vertices used for rendering this WMO in World Space
-		/// </summary>
-		public IList<VertexPositionNormalColored> Vertices {
-			get { return TriangleList.Vertices; }
-		}
-
-		/// <summary>
-		/// List of indicies used for rendering this WMO in World Space
-		/// </summary>
-		public IList<int> Indices {
-			get { return TriangleList.Indices; }
-		}
-
-		#endregion
-
 		public void Transform(Vector3 position, Vector3 rotation, float rad) {
 			_OBB = new OBB();
-			Vertices.Clear();
-			Indices.Clear();
+			TriangleList.Vertices.Clear();
+			TriangleList.Indices.Clear();
 
 			float pos_x = (position.X - 17066.666666666656f) * -1;
 			float pos_y = position.Y;
@@ -93,12 +75,12 @@ namespace MPQNav.MPQ.ADT {
 					Vector3 rotatedVector = Vector3.Transform(baseVertex - origin, rotateY);
 					Vector3 finalVector = rotatedVector + origin;
 
-					Vertices.Add(new VertexPositionNormalColored(finalVector, Color.Yellow, Vector3.Up));
+					TriangleList.Vertices.Add(new VertexPositionNormalColored(finalVector, Color.Yellow, Vector3.Up));
 				}
 				for(int index = 0; index < currentSub._MOVI.Indices.Length; index++) {
-					Indices.Add(currentSub._MOVI.Indices[index] + offset);
+					TriangleList.Indices.Add(currentSub._MOVI.Indices[index] + offset);
 				}
-				offset = Vertices.Count;
+				offset = TriangleList.Vertices.Count;
 			}
 
 			// Generate the OBB
