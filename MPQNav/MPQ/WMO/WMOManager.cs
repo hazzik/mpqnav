@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
+using MPQNav.Collision._3D;
 using MPQNav.MPQ.ADT.Chunks;
+using MPQNav.MPQ.ADT.Chunks.Parsers;
 using MPQNav.MPQ.WMO.Chunks.Parsers;
 using MPQNav.Util;
 
@@ -50,30 +52,16 @@ namespace MPQNav.MPQ.ADT {
 			}
 
 			var br = new BinaryReader(File.OpenRead(MpqNavSettings.MpqPath + modf.FileName));
-			br.ReadBytes(20); // Skip the header
-			UInt32 nTextures = br.ReadUInt32();
-			UInt32 groupsCount = br.ReadUInt32(); // This is the number of "sub-wmos" or group files that we need to read
-			UInt32 nPortals = br.ReadUInt32();
-			UInt32 nLights = br.ReadUInt32();
-			UInt32 nModels = br.ReadUInt32();
-			UInt32 nDoodads = br.ReadUInt32();
-			UInt32 nSets = br.ReadUInt32();
-			UInt32 ambientColor = br.ReadUInt32();
+			//br.ReadBytes(20); // Skip the header
 
-			UInt32 WMOID = br.ReadUInt32(); // Column 2 in the WMOAreaTable.dbc
-
-			float bb1_x = (br.ReadSingle() * -1);
-			float bb1_z = br.ReadSingle();
-			float bb1_y = br.ReadSingle();
-			float bb2_x = (br.ReadSingle() * -1);
-			float bb2_z = br.ReadSingle();
-			float bb2_y = br.ReadSingle();
+			var version = new MVERChunkParser(br, br.BaseStream.Position).Parse();
+			var mohd = new MOHDChunkParser(br, br.BaseStream.Position).Parse();
 
 			var currentWMO = new WMO();
 			currentWMO.Name = modf.FileName;
-			currentWMO.createAABB(new Vector3(bb1_x, bb1_y, bb1_z), new Vector3(bb2_x, bb2_y, bb2_z));
-			currentWMO.TotalGroups = (int)groupsCount;
-			for(int wmoGroup = 0; wmoGroup < groupsCount; wmoGroup++) {
+			currentWMO.AABB = new AABB(mohd.BoundingBox1, mohd.BoundingBox2);
+			currentWMO.TotalGroups = (int)mohd.GroupsCount;
+			for(int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++) {
 				var currentFileName = string.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
 				currentWMO.addWMO_Sub(ProcessWMOSub(currentFileName, wmoGroup));
 			}
@@ -82,7 +70,8 @@ namespace MPQNav.MPQ.ADT {
 			currentWMO.Transform(position, rotation, rad);
 			_wmos.Add(currentWMO);
 		}
- 		
+
+
 		/// <summary>
 		/// Gets a WMO_Sub from the WMO Group file
 		/// </summary>

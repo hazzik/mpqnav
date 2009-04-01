@@ -60,10 +60,6 @@ namespace MPQNav.MPQ.ADT {
 		/// </summary>
 		public List<int> Indices { get; set; }
 
-		public void createAABB(Vector3 v_min, Vector3 v_max) {
-			AABB = new AABB(v_min, v_max);
-		}
-
 		public void addWMO_Sub(WMO_Sub wmoSub) {
 			WmoSubList.Add(wmoSub);
 		}
