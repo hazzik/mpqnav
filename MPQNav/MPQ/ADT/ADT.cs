@@ -71,10 +71,10 @@ namespace MPQNav.ADT {
 
 		#region Rendering Variables
 
+		private List<int> _h2OIndices; // = new List<int>();
+		private List<VertexPositionNormalColored> _h2OVertices; // = new List<VertexPositionNormalColored>();
 		private IList<int> _indices; // = new List<int>();
 		private IList<VertexPositionNormalColored> _vertices; // = new List<VertexPositionNormalColored>();
-		public List<int> H2OIndicies; // = new List<int>();
-		public List<VertexPositionNormalColored> H2OVertices; // = new List<VertexPositionNormalColored>();
 
 		#endregion
 
@@ -99,6 +99,14 @@ namespace MPQNav.ADT {
 
 		public IList<WMO> WMOs {
 			get { return _wmos; }
+		}
+
+		public List<int> H2OIndices {
+			get { return _h2OIndices; }
+		}
+
+		public List<VertexPositionNormalColored> H2OVertices {
+			get { return _h2OVertices; }
 		}
 
 		#region ITriangleList Members
@@ -170,8 +178,8 @@ namespace MPQNav.ADT {
 					}
 				}
 			}
-			H2OVertices = vertices;
-			H2OIndicies = indices;
+			_h2OVertices = vertices;
+			_h2OIndices = indices;
 		}
 
 		private static Color GetColor(MH2O.FluidType fluidType) {

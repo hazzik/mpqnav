@@ -121,8 +121,8 @@ namespace MPQNav.ADT {
 				for(int v = 0; v < a.H2OVertices.Count; v++) {
 					tempVertices.Add(a.H2OVertices[v]);
 				}
-				for(int i = 0; i < a.H2OIndicies.Count; i++) {
-					tempIndicies.Add(a.H2OIndicies[i] + offset);
+				for(int i = 0; i < a.H2OIndices.Count; i++) {
+					tempIndicies.Add(a.H2OIndices[i] + offset);
 				}
 				offset = tempVertices.Count;
 				// Handle the WMOs
