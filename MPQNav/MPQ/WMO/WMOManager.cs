@@ -15,7 +15,14 @@ namespace MPQNav.MPQ.ADT {
 		/// <summary>
 		/// List of WMOs managed by this WMOManager
 		/// </summary>
-		public List<WMO> _wmos = new List<WMO>();
+		private List<WMO> _wmos = new List<WMO>();
+
+		/// <summary>
+		/// List of WMOs managed by this WMOManager
+		/// </summary>
+		public List<WMO> WMOs {
+			get { return _wmos; }
+		}
 
 		#endregion
 
