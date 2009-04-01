@@ -11,11 +11,6 @@ namespace MPQNav.MPQ.ADT {
 		#region variables
 
 		/// <summary>
-		/// List of filenames managed by this WMOManager
-		/// </summary>
-		private readonly List<String> _names = new List<String>();
-
-		/// <summary>
 		/// List of WMOs managed by this WMOManager
 		/// </summary>
 		public List<WMO> _wmos = new List<WMO>();
@@ -46,14 +41,6 @@ namespace MPQNav.MPQ.ADT {
 		#endregion
 
 		/// <summary>
-		/// Adds a WMO Filename to the Manager
-		/// </summary>
-		/// <param name="name">The filename to add</param>
-		public void addFileName(String name) {
-			_names.Add(name);
-		}
-
-		/// <summary>
 		/// Adds a WMO to the manager
 		/// </summary>
 		/// <param name="modf">MODF (placement informatio for this WMO)</param>
@@ -61,8 +48,6 @@ namespace MPQNav.MPQ.ADT {
 			if(!File.Exists(MpqNavSettings.MpqPath + modf.FileName)) {
 				throw new Exception("File does not exist: " + MpqNavSettings.MpqPath + modf.FileName);
 			}
-
-			addFileName(modf.FileName);
 
 			var br = new BinaryReader(File.OpenRead(MpqNavSettings.MpqPath + modf.FileName));
 			br.ReadBytes(20); // Skip the header
@@ -90,26 +75,27 @@ namespace MPQNav.MPQ.ADT {
 			currentWMO.TotalGroups = (int)groupsCount;
 			for(int wmoGroup = 0; wmoGroup < groupsCount; wmoGroup++) {
 				var currentFileName = string.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
-				currentWMO.addWMO_Sub(processWMOSub(MpqNavSettings.MpqPath + currentFileName, wmoGroup));
+				currentWMO.addWMO_Sub(ProcessWMOSub(currentFileName, wmoGroup));
 			}
 			var position = modf.Position;
 			var rotation = new Vector3(modf.OrientationA, modf.OrientationB, modf.OrientationC);
 			currentWMO.Transform(position, rotation, rad);
 			_wmos.Add(currentWMO);
 		}
-
-
+ 		
 		/// <summary>
 		/// Gets a WMO_Sub from the WMO Group file
 		/// </summary>
-		/// <param name="group_index">Current index in the WMO Group</param>
-		/// <param name="path">Full Filename of the WMO_Sub</param>
+		/// <param name="wmoGroup">Current index in the WMO Group</param>
+		/// <param name="fileName">Full Filename of the WMO_Sub</param>
 		/// <returns></returns>
-		public WMO.WMO_Sub processWMOSub(string path, int group_index) {
+		public WMO.WMO_Sub ProcessWMOSub(string fileName, int wmoGroup) {
+			var path = MpqNavSettings.MpqPath + fileName;
 			if(!File.Exists(path)) {
 				throw new Exception("File does not exist: " + path);
 			}
-			var currentWMOSub = new WMO.WMO_Sub(group_index);
+
+			var currentWMOSub = new WMO.WMO_Sub(wmoGroup);
 
 			using(var reader = new BinaryReader(File.OpenRead(path))) {
 				currentWMOSub._MOVI = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
@@ -118,15 +104,6 @@ namespace MPQNav.MPQ.ADT {
 			}
 
 			return currentWMOSub;
-		}
-
-		/// <summary>
-		/// Gets the filename of a WMO at the given index 
-		/// </summary>
-		/// <param name="index">Index of the Filename</param>
-		/// <returns>The filename upon success, INVALID upon failure</returns>
-		public String getFilename(int index) {
-			return _names.Count > index ? _names[index] : "INVALID";
 		}
 	}
 }
