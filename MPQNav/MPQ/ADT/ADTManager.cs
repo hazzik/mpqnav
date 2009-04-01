@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using MPQNav.MPQ.ADT;
 using MPQNav.Util;
@@ -30,14 +29,12 @@ namespace MPQNav.ADT {
 		/// </summary>
 		private readonly Boolean loaded;
 
-		private int[] indicesCachedADT;
+		private ITriangleList _triangleList;
 
 		/// <summary>
 		/// Boolean variable representing if all the rendering data has been cached.
 		/// </summary>
 		private Boolean renderCached;
-
-		private VertexPositionNormalColored[] verticesCachedADT;
 
 		#endregion
 
@@ -55,6 +52,15 @@ namespace MPQNav.ADT {
 
 		#endregion
 
+		public ITriangleList TriangleList {
+			get {
+				if(!renderCached) {
+					_triangleList = BuildTriangleList();
+				}
+				return _triangleList;
+			}
+		}
+
 		/// <summary>
 		/// Loads an ADT into the manager.
 		/// </summary>
@@ -65,11 +71,11 @@ namespace MPQNav.ADT {
 				MessageBox.Show("ADT Manager not loaded, aborting loading ADT file.", "ADT Manager not loaded.");
 				return;
 			}
-			var dir = MpqNavSettings.MpqPath + AdtPath + _continent;
+			string dir = MpqNavSettings.MpqPath + AdtPath + _continent;
 			if(!Directory.Exists(dir)) {
 				throw new Exception("Continent data missing");
 			}
-			var file = String.Format("{0}{1}{2}\\{2}_{3}_{4}.adt", MpqNavSettings.MpqPath, AdtPath, _continent, x, y);
+			string file = String.Format("{0}{1}{2}\\{2}_{3}_{4}.adt", MpqNavSettings.MpqPath, AdtPath, _continent, x, y);
 			if(!File.Exists(file)) {
 				throw new Exception(String.Format("ADT Doesn't exist: {0}", file));
 			}
@@ -89,22 +95,7 @@ namespace MPQNav.ADT {
 			_ADTs.Add(currentADT);
 		}
 
-		public VertexPositionNormalColored[] renderingVerticies() {
-			if(!renderCached) {
-				buildVerticiesAndIndicies();
-			}
-			return verticesCachedADT;
-		}
-
-
-		public int[] renderingIndices() {
-			if(!renderCached) {
-				buildVerticiesAndIndicies();
-			}
-			return indicesCachedADT;
-		}
-
-		public void buildVerticiesAndIndicies() {
+		public ITriangleList BuildTriangleList() {
 			// Cycle through each ADT
 			var triangleListCollection = new TriangleListCollection();
 			foreach(ADT a in _ADTs) {
@@ -122,10 +113,10 @@ namespace MPQNav.ADT {
 			}
 
 			var list = triangleListCollection.Optimize();
-			verticesCachedADT = list.Vertices.ToArray();
-			indicesCachedADT = list.Indices.ToArray();
 
 			renderCached = true;
+
+			return list;
 		}
 	}
 

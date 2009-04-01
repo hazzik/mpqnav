@@ -90,9 +90,6 @@ namespace MPQNav {
 
 		private KeyboardState oldKeyState;
 
-		private VertexPositionNormalColored[] renderVerticies;
-		private int[] renderIndices;
-
 		private SpriteBatch spriteBatch;
 		private SpriteFont spriteFont;
 
@@ -106,12 +103,12 @@ namespace MPQNav {
 			manager = new ADTManager(MpqNavSettings.DefaultContinent);
 
 			manager.loadADT(MpqNavSettings.DefaultMapX, MpqNavSettings.DefaultMapY);
-			
-			renderVerticies = manager.renderingVerticies();
-			renderIndices = manager.renderingIndices();
-			if(this.renderIndices.Length > 0) {
-				this.avatarPosition = renderVerticies[0].Position;
-				this.avatarYaw = 90;
+
+			var renderVerticies = manager.TriangleList.Vertices.ToArray();
+			var renderIndices = manager.TriangleList.Indices.ToArray();
+			if(renderIndices.Length > 0) {
+				avatarPosition = renderVerticies[0].Position;
+				avatarYaw = 90;
 			}
 		}
 
@@ -235,18 +232,7 @@ namespace MPQNav {
 		}
 
 		private void Render() {
-			renderVerticies = manager.renderingVerticies();
-			renderIndices = manager.renderingIndices();
-
-			graphics.GraphicsDevice.DrawUserIndexedPrimitives(
-				PrimitiveType.TriangleList,
-				renderVerticies.ToArray(),
-				0, // vertex buffer offset to add to each element of the index buffer
-				renderVerticies.Length, // number of vertices to draw
-				renderIndices.ToArray(),
-				0, // first index element to read
-				renderIndices.Length / 3 // number of primitives to draw
-				);
+			graphics.GraphicsDevice.DrawTriangleList(manager.TriangleList);
 		}
 
 		private void DrawCameraState() {

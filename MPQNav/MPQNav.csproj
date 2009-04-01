@@ -89,6 +89,7 @@
     <Compile Include="Collision\2D\Traingle.cs" />
     <Compile Include="MPQ\ADT\ADT.cs" />
     <Compile Include="MPQ\ADT\ADTManager.cs" />
+    <Compile Include="MPQ\ADT\GraphicsDeviceExtensions.cs" />
     <Compile Include="MPQ\ADT\TriangleListCollection.cs" />
     <Compile Include="MPQ\ADT\TriangleListExtensions.cs" />
     <Compile Include="MPQ\M2\M2.cs" />
