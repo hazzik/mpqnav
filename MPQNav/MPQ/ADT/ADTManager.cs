@@ -114,8 +114,8 @@ namespace MPQNav.ADT {
 				for(int v = 0; v < a.Vertices.Count; v++) {
 					tempVertices.Add(a.Vertices[v]);
 				}
-				for(int i = 0; i < a.Indicies.Count; i++) {
-					tempIndicies.Add(a.Indicies[i] + offset);
+				for(int i = 0; i < a.Indices.Count; i++) {
+					tempIndicies.Add(a.Indices[i] + offset);
 				}
 				offset = tempVertices.Count;
 				for(int v = 0; v < a.H2OVertices.Count; v++) {

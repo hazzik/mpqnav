@@ -7,11 +7,12 @@ using MPQNav.Collision._3D;
 using MPQNav.MPQ.ADT;
 using MPQNav.MPQ.ADT.Chunks;
 using MPQNav.MPQ.ADT.Chunks.Parsers;
+using MPQNav.MPQ.WMO.Chunks;
 using MPQNav.MPQ.WMO.Chunks.Parsers;
 using MPQNav.Util;
 
 namespace MPQNav.ADT {
-	internal class ADT {
+	internal class ADT : ITriangleList {
 		#region Variables
 
 		/// <summary>
@@ -70,10 +71,10 @@ namespace MPQNav.ADT {
 
 		#region Rendering Variables
 
+		private IList<int> _indices; // = new List<int>();
+		private IList<VertexPositionNormalColored> _vertices; // = new List<VertexPositionNormalColored>();
 		public List<int> H2OIndicies; // = new List<int>();
 		public List<VertexPositionNormalColored> H2OVertices; // = new List<VertexPositionNormalColored>();
-		public List<int> Indicies; // = new List<int>();
-		public List<VertexPositionNormalColored> Vertices; // = new List<VertexPositionNormalColored>();
 
 		#endregion
 
@@ -90,6 +91,24 @@ namespace MPQNav.ADT {
 			_FileName = fName;
 			_x = Int32.Parse(fName_split[1]);
 			_y = Int32.Parse(fName_split[2].Substring(0, (fName_split[2].Length - 4)));
+		}
+
+		#endregion
+
+		private readonly IList<WMO> _wmos = new List<WMO>();
+
+		public IList<WMO> WMOs {
+			get { return _wmos; }
+		}
+
+		#region ITriangleList Members
+
+		public IList<int> Indices {
+			get { return _indices; }
+		}
+
+		public IList<VertexPositionNormalColored> Vertices {
+			get { return _vertices; }
 		}
 
 		#endregion
@@ -168,8 +187,8 @@ namespace MPQNav.ADT {
 		}
 
 		public void GenerateVertexAndIndices() {
-			Vertices = new List<VertexPositionNormalColored>();
-			Indicies = new List<int>();
+			_vertices = new List<VertexPositionNormalColored>();
+			_indices = new List<int>();
 
 
 			for(int My = 0; My < 16; My++) {
@@ -195,9 +214,9 @@ namespace MPQNav.ADT {
                                 *9  10 11
                                 */
 
-								Indicies.Add(Vertices.Count + ((row + 1) * (8 + 1) + col)); //9 ... 10
-								Indicies.Add(Vertices.Count + (row * (8 + 1) + col)); //0 ... 1
-								Indicies.Add(Vertices.Count + (row * (8 + 1) + col + 1)); //1 ... 2
+								Indices.Add(_vertices.Count + ((row + 1) * (8 + 1) + col)); //9 ... 10
+								Indices.Add(_vertices.Count + (row * (8 + 1) + col)); //0 ... 1
+								Indices.Add(_vertices.Count + (row * (8 + 1) + col + 1)); //1 ... 2
 
 								/*This 3 index add the low triangle
                                  *
@@ -207,9 +226,9 @@ namespace MPQNav.ADT {
                                  *9--10--11
                                  */
 
-								Indicies.Add(Vertices.Count + ((row + 1) * (8 + 1) + col + 1));
-								Indicies.Add(Vertices.Count + ((row + 1) * (8 + 1) + col));
-								Indicies.Add(Vertices.Count + (row * (8 + 1) + col + 1));
+								Indices.Add(_vertices.Count + ((row + 1) * (8 + 1) + col + 1));
+								Indices.Add(_vertices.Count + ((row + 1) * (8 + 1) + col));
+								Indices.Add(_vertices.Count + (row * (8 + 1) + col + 1));
 							}
 
 							#endregion
@@ -238,7 +257,7 @@ namespace MPQNav.ADT {
 								_clr = Color.Brown;
 							}
 							var position = new Vector3(x_pos, y_pos, z_pos);
-							Vertices.Add(new VertexPositionNormalColored(position, _clr, Vector3.Up));
+							_vertices.Add(new VertexPositionNormalColored(position, _clr, Vector3.Up));
 						}
 					}
 				}
@@ -246,7 +265,7 @@ namespace MPQNav.ADT {
 		}
 
 		public void LoadWMO() {
-			foreach(var modf in _MODFList) {
+			foreach(MODF modf in _MODFList) {
 				AddWMO(modf);
 			}
 		}
@@ -261,29 +280,23 @@ namespace MPQNav.ADT {
 			}
 
 			var br = new BinaryReader(File.OpenRead(MpqNavSettings.MpqPath + modf.FileName));
-			var version = new MVERChunkParser(br, br.BaseStream.Position).Parse();
-			var mohd = new MOHDChunkParser(br, br.BaseStream.Position).Parse();
+			int version = new MVERChunkParser(br, br.BaseStream.Position).Parse();
+			MOHD mohd = new MOHDChunkParser(br, br.BaseStream.Position).Parse();
 
 			var currentWMO = new WMO();
 			currentWMO.Name = modf.FileName;
 			currentWMO.AABB = new AABB(mohd.BoundingBox1, mohd.BoundingBox2);
 			currentWMO.TotalGroups = (int)mohd.GroupsCount;
 			for(int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++) {
-				var currentFileName = String.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
+				string currentFileName = String.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
 				currentWMO.WmoSubList.Add(ProcessWMOSub(currentFileName, wmoGroup));
 			}
 			currentWMO.Transform(modf.Position, modf.Rotation, MathHelper.ToRadians(1));
 			WMOs.Add(currentWMO);
 		}
 
-		private readonly IList<WMO> _wmos = new List<WMO>();
-
-		public IList<WMO> WMOs {
-			get { return _wmos; }
-		}
-
 		public void LoadM2() {
-			foreach(var mmdf in _MDDFList) {
+			foreach(MDDF mmdf in _MDDFList) {
 				_M2Manager.AddM2(mmdf);
 			}
 		}
@@ -295,7 +308,7 @@ namespace MPQNav.ADT {
 		/// <param name="fileName">Full Filename of the WMO_Sub</param>
 		/// <returns></returns>
 		public static WMO.WMO_Sub ProcessWMOSub(string fileName, int wmoGroup) {
-			var path = MpqNavSettings.MpqPath + fileName;
+			string path = MpqNavSettings.MpqPath + fileName;
 			if(!File.Exists(path)) {
 				throw new Exception("File does not exist: " + path);
 			}

@@ -99,6 +99,7 @@
     <Compile Include="MPQ\WMO\Chunks\Parsers\MOVTChunkParser.cs" />
     <Compile Include="MPQ\WMO\Chunks\MOHD.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MOHDChunkParser.cs" />
+    <Compile Include="MPQ\WMO\TriangleList.cs" />
     <Compile Include="MPQ\WMO\WMO.cs" />
     <Compile Include="ParserBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -9,9 +9,8 @@ namespace MPQNav.MPQ.ADT {
 	/// <summary>
 	/// Class for the WMO Group File
 	/// </summary>
-	internal class WMO {
-		private readonly IList<int> _indices = new List<int>();
-		private readonly IList<VertexPositionNormalColored> _vertices = new List<VertexPositionNormalColored>();
+	internal class WMO : ITriangleList {
+		private readonly TriangleList _triangleList = new TriangleList();
 		private readonly List<WMO_Sub> _wmoSubList = new List<WMO_Sub>();
 
 		/// <summary>
@@ -48,19 +47,27 @@ namespace MPQNav.MPQ.ADT {
 			get { return _wmoSubList; }
 		}
 
+		public TriangleList TriangleList {
+			get { return _triangleList; }
+		}
+
+		#region ITriangleList Members
+
 		/// <summary>
 		/// List of vertices used for rendering this WMO in World Space
 		/// </summary>
 		public IList<VertexPositionNormalColored> Vertices {
-			get { return _vertices; }
+			get { return TriangleList.Vertices; }
 		}
 
 		/// <summary>
 		/// List of indicies used for rendering this WMO in World Space
 		/// </summary>
 		public IList<int> Indices {
-			get { return _indices; }
+			get { return TriangleList.Indices; }
 		}
+
+		#endregion
 
 		public void Transform(Vector3 position, Vector3 rotation, float rad) {
 			_OBB = new OBB();
