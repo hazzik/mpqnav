@@ -121,27 +121,11 @@ namespace MPQNav.ADT {
 				}
 			}
 
-			Optimize(triangleListCollection, out verticesCachedADT, out indicesCachedADT);
+			var list = triangleListCollection.Optimize();
+			verticesCachedADT = list.Vertices.ToArray();
+			indicesCachedADT = list.Indices.ToArray();
 
 			renderCached = true;
-		}
-
-		public static void Optimize(ITriangleList list, out VertexPositionNormalColored[] outVertices, out int[] outindices) {
-			var vertices = list.Vertices;
-			var indices = list.Indices;
-			var hash = new Dictionary<VertexPositionNormalColored, int>();
-			var resultIndices = new List<int>();
-			for(int i = 0; i < indices.Count; i++) {
-				var vertex = vertices[indices[i]];
-				int index;
-				if(!hash.TryGetValue(vertex, out index)) {
-					index = hash.Count;
-					hash.Add(vertex, index);
-				}
-				resultIndices.Add(index);
-			}
-			outVertices = hash.Keys.ToArray();
-			outindices = resultIndices.ToArray();
 		}
 	}
 
