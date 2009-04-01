@@ -22,18 +22,8 @@ namespace MPQNav.MPQ.ADT.Chunks {
 		public Vector3 Position { get; set; }
 
 		/// <summary>
-		/// Rotation of the Z axis
+		/// Rotation of the WMO
 		/// </summary>
-		public float OrientationA { get; set; }
-
-		/// <summary>
-		/// Rotation of the Y axis
-		/// </summary>
-		public float OrientationB { get; set; }
-
-		/// <summary>
-		///  Rotation of the X axis
-		/// </summary>
-		public float OrientationC { get; set; }
+		public Vector3 Rotation { get; set; }
 	}
 }

@@ -52,8 +52,6 @@ namespace MPQNav.MPQ.ADT {
 			}
 
 			var br = new BinaryReader(File.OpenRead(MpqNavSettings.MpqPath + modf.FileName));
-			//br.ReadBytes(20); // Skip the header
-
 			var version = new MVERChunkParser(br, br.BaseStream.Position).Parse();
 			var mohd = new MOHDChunkParser(br, br.BaseStream.Position).Parse();
 
@@ -65,9 +63,7 @@ namespace MPQNav.MPQ.ADT {
 				var currentFileName = string.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
 				currentWMO.addWMO_Sub(ProcessWMOSub(currentFileName, wmoGroup));
 			}
-			var position = modf.Position;
-			var rotation = new Vector3(modf.OrientationA, modf.OrientationB, modf.OrientationC);
-			currentWMO.Transform(position, rotation, rad);
+			currentWMO.Transform(modf.Position, modf.Rotation, rad);
 			_wmos.Add(currentWMO);
 		}
 

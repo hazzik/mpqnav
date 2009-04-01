@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using MPQNav.Util;
 
 namespace MPQNav.MPQ.WMO.Chunks.Parsers {
-	internal class MOHDChunkParser:ChunkParser<MOHD> {
+	internal class MOHDChunkParser : ChunkParser<MOHD> {
 		public MOHDChunkParser(BinaryReader reader, long absoluteStart)
 			: base("MOHD", reader, absoluteStart) {
 		}

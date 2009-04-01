@@ -22,13 +22,15 @@ namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 			int bytesRead = 0;
 			while(bytesRead < Size) {
 				var lMODF = new MODF {
-					FileName = _mwmos[(int)Reader.ReadUInt32()],
-					UniqId = Reader.ReadUInt32(),
-					Position = new Vector3(Reader.ReadSingle(), Reader.ReadSingle(), Reader.ReadSingle()),
-					OrientationA = Reader.ReadSingle(),
-					OrientationB = Reader.ReadSingle(),
-					OrientationC = Reader.ReadSingle()
-				};
+				                     	FileName = _mwmos[(int)Reader.ReadUInt32()],
+				                     	UniqId = Reader.ReadUInt32(),
+				                     	Position = new Vector3(Reader.ReadSingle(),
+				                     	                       Reader.ReadSingle(),
+				                     	                       Reader.ReadSingle()),
+				                     	Rotation = new Vector3(Reader.ReadSingle(),
+				                     	                       Reader.ReadSingle(),
+				                     	                       Reader.ReadSingle()),
+				                     };
 				Reader.ReadBytes(32); // 32 bytes
 				bytesRead += 64; // 64 total bytes
 				_MODF.Add(lMODF);
