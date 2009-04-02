@@ -56,7 +56,7 @@ namespace MPQNav.MPQ.ADT {
 			Matrix rotateX = Matrix.CreateRotationX(rotation.Z * rad);
 
 			for(int i = 0; i < WmoSubList.Count; i++) {
-				list.Add(TransformAndAdd(WmoSubList[i], origin, rotateY));
+				list.Add(Transform(WmoSubList[i], origin, rotateY));
 			}
 
 			_triangleList = list;
@@ -64,36 +64,13 @@ namespace MPQNav.MPQ.ADT {
 			_OBB = new OBB(AABB.center, AABB.extents, rotateY);
 		}
 
-		private static ITriangleList TransformAndAdd(ITriangleList list, Vector3 origin, Matrix rotateY) {
-			var currentSub = (WMO_Sub)list;
+		private static ITriangleList Transform(ITriangleList list, Vector3 origin, Matrix rotateY) {
 			return new TriangleList {
-				Indices = currentSub.Indices,
-				Vertices = currentSub._MOVT.Vertices
-					.Select(v => Vector3.Transform(v, rotateY) + origin)
-					.Select(x => new VertexPositionNormalColored(x, Color.Yellow, Vector3.Up)).ToList()
+				Indices = list.Indices,
+				Vertices = list.Vertices
+					.Select(v => Vector3.Transform(v.Position, rotateY) + origin)
+					.Select(v => new VertexPositionNormalColored(v, Color.Yellow, Vector3.Up)).ToList()
 			};
 		}
-
-		#region Nested type: WMO_Sub
-
-		public class WMO_Sub : ITriangleList {
-			public MONR _MONR = new MONR();
-			public MOVI _MOVI = new MOVI();
-			public MOVT _MOVT = new MOVT();
-
-			public IList<int> Indices { get { return _MOVI.Indices; } }
-
-			public IList<VertexPositionNormalColored> Vertices {
-				get {
-					var vertices = new List<VertexPositionNormalColored>();
-					for(int i = 0; i < _MONR.Normals.Length; i++) {
-						vertices.Add(new VertexPositionNormalColored(_MOVT.Vertices[i], Color.Yellow, _MONR.Normals[i]));
-					}
-					return vertices;
-				}
-			}
-		}
-
-		#endregion
 	}
 }

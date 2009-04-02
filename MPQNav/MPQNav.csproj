@@ -95,11 +95,8 @@
     <Compile Include="MPQ\ADT\TriangleListExtensions.cs" />
     <Compile Include="MPQ\M2\M2.cs" />
     <Compile Include="MPQ\M2\M2Manger.cs" />
-    <Compile Include="MPQ\WMO\Chunks\MONR.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MONRChunkParser.cs" />
-    <Compile Include="MPQ\WMO\Chunks\MOVI.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MOVIChunkParser.cs" />
-    <Compile Include="MPQ\WMO\Chunks\MOVT.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MOVTChunkParser.cs" />
     <Compile Include="MPQ\WMO\Chunks\MOHD.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MOHDChunkParser.cs" />

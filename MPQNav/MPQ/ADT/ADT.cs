@@ -262,21 +262,25 @@ namespace MPQNav.ADT {
 		/// <param name="wmoGroup">Current index in the WMO Group</param>
 		/// <param name="fileName">Full Filename of the WMO_Sub</param>
 		/// <returns></returns>
-		public static WMO.WMO_Sub LoadWMOSub(string fileName, int wmoGroup) {
+		public static ITriangleList LoadWMOSub(string fileName, int wmoGroup) {
 			var path = MpqNavSettings.MpqPath + fileName;
 			if(!File.Exists(path)) {
 				throw new Exception(string.Format("File does not exist: {0}", path));
 			}
 
-			var wmoSub = new WMO.WMO_Sub();
-
 			using(var reader = new BinaryReader(File.OpenRead(path))) {
-				wmoSub._MOVI.Indices = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
-				wmoSub._MOVT.Vertices = new MOVTChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition).Parse();
-				wmoSub._MONR.Normals = new MONRChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MONR").StartPosition).Parse();
+				var indices = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
+				var vectors = new MOVTChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition).Parse();
+				var normals = new MONRChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MONR").StartPosition).Parse();
+				var vertices = new List<VertexPositionNormalColored>();
+				for(var i = 0; i < vectors.Count; i++) {
+					vertices.Add(new VertexPositionNormalColored(vectors[i], Color.Yellow, normals[i]));
+				}
+				return new TriangleList {
+					Indices = indices,
+					Vertices = vertices,
+				};
 			}
-
-			return wmoSub;
 		}
 	}
 }
