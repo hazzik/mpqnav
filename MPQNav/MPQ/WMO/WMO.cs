@@ -13,7 +13,7 @@ namespace MPQNav.MPQ.ADT {
 	/// </summary>
 	internal class WMO {
 		private ITriangleList _triangleList = new TriangleList();
-		private readonly List<WMO_Sub> _wmoSubList = new List<WMO_Sub>();
+		private readonly IList<ITriangleList> _wmoSubList = new List<ITriangleList>();
 
 		/// <summary>
 		/// The Orientated Bounding Box for this WMO
@@ -33,7 +33,7 @@ namespace MPQNav.MPQ.ADT {
 		/// <summary>
 		/// List containg all the WMO Sub-Chunks for this WMO Group File
 		/// </summary>
-		public List<WMO_Sub> WmoSubList {
+		public IList<ITriangleList> WmoSubList {
 			get { return _wmoSubList; }
 		}
 
@@ -64,7 +64,8 @@ namespace MPQNav.MPQ.ADT {
 			_OBB = new OBB(AABB.center, AABB.extents, rotateY);
 		}
 
-		private static ITriangleList TransformAndAdd(WMO_Sub currentSub, Vector3 origin, Matrix rotateY) {
+		private static ITriangleList TransformAndAdd(ITriangleList list, Vector3 origin, Matrix rotateY) {
+			var currentSub = (WMO_Sub)list;
 			return new TriangleList {
 				Indices = currentSub.Indices,
 				Vertices = currentSub._MOVT.Vertices
