@@ -102,7 +102,7 @@ namespace MPQNav.ADT {
 					triangleListCollection.Add(w.TriangleList);
 				}
 				// Handle the M2s
-				foreach(M2 m in a._M2Manager._m2s) {
+				foreach(M2 m in a.M2s) {
 					triangleListCollection.Add(m.TriangleList);
 				}
 			}

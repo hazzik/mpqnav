@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MPQNav.Collision._3D;
@@ -14,11 +15,6 @@ using MPQNav.Util;
 namespace MPQNav.ADT {
 	internal class ADT {
 		#region Variables
-
-		/// <summary>
-		/// The manager for all M2s used by this ADT
-		/// </summary>
-		public M2Manger _M2Manager = new M2Manger();
 
 		/// <summary>
 		/// Array of MCNK chunks which give the ADT vertex information for this ADT
@@ -49,6 +45,7 @@ namespace MPQNav.ADT {
 		#endregion
 
 		private readonly IList<WMO> _wmos = new List<WMO>();
+		private readonly IList<M2> _m2s = new List<M2>();
 
 		public IList<WMO> WMOs {
 			get { return _wmos; }
@@ -57,6 +54,10 @@ namespace MPQNav.ADT {
 		public TriangleList TriangeListH2O { get; set; }
 
 		public TriangleList TriangeList { get; set; }
+
+		public IList<M2> M2s {
+			get { return _m2s; }
+		}
 
 		public TriangleList GenerateVertexAndIndicesH2O() {
 			var vertices = new List<VertexPositionNormalColored>();
@@ -232,7 +233,7 @@ namespace MPQNav.ADT {
 		private static WMO LoadWMO(string fileName) {
 			var path = MpqNavSettings.MpqPath + fileName;
 			if(!File.Exists(path)) {
-				throw new Exception(string.Format("File does not exist: {0}", path));
+				throw new Exception(String.Format("File does not exist: {0}", path));
 			}
 
 			MOHD mohd;
@@ -245,14 +246,16 @@ namespace MPQNav.ADT {
 			currentWMO.AABB = new AABB(mohd.BoundingBox1, mohd.BoundingBox2);
 			currentWMO.TotalGroups = (int)mohd.GroupsCount;
 			for(int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++) {
-				currentWMO.WmoSubList.Add(LoadWMOSub(string.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup), wmoGroup));
+				currentWMO.WmoSubList.Add(LoadWMOSub(String.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup), wmoGroup));
 			}
 			return currentWMO;
 		}
 
 		public void LoadM2() {
-			foreach(var mmdf in _MDDFList) {
-				_M2Manager.AddM2(mmdf);
+			foreach(MDDF mmdf in _MDDFList) {
+				var m2 = LoadM2(mmdf.FilePath);
+				m2.Transform(mmdf.Position, mmdf.Rotation, mmdf.Scale);
+				_m2s.Add(m2);
 			}
 		}
 
@@ -265,7 +268,7 @@ namespace MPQNav.ADT {
 		public static ITriangleList LoadWMOSub(string fileName, int wmoGroup) {
 			var path = MpqNavSettings.MpqPath + fileName;
 			if(!File.Exists(path)) {
-				throw new Exception(string.Format("File does not exist: {0}", path));
+				throw new Exception(String.Format("File does not exist: {0}", path));
 			}
 
 			using(var reader = new BinaryReader(File.OpenRead(path))) {
@@ -281,6 +284,72 @@ namespace MPQNav.ADT {
 					Vertices = vertices,
 				};
 			}
+		}
+
+		public static M2 LoadM2(string fileName) {
+			string path = MpqNavSettings.MpqPath + fileName;
+			if(path.Substring(path.Length - 4) == ".mdx") {
+				path = path.Substring(0, path.Length - 4) + ".m2";
+			}
+			if(!File.Exists(path)) {
+				throw new Exception(String.Format("File does not exist: {0}", path));
+			}
+
+			using(var br = new BinaryReader(File.OpenRead(path))) {
+				br.BaseStream.Position = 60; //wotlk
+				uint numberOfVerts = br.ReadUInt32();
+				uint vertsOffset = br.ReadUInt32();
+				uint numberOfViews = br.ReadUInt32();
+				//UInt32 viewsOffset = br.ReadUInt32(); //now in skins
+
+				br.BaseStream.Position = 216; //wotlk
+				uint nBoundingTriangles = br.ReadUInt32();
+				uint ofsBoundingTriangles = br.ReadUInt32();
+				uint nBoundingVertices = br.ReadUInt32();
+				uint ofsBoundingVertices = br.ReadUInt32();
+
+				br.BaseStream.Position = ofsBoundingVertices;
+
+				List<Vector3> vectors = ReadVectors(br, nBoundingVertices);
+				List<VertexPositionNormalColored> tempVertices =
+					vectors.Select(v1 => new VertexPositionNormalColored(v1, Color.Red, Vector3.Up)).ToList();
+
+				br.BaseStream.Position = ofsBoundingTriangles;
+
+				List<int> tempIndices = ReadTriangleList(br, nBoundingTriangles);
+
+				return new M2 {
+					TriangleList = new TriangleList {
+						Indices = tempIndices,
+						Vertices = tempVertices,
+					},
+				};
+			}
+		}
+
+		private static List<int> ReadTriangleList(BinaryReader br, uint nBoundingTriangles) {
+			var tempIndices = new List<int>();
+			for(int v = 0; v < nBoundingTriangles; v = v + 3) {
+				Int16 int1 = br.ReadInt16();
+				Int16 int2 = br.ReadInt16();
+				Int16 int3 = br.ReadInt16();
+
+				tempIndices.Add(int3);
+				tempIndices.Add(int2);
+				tempIndices.Add(int1);
+			}
+			return tempIndices;
+		}
+
+		private static List<Vector3> ReadVectors(BinaryReader br, uint count) {
+			var vectors = new List<Vector3>();
+			for(int v = 0; v < count; v++) {
+				float x = br.ReadSingle() * -1;
+				float z = br.ReadSingle();
+				float y = br.ReadSingle();
+				vectors.Add(new Vector3(x, y, z));
+			}
+			return vectors;
 		}
 	}
 }

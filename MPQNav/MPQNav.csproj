@@ -94,7 +94,6 @@
     <Compile Include="MPQ\ADT\TriangleListCollection.cs" />
     <Compile Include="MPQ\ADT\TriangleListExtensions.cs" />
     <Compile Include="MPQ\M2\M2.cs" />
-    <Compile Include="MPQ\M2\M2Manger.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MONRChunkParser.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MOVIChunkParser.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MOVTChunkParser.cs" />
