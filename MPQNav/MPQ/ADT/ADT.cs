@@ -268,7 +268,7 @@ namespace MPQNav.ADT {
 				throw new Exception(string.Format("File does not exist: {0}", path));
 			}
 
-			var wmoSub = new WMO.WMO_Sub(wmoGroup);
+			var wmoSub = new WMO.WMO_Sub();
 
 			using(var reader = new BinaryReader(File.OpenRead(path))) {
 				wmoSub._MOVI = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();

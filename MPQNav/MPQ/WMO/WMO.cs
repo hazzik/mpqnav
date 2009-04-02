@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MPQNav.ADT;
 using MPQNav.Collision._3D;
 using MPQNav.MPQ.WMO.Chunks;
 
@@ -10,7 +12,7 @@ namespace MPQNav.MPQ.ADT {
 	/// Class for the WMO Group File
 	/// </summary>
 	internal class WMO {
-		private readonly TriangleList _triangleList = new TriangleList();
+		private ITriangleList _triangleList = new TriangleList();
 		private readonly List<WMO_Sub> _wmoSubList = new List<WMO_Sub>();
 
 		/// <summary>
@@ -35,14 +37,13 @@ namespace MPQNav.MPQ.ADT {
 			get { return _wmoSubList; }
 		}
 
-		public TriangleList TriangleList {
+		public ITriangleList TriangleList {
 			get { return _triangleList; }
 		}
 
 		public void Transform(Vector3 position, Vector3 rotation, float rad) {
 			_OBB = new OBB();
-			TriangleList.Vertices.Clear();
-			TriangleList.Indices.Clear();
+			var list = new TriangleListCollection();
 
 			float pos_x = (position.X - 17066.666666666656f) * -1;
 			float pos_y = position.Y;
@@ -54,37 +55,41 @@ namespace MPQNav.MPQ.ADT {
 			Matrix rotateZ = Matrix.CreateRotationZ(rotation.X * -1 * rad);
 			Matrix rotateX = Matrix.CreateRotationX(rotation.Z * rad);
 
-			int offset = 0;
-
 			for(int i = 0; i < WmoSubList.Count; i++) {
-				WMO_Sub currentSub = WmoSubList[i];
-				for(int v = 0; v < currentSub._MOVT.Vertices.Count; v++) {
-					Vector3 baseVertex = currentSub._MOVT.Vertices[v] + origin;
-					Vector3 rotatedVector = Vector3.Transform(baseVertex - origin, rotateY);
-					Vector3 finalVector = rotatedVector + origin;
-
-					TriangleList.Vertices.Add(new VertexPositionNormalColored(finalVector, Color.Yellow, Vector3.Up));
-				}
-				for(int index = 0; index < currentSub._MOVI.Indices.Length; index++) {
-					TriangleList.Indices.Add(currentSub._MOVI.Indices[index] + offset);
-				}
-				offset = TriangleList.Vertices.Count;
+				list.Add(TransformAndAdd(WmoSubList[i], origin, rotateY));
 			}
 
+			_triangleList = list;
 			// Generate the OBB
 			_OBB = new OBB(AABB.center, AABB.extents, rotateY);
 		}
 
+		private static ITriangleList TransformAndAdd(WMO_Sub currentSub, Vector3 origin, Matrix rotateY) {
+			return new TriangleList {
+				Indices = currentSub.Indices,
+				Vertices = currentSub._MOVT.Vertices
+					.Select(v => Vector3.Transform(v, rotateY) + origin)
+					.Select(x => new VertexPositionNormalColored(x, Color.Yellow, Vector3.Up)).ToList()
+			};
+		}
+
 		#region Nested type: WMO_Sub
 
-		public class WMO_Sub {
-			public int _index;
+		public class WMO_Sub : ITriangleList {
 			public MONR _MONR = new MONR();
 			public MOVI _MOVI = new MOVI();
 			public MOVT _MOVT = new MOVT();
 
-			public WMO_Sub(int index) {
-				_index = index;
+			public IList<int> Indices { get { return _MOVI.Indices; } }
+
+			public IList<VertexPositionNormalColored> Vertices {
+				get {
+					var vertices = new List<VertexPositionNormalColored>();
+					for(int i = 0; i < _MONR.Normals.Length; i++) {
+						vertices.Add(new VertexPositionNormalColored(_MOVT.Vertices[i], Color.Yellow, _MONR.Normals[i]));
+					}
+					return vertices;
+				}
 			}
 		}
 
