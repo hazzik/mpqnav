@@ -100,8 +100,8 @@ namespace MPQNav.ADT {
 			var triangleListCollection = new TriangleListCollection();
 			foreach(ADT a in _ADTs) {
 				// Handle the ADTs
-				triangleListCollection.Add(a.TriangeListH2O);
 				triangleListCollection.Add(a.TriangeList);
+				triangleListCollection.Add(a.TriangeListH2O);
 				// Handle the WMOs
 				foreach(WMO w in a.WMOs) {
 					triangleListCollection.Add(w.TriangleList);
