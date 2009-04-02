@@ -68,8 +68,10 @@ namespace MPQNav.MPQ.ADT {
 			return new TriangleList {
 				Indices = list.Indices,
 				Vertices = list.Vertices
-					.Select(v => Vector3.Transform(v.Position, rotateY) + origin)
-					.Select(v => new VertexPositionNormalColored(v, Color.Yellow, Vector3.Up)).ToList()
+					.Select(v => new VertexPositionNormalColored(
+										Vector3.Transform(v.Position, rotateY) + origin,
+										Color.Yellow,
+										Vector3.TransformNormal(v.Normal, rotateY) + origin)).ToList(),
 			};
 		}
 	}
