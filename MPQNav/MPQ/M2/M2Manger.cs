@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -61,23 +62,37 @@ namespace MPQNav.MPQ.ADT {
 
 				List<Vector3> vectors = ReadVectors(br, nBoundingVertices);
 				List<VertexPositionNormalColored> tempVertices =
-					vectors.Select(v1 => new VertexPositionNormalColored(v1, Color.Pink, Vector3.Up)).ToList();
+					vectors.Select(v1 => new VertexPositionNormalColored(v1, Color.Red, Vector3.Up)).ToList();
 
 				br.BaseStream.Position = ofsBoundingTriangles;
 
-				var tempIndices = new List<int>();
-				for(int v = 0; v < nBoundingTriangles; v = v + 3) {
-					Int16 int1 = br.ReadInt16();
-					Int16 int2 = br.ReadInt16();
-					Int16 int3 = br.ReadInt16();
+				List<int> tempIndices = ReadTriangleList(br, nBoundingTriangles);
 
-					tempIndices.Add(int3);
-					tempIndices.Add(int2);
-					tempIndices.Add(int1);
-				}
+				var m2 = new M2 {
+					TriangleList = new TriangleList {
+						Indices = tempIndices,
+						Vertices = tempVertices,
+					},
+				};
 
-				_m2s.Add(transform(tempVertices, tempIndices, mddf));
+				m2.Transform(mddf.Position, mddf.Rotation, mddf.Scale);
+
+				_m2s.Add(m2);
 			}
+		}
+
+		private static List<int> ReadTriangleList(BinaryReader br, uint nBoundingTriangles) {
+			var tempIndices = new List<int>();
+			for(int v = 0; v < nBoundingTriangles; v = v + 3) {
+				Int16 int1 = br.ReadInt16();
+				Int16 int2 = br.ReadInt16();
+				Int16 int3 = br.ReadInt16();
+
+				tempIndices.Add(int3);
+				tempIndices.Add(int2);
+				tempIndices.Add(int1);
+			}
+			return tempIndices;
 		}
 
 		private static List<Vector3> ReadVectors(BinaryReader br, uint count) {
@@ -89,69 +104,6 @@ namespace MPQNav.MPQ.ADT {
 				vectors.Add(new Vector3(x, y, z));
 			}
 			return vectors;
-		}
-
-		private M2 transform(IList<VertexPositionNormalColored> vertices, IList<int> indicies, MDDF mddf) {
-			var currentM2 = new M2();
-
-			// Real world positions for a transform
-
-			currentM2.TriangleList.Vertices.Clear();
-			currentM2.TriangleList.Indices.Clear();
-
-			// First we scale
-			for(int i = 0; i < vertices.Count; i++) {
-				var vertex = vertices[i];
-				float pos_x = (mddf.Position.X - 17066.666666666656f) * -1;
-				float pos_y = mddf.Position.Y;
-				float pos_z = (mddf.Position.Z - 17066.666666666656f) * -1;
-				var origin = new Vector3(pos_x, pos_y, pos_z);
-
-				float my_x = vertex.Position.X + pos_x;
-				float my_y = vertex.Position.Y + pos_y;
-				float my_z = vertex.Position.Z + pos_z;
-				var baseVertex = new Vector3(my_x, my_y, my_z);
-
-				Matrix scaleMatrix = Matrix.CreateScale(mddf.Scale);
-
-				Vector3 scaledVector = Vector3.Transform(baseVertex - origin, scaleMatrix);
-				currentM2.TriangleList.Vertices.Add(new VertexPositionNormalColored(scaledVector, Color.Red, Vector3.Up));
-			}
-			currentM2.AABB = new AABB(currentM2.TriangleList.Vertices);
-			currentM2.OBB = new OBB(currentM2.AABB.center, currentM2.AABB.extents, Matrix.CreateRotationY(mddf.Rotation.Y - 90));
-
-			var tempVertices = new List<VertexPositionNormalColored>();
-
-			for(int i = 0; i < currentM2.TriangleList.Vertices.Count; i++) {
-				float pos_x = (mddf.Position.X - 17066.666666666656f) * -1;
-				float pos_y = mddf.Position.Y;
-				float pos_z = (mddf.Position.Z - 17066.666666666656f) * -1;
-				var origin = new Vector3(pos_x, pos_y, pos_z);
-
-				float my_x = vertices[i].Position.X + pos_x;
-				float my_y = vertices[i].Position.Y + pos_y;
-				float my_z = vertices[i].Position.Z + pos_z;
-				var baseVertex = new Vector3(my_x, my_y, my_z);
-
-				// Creation the rotations
-				float a = mddf.Rotation.X * -1 * rad;
-				float b = (mddf.Rotation.Y - 90) * rad;
-				float c = mddf.Rotation.Z * rad;
-
-				// Fancy things to rotate our model
-				Matrix rotateY = Matrix.CreateRotationY(b);
-				Matrix rotateZ = Matrix.CreateRotationZ(a);
-				Matrix rotateX = Matrix.CreateRotationX(c);
-
-				Vector3 rotatedVector = Vector3.Transform(baseVertex - origin, rotateY);
-				//rotatedVector = Vector3.Transform(rotatedVector, rotateZ);
-				//rotatedVector = Vector3.Transform(rotatedVector, rotateX);
-				Vector3 finalVector = rotatedVector + origin;
-				tempVertices.Add(new VertexPositionNormalColored(finalVector, Color.Red, Vector3.Up));
-			}
-			currentM2.TriangleList.Indices = indicies;
-			currentM2.TriangleList.Vertices = tempVertices;
-			return currentM2;
 		}
 
 		public void AddM2(MDDF mmdf) {

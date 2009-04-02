@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MPQNav.MPQ.ADT;
 
 namespace MPQNav.ADT {
@@ -22,6 +24,17 @@ namespace MPQNav.ADT {
 			return new TriangleList {
 				Indices = resultIndices.ToArray(),
 				Vertices = hash.Keys.ToArray(),
+			};
+		}
+
+		public static ITriangleList Transform(this ITriangleList list, Vector3 origin, Matrix matrix) {
+			return new TriangleList {
+				Indices = list.Indices,
+				Vertices = list.Vertices
+					.Select(v => new VertexPositionNormalColored(
+										Vector3.Transform(v.Position, matrix) + origin,
+										v.Color,
+										Vector3.TransformNormal(v.Normal, matrix))).ToList(),
 			};
 		}
 	}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Xna.Framework;
 using MPQNav.MPQ.ADT;
 using MPQNav.Util;
 
@@ -111,6 +112,13 @@ namespace MPQNav.ADT {
 			renderCached = true;
 
 			return list;
+		}
+
+		public static Vector3 CreateOrigin(Vector3 position) {
+			float pos_x = -(position.X - 17066.666666666656f);
+			float pos_y = position.Y;
+			float pos_z = -(position.Z - 17066.666666666656f);
+			return new Vector3(pos_x, pos_y, pos_z);
 		}
 	}
 

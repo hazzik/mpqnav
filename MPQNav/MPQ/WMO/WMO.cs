@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MPQNav.ADT;
 using MPQNav.Collision._3D;
-using MPQNav.MPQ.WMO.Chunks;
 
 namespace MPQNav.MPQ.ADT {
 	/// <summary>
@@ -18,7 +15,7 @@ namespace MPQNav.MPQ.ADT {
 		/// <summary>
 		/// The Orientated Bounding Box for this WMO
 		/// </summary>
-		public OBB _OBB;
+		public OBB OOB { get; set; }
 
 		/// <summary>
 		/// AABB For the WMO
@@ -41,38 +38,27 @@ namespace MPQNav.MPQ.ADT {
 			get { return _triangleList; }
 		}
 
-		public void Transform(Vector3 position, Vector3 rotation) {
-			_OBB = new OBB();
-			var list = new TriangleListCollection();
+		public void Transform(Vector3 position, Vector3 rotation, float scale) {
+			var origin = ADTManager.CreateOrigin(position);
 
-			float pos_x = (position.X - 17066.666666666656f) * -1;
-			float pos_y = position.Y;
-			float pos_z = (position.Z - 17066.666666666656f) * -1;
+			Vector3 rotation1 = rotation;
+			Matrix scaleMatrix = Matrix.CreateScale(scale);
+			Matrix rotateX = Matrix.CreateRotationX(MathHelper.ToRadians(rotation1.Z));
+			Matrix rotateY = Matrix.CreateRotationY(MathHelper.ToRadians(rotation1.Y - 90));
+			Matrix rotateZ = Matrix.CreateRotationZ(MathHelper.ToRadians(-rotation1.X));
 
-			var origin = new Vector3(pos_x, pos_y, pos_z);
+			_triangleList = GetTriangleList().Transform(origin, rotateX * rotateY * rotateZ * scaleMatrix);
 
-			Matrix rotateY = Matrix.CreateRotationY(MathHelper.ToRadians(rotation.Y - 90));
-			Matrix rotateZ = Matrix.CreateRotationZ(MathHelper.ToRadians(-rotation.X));
-			Matrix rotateX = Matrix.CreateRotationX(MathHelper.ToRadians(rotation.Z));
-
-			for(int i = 0; i < WmoSubList.Count; i++) {
-				list.Add(Transform(WmoSubList[i], origin, rotateY));
-			}
-
-			_triangleList = list;
-			// Generate the OBB
-			_OBB = new OBB(AABB.center, AABB.extents, rotateY);
+			OOB = new OBB(AABB.center, AABB.extents, rotateY);
 		}
 
-		private static ITriangleList Transform(ITriangleList list, Vector3 origin, Matrix rotateY) {
-			return new TriangleList {
-				Indices = list.Indices,
-				Vertices = list.Vertices
-					.Select(v => new VertexPositionNormalColored(
-										Vector3.Transform(v.Position, rotateY) + origin,
-										Color.Yellow,
-										Vector3.TransformNormal(v.Normal, rotateY) + origin)).ToList(),
-			};
+		private ITriangleList GetTriangleList() {
+			var list = new TriangleListCollection();
+
+			for(int i = 0; i < WmoSubList.Count; i++) {
+				list.Add(WmoSubList[i]);
+			}
+			return list;
 		}
 	}
 }

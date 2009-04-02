@@ -221,7 +221,7 @@ namespace MPQNav.ADT {
 		public void LoadWMO() {
 			foreach(MODF modf in _MODFList) {
 				var wmo = LoadWMO(modf.FileName);
-				wmo.Transform(modf.Position, modf.Rotation);
+				wmo.Transform(modf.Position, modf.Rotation, 1.0f);
 				_wmos.Add(wmo);
 			}
 		}
