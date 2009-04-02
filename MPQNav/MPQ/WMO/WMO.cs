@@ -18,13 +18,6 @@ namespace MPQNav.MPQ.ADT {
 		/// </summary>
 		public OBB _OBB;
 
-		public WMO() {
-		}
-
-		public WMO(String name) {
-			Name = name;
-		}
-
 		/// <summary>
 		/// AABB For the WMO
 		/// </summary>
@@ -34,11 +27,6 @@ namespace MPQNav.MPQ.ADT {
 		/// Total number of groups for the WMO
 		/// </summary>
 		public int TotalGroups { get; set; }
-
-		/// <summary>
-		/// Name of the WMO Group file
-		/// </summary>
-		public string Name { get; set; }
 
 		/// <summary>
 		/// List containg all the WMO Sub-Chunks for this WMO Group File

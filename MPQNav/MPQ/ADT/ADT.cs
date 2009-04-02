@@ -220,37 +220,38 @@ namespace MPQNav.ADT {
 
 		public void LoadWMO() {
 			foreach(MODF modf in _MODFList) {
-				AddWMO(modf);
+				var wmo = LoadWMO(modf.FileName);
+				wmo.Transform(modf.Position, modf.Rotation, MathHelper.ToRadians(1));
+				_wmos.Add(wmo);
 			}
 		}
 
-		/// <summary>
-		/// Adds a WMO to the manager
-		/// </summary>
-		/// <param name="modf">MODF (placement informatio for this WMO)</param>
-		public void AddWMO(MODF modf) {
-			if(!File.Exists(MpqNavSettings.MpqPath + modf.FileName)) {
-				throw new Exception("File does not exist: " + MpqNavSettings.MpqPath + modf.FileName);
+		/// <summary> Loads WMO from file </summary>
+		/// <param name="fileName">Full name of file of the WMO</param>
+		/// <returns>Loaded WMO</returns>
+		private static WMO LoadWMO(string fileName) {
+			var path = MpqNavSettings.MpqPath + fileName;
+			if(!File.Exists(path)) {
+				throw new Exception(string.Format("File does not exist: {0}", path));
 			}
 
-			var br = new BinaryReader(File.OpenRead(MpqNavSettings.MpqPath + modf.FileName));
-			int version = new MVERChunkParser(br, br.BaseStream.Position).Parse();
-			MOHD mohd = new MOHDChunkParser(br, br.BaseStream.Position).Parse();
+			MOHD mohd;
+			using(var br = new BinaryReader(File.OpenRead(path))) {
+				int version = new MVERChunkParser(br, br.BaseStream.Position).Parse();
+				mohd = new MOHDChunkParser(br, br.BaseStream.Position).Parse();
+			}
 
 			var currentWMO = new WMO();
-			currentWMO.Name = modf.FileName;
 			currentWMO.AABB = new AABB(mohd.BoundingBox1, mohd.BoundingBox2);
 			currentWMO.TotalGroups = (int)mohd.GroupsCount;
 			for(int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++) {
-				string currentFileName = String.Format("{0}_{1:D3}.wmo", currentWMO.Name.Substring(0, currentWMO.Name.Length - 4), wmoGroup);
-				currentWMO.WmoSubList.Add(ProcessWMOSub(currentFileName, wmoGroup));
+				currentWMO.WmoSubList.Add(LoadWMOSub(string.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup), wmoGroup));
 			}
-			currentWMO.Transform(modf.Position, modf.Rotation, MathHelper.ToRadians(1));
-			WMOs.Add(currentWMO);
+			return currentWMO;
 		}
 
 		public void LoadM2() {
-			foreach(MDDF mmdf in _MDDFList) {
+			foreach(var mmdf in _MDDFList) {
 				_M2Manager.AddM2(mmdf);
 			}
 		}
@@ -261,21 +262,21 @@ namespace MPQNav.ADT {
 		/// <param name="wmoGroup">Current index in the WMO Group</param>
 		/// <param name="fileName">Full Filename of the WMO_Sub</param>
 		/// <returns></returns>
-		public static WMO.WMO_Sub ProcessWMOSub(string fileName, int wmoGroup) {
-			string path = MpqNavSettings.MpqPath + fileName;
+		public static WMO.WMO_Sub LoadWMOSub(string fileName, int wmoGroup) {
+			var path = MpqNavSettings.MpqPath + fileName;
 			if(!File.Exists(path)) {
-				throw new Exception("File does not exist: " + path);
+				throw new Exception(string.Format("File does not exist: {0}", path));
 			}
 
-			var currentWMOSub = new WMO.WMO_Sub(wmoGroup);
+			var wmoSub = new WMO.WMO_Sub(wmoGroup);
 
 			using(var reader = new BinaryReader(File.OpenRead(path))) {
-				currentWMOSub._MOVI = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
-				currentWMOSub._MOVT = new MOVTChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition).Parse();
-				currentWMOSub._MONR = new MONRChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MONR").StartPosition).Parse();
+				wmoSub._MOVI = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
+				wmoSub._MOVT = new MOVTChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition).Parse();
+				wmoSub._MONR = new MONRChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MONR").StartPosition).Parse();
 			}
 
-			return currentWMOSub;
+			return wmoSub;
 		}
 	}
 }
