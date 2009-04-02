@@ -64,7 +64,7 @@ namespace MPQNav.ADT {
 
 			ADT currentADT;
 			using(var reader = new BinaryReader(File.OpenRead(file))) {
-				currentADT = new ADTChunkFileParser(Path.GetFileName(file), reader).Parse();
+				currentADT = new ADTChunkFileParser(reader).Parse();
 			}
 
 			currentADT.LoadWMO();

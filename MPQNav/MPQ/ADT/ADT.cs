@@ -16,17 +16,6 @@ namespace MPQNav.ADT {
 		#region Variables
 
 		/// <summary>
-		/// The continent of the ADT
-		/// </summary>
-		private ContinentType _continent;
-
-		/// <summary>
-		/// Filename of the ADT
-		/// </summary>
-		/// <example>Azeroth_32_32.adt</example>
-		public String _FileName;
-
-		/// <summary>
 		/// The manager for all M2s used by this ADT
 		/// </summary>
 		public M2Manger _M2Manager = new M2Manger();
@@ -56,40 +45,6 @@ namespace MPQNav.ADT {
 		/// </summary>
 		/// <example></example>
 		public Int32 _Version;
-
-		/// <summary>
-		/// The X offset of the map in the 64 x 64 grid
-		/// </summary>
-		private int _x;
-
-		/// <summary>
-		/// The Y offset of the map in the 64 x 64 grid
-		/// </summary>
-		private int _y;
-
-		#endregion
-
-		#region Rendering Variables
-
-		private IList<int> _indices; // = new List<int>();
-		private IList<VertexPositionNormalColored> _vertices; // = new List<VertexPositionNormalColored>();
-
-		#endregion
-
-		#region Constructors
-
-		/// <summary>
-		/// Creates a new instance of the ADT class
-		/// </summary>
-		/// <param name="fName">Filename of just the ADT</param>
-		/// <example>ADT myADT = new ADT("Azeroth_32_32.adt");</example>
-		public ADT(String fName) {
-			String[] fName_split = fName.Split(Convert.ToChar("_"));
-			_continent = (ContinentType)Enum.Parse(typeof(ContinentType), fName_split[0], true);
-			_FileName = fName;
-			_x = Int32.Parse(fName_split[1]);
-			_y = Int32.Parse(fName_split[2].Substring(0, (fName_split[2].Length - 4)));
-		}
 
 		#endregion
 
