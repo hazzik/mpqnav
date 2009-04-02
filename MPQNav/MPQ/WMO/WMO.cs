@@ -41,7 +41,7 @@ namespace MPQNav.MPQ.ADT {
 			get { return _triangleList; }
 		}
 
-		public void Transform(Vector3 position, Vector3 rotation, float rad) {
+		public void Transform(Vector3 position, Vector3 rotation) {
 			_OBB = new OBB();
 			var list = new TriangleListCollection();
 
@@ -51,9 +51,9 @@ namespace MPQNav.MPQ.ADT {
 
 			var origin = new Vector3(pos_x, pos_y, pos_z);
 
-			Matrix rotateY = Matrix.CreateRotationY((rotation.Y - 90) * rad);
-			Matrix rotateZ = Matrix.CreateRotationZ(rotation.X * -1 * rad);
-			Matrix rotateX = Matrix.CreateRotationX(rotation.Z * rad);
+			Matrix rotateY = Matrix.CreateRotationY(MathHelper.ToRadians(rotation.Y - 90));
+			Matrix rotateZ = Matrix.CreateRotationZ(MathHelper.ToRadians(-rotation.X));
+			Matrix rotateX = Matrix.CreateRotationX(MathHelper.ToRadians(rotation.Z));
 
 			for(int i = 0; i < WmoSubList.Count; i++) {
 				list.Add(Transform(WmoSubList[i], origin, rotateY));
