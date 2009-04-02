@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Specialized;
 using System.Configuration;
-using MPQNav.ADT;
 
 namespace MPQNav {
 	public static class MpqNavSettings {
@@ -11,11 +10,8 @@ namespace MPQNav {
 			get { return _settings["mpqPath"]; }
 		}
 
-		public static ContinentType DefaultContinent {
-			get {
-				string continent = _settings["defaultContinent"];
-				return (ContinentType)Enum.Parse(typeof(ContinentType), continent, true);
-			}
+		public static string DefaultContinent {
+			get { return Maps.All[int.Parse(_settings["defaultContinent"])]; }
 		}
 
 		public static int DefaultMapX {

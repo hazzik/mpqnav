@@ -36,7 +36,7 @@ namespace MPQNav.Util {
 
 			currentADT._MDDFList = new MDDFChunkParser(Reader, mhdr.OffsDoodsDef + mhdr.Base, mmdxs).Parse();
 
-			var mh2os = mhdr.OffsMH2O != 0 ? new MH2OChunkParser(Reader, mhdr.OffsMH2O + mhdr.Base).Parse() : new MH2O[0,0];
+			var mh2os = mhdr.OffsMH2O != 0 ? new MH2OChunkParser(Reader, mhdr.OffsMH2O + mhdr.Base).Parse() : null;
 
 			currentADT._MH2OArray = mh2os;
 

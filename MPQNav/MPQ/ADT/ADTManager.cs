@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
 using MPQNav.MPQ.ADT;
 using MPQNav.Util;
 
@@ -22,12 +21,7 @@ namespace MPQNav.ADT {
 		/// <summary>
 		/// Continent of the ADT Manager
 		/// </summary>
-		private readonly ContinentType _continent;
-
-		/// <summary>
-		/// Boolean result stating if this manager is loaded or not.
-		/// </summary>
-		private readonly Boolean loaded;
+		private readonly string _continent;
 
 		private ITriangleList _triangleList;
 
@@ -45,9 +39,8 @@ namespace MPQNav.ADT {
 		/// </summary>
 		/// <param name="c">Continent of the ADT</param>
 		/// <example>ADTManager myADTManager = new ADTManager(continent.Azeroth, "C:\\mpq\\");</example>
-		public ADTManager(ContinentType c) {
+		public ADTManager(string c) {
 			_continent = c;
-			loaded = true;
 		}
 
 		#endregion
@@ -67,18 +60,7 @@ namespace MPQNav.ADT {
 		/// <param name="x">X coordiate of the ADT in the 64 x 64 Grid</param>
 		/// <param name="y">Y coordinate of the ADT in the 64 x 64 grid</param>
 		public void loadADT(int x, int y) {
-			if(loaded == false) {
-				MessageBox.Show("ADT Manager not loaded, aborting loading ADT file.", "ADT Manager not loaded.");
-				return;
-			}
-			string dir = MpqNavSettings.MpqPath + AdtPath + _continent;
-			if(!Directory.Exists(dir)) {
-				throw new Exception("Continent data missing");
-			}
-			string file = String.Format("{0}{1}{2}\\{2}_{3}_{4}.adt", MpqNavSettings.MpqPath, AdtPath, _continent, x, y);
-			if(!File.Exists(file)) {
-				throw new Exception(String.Format("ADT Doesn't exist: {0}", file));
-			}
+			string file = GetAdtFileName(x, y);
 
 			ADT currentADT;
 			using(var reader = new BinaryReader(File.OpenRead(file))) {
@@ -93,6 +75,18 @@ namespace MPQNav.ADT {
 			currentADT.TriangeList = currentADT.GenerateVertexAndIndices();
 			currentADT.TriangeListH2O = currentADT.GenerateVertexAndIndicesH2O();
 			_ADTs.Add(currentADT);
+		}
+
+		private string GetAdtFileName(int x, int y) {
+			string dir = MpqNavSettings.MpqPath + AdtPath + _continent;
+			if(!Directory.Exists(dir)) {
+				throw new Exception("Continent data missing");
+			}
+			string file = String.Format("{0}{1}{2}\\{2}_{3}_{4}.adt", MpqNavSettings.MpqPath, AdtPath, _continent, x, y);
+			if(!File.Exists(file)) {
+				throw new Exception(String.Format("ADT Doesn't exist: {0}", file));
+			}
+			return file;
 		}
 
 		public ITriangleList BuildTriangleList() {
@@ -112,7 +106,7 @@ namespace MPQNav.ADT {
 				}
 			}
 
-			var list = triangleListCollection.Optimize();
+			ITriangleList list = triangleListCollection.Optimize();
 
 			renderCached = true;
 

@@ -188,6 +188,8 @@ namespace MPQNav {
 		/// </summary>
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw(GameTime gameTime) {
+			graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
+			graphics.GraphicsDevice.RenderState.DepthBufferWriteEnable = true;
 			graphics.GraphicsDevice.Clear(Color.Black);
 			graphics.GraphicsDevice.VertexDeclaration = vertexDeclaration;
 			// Update our camera

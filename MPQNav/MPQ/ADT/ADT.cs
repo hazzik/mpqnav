@@ -106,57 +106,59 @@ namespace MPQNav.ADT {
 		public TriangleList GenerateVertexAndIndicesH2O() {
 			var vertices = new List<VertexPositionNormalColored>();
 			var indices = new List<int>();
-			float[,] MH2OHeightMap = null;
-			bool[,] MH2ORenderMap = null;
-			float offset_x = (533.33333f / 16) / 8;
-			float offset_z = (533.33333f / 16) / 8;
+			if(_MH2OArray != null) {
+				float[,] MH2OHeightMap = null;
+				bool[,] MH2ORenderMap = null;
+				float offset_x = (533.33333f / 16) / 8;
+				float offset_z = (533.33333f / 16) / 8;
 
-			int VertexCounter = 0;
-			int _TempVertexCounter = 0;
-			for(int My = 0; My < 16; My++) {
-				for(int Mx = 0; Mx < 16; Mx++) {
-					_TempVertexCounter = VertexCounter;
-					float x = _MCNKArray[Mx, My].x;
-					float z = _MCNKArray[Mx, My].z;
-					MH2O _MH2O = _MH2OArray[Mx, My];
+				int VertexCounter = 0;
+				int _TempVertexCounter = 0;
+				for(int My = 0; My < 16; My++) {
+					for(int Mx = 0; Mx < 16; Mx++) {
+						_TempVertexCounter = VertexCounter;
+						float x = _MCNKArray[Mx, My].x;
+						float z = _MCNKArray[Mx, My].z;
+						MH2O _MH2O = _MH2OArray[Mx, My];
 
-					float y_pos = _MH2O.heightLevel1;
-					if(_MH2O.used) {
-						Color clr = GetColor(_MH2O.type);
-						MH2OHeightMap = _MH2O.GetMapHeightsMatrix();
-						MH2ORenderMap = _MH2O.GetRenderBitMapMatrix();
-						for(int r = 0; r < 9; r++) {
-							for(int c = 0; c < 9; c++) {
-								float x_pos = x - (c * offset_x);
-								float z_pos = z - (r * offset_z);
-								if(((r >= _MH2O.yOffset) && ((r - _MH2O.yOffset) <= _MH2O.height)) &&
-								   ((c >= _MH2O.xOffset) && ((c - _MH2O.xOffset) <= _MH2O.width))) {
-									y_pos = MH2OHeightMap[r - _MH2O.yOffset, c - _MH2O.xOffset]; // +_MH2O.heightLevel1;
-									var position = new Vector3(x_pos, y_pos, z_pos);
+						float y_pos = _MH2O.heightLevel1;
+						if(_MH2O.used) {
+							Color clr = GetColor(_MH2O.type);
+							MH2OHeightMap = _MH2O.GetMapHeightsMatrix();
+							MH2ORenderMap = _MH2O.GetRenderBitMapMatrix();
+							for(int r = 0; r < 9; r++) {
+								for(int c = 0; c < 9; c++) {
+									float x_pos = x - (c * offset_x);
+									float z_pos = z - (r * offset_z);
+									if(((r >= _MH2O.yOffset) && ((r - _MH2O.yOffset) <= _MH2O.height)) &&
+									   ((c >= _MH2O.xOffset) && ((c - _MH2O.xOffset) <= _MH2O.width))) {
+										y_pos = MH2OHeightMap[r - _MH2O.yOffset, c - _MH2O.xOffset]; // +_MH2O.heightLevel1;
+										var position = new Vector3(x_pos, y_pos, z_pos);
 
-									vertices.Add(new VertexPositionNormalColored(position, clr, Vector3.Up));
-									_TempVertexCounter++;
+										vertices.Add(new VertexPositionNormalColored(position, clr, Vector3.Up));
+										_TempVertexCounter++;
+									}
 								}
 							}
-						}
 
-						for(int r = _MH2O.yOffset; r < _MH2O.yOffset + _MH2O.height; r++) {
-							for(int c = _MH2O.xOffset; c < _MH2O.xOffset + _MH2O.width; c++) {
-								int row = r - _MH2O.yOffset;
-								int col = c - _MH2O.xOffset;
+							for(int r = _MH2O.yOffset; r < _MH2O.yOffset + _MH2O.height; r++) {
+								for(int c = _MH2O.xOffset; c < _MH2O.xOffset + _MH2O.width; c++) {
+									int row = r - _MH2O.yOffset;
+									int col = c - _MH2O.xOffset;
 
-								//if ((MH2ORenderMap[row, c]) || ((_MH2O.height == 8) && (_MH2O.width == 8)))
-								{
-									indices.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col));
-									indices.Add(VertexCounter + (row * (_MH2O.width + 1) + col));
-									indices.Add(VertexCounter + (row * (_MH2O.width + 1) + col + 1));
-									indices.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col + 1));
-									indices.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col));
-									indices.Add(VertexCounter + (row * (_MH2O.width + 1) + col + 1));
+									//if ((MH2ORenderMap[row, c]) || ((_MH2O.height == 8) && (_MH2O.width == 8)))
+									{
+										indices.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col));
+										indices.Add(VertexCounter + (row * (_MH2O.width + 1) + col));
+										indices.Add(VertexCounter + (row * (_MH2O.width + 1) + col + 1));
+										indices.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col + 1));
+										indices.Add(VertexCounter + ((row + 1) * (_MH2O.width + 1) + col));
+										indices.Add(VertexCounter + (row * (_MH2O.width + 1) + col + 1));
+									}
 								}
 							}
+							VertexCounter = _TempVertexCounter;
 						}
-						VertexCounter = _TempVertexCounter;
 					}
 				}
 			}

@@ -79,6 +79,7 @@
     <Compile Include="Console\MpqConsole.cs" />
     <Compile Include="Console\XnaConsole.cs" />
     <Compile Include="IParser.cs" />
+    <Compile Include="Maps.cs" />
     <Compile Include="MpqNavSettings.cs" />
     <Compile Include="MPQ\ADT\Chunks\MDDF.cs" />
     <Compile Include="MPQ\ADT\Chunks\MCIN.cs" />
