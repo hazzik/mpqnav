@@ -21,14 +21,8 @@ namespace MPQNav.MPQ.ADT.Chunks {
 		/// <summary> Position of the M2 </summary>
 		public Vector3 Position { get; set; }
 
-		/// <summary> Rotation around the Z axis </summary>
-		public float OrientationA { get; set; }
-
-		/// <summary> Rotation around the Y axis </summary>
-		public float OrientationB { get; set; }
-
-		/// <summary> Rotation around the X axis </summary>
-		public float OrientationC { get; set; }
+		/// <summary> Rotation of the M2 </summary>
+		public Vector3 Rotation;
 
 		/// <summary> Scale factor of the M2 </summary>
 		public float Scale { get; set; }

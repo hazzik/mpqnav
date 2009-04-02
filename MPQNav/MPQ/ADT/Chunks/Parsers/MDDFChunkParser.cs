@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
+using MPQNav.Collision._2D;
 using MPQNav.Util;
 
 namespace MPQNav.MPQ.ADT.Chunks.Parsers {
@@ -25,9 +26,7 @@ namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 					FilePath = _mmdxs[(int)Reader.ReadUInt32()],
 					UniqId = Reader.ReadUInt32(),
 					Position = new Vector3(Reader.ReadSingle(), Reader.ReadSingle(), Reader.ReadSingle()),
-					OrientationA = Reader.ReadSingle(),
-					OrientationB = Reader.ReadSingle(),
-					OrientationC = Reader.ReadSingle(),
+					Rotation = new Vector3(Reader.ReadSingle(), Reader.ReadSingle(), Reader.ReadSingle()),
 					Scale = (Reader.ReadUInt32() / 1024f)
 				};
 				bytesRead += 36; // 36 total bytes

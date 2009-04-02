@@ -118,7 +118,7 @@ namespace MPQNav.MPQ.ADT {
 				currentM2.TriangleList.Vertices.Add(new VertexPositionNormalColored(scaledVector, Color.Red, Vector3.Up));
 			}
 			currentM2.AABB = new AABB(currentM2.TriangleList.Vertices);
-			currentM2.OBB = new OBB(currentM2.AABB.center, currentM2.AABB.extents, Matrix.CreateRotationY(mddf.OrientationB - 90));
+			currentM2.OBB = new OBB(currentM2.AABB.center, currentM2.AABB.extents, Matrix.CreateRotationY(mddf.Rotation.Y - 90));
 
 			var tempVertices = new List<VertexPositionNormalColored>();
 
@@ -134,9 +134,9 @@ namespace MPQNav.MPQ.ADT {
 				var baseVertex = new Vector3(my_x, my_y, my_z);
 
 				// Creation the rotations
-				float a = mddf.OrientationA * -1 * rad;
-				float b = (mddf.OrientationB - 90) * rad;
-				float c = mddf.OrientationC * rad;
+				float a = mddf.Rotation.X * -1 * rad;
+				float b = (mddf.Rotation.Y - 90) * rad;
+				float c = mddf.Rotation.Z * rad;
 
 				// Fancy things to rotate our model
 				Matrix rotateY = Matrix.CreateRotationY(b);
