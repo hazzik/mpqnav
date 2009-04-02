@@ -20,32 +20,20 @@ namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 		/// Parse all MH2O element from file stream
 		/// </summary>
 		public override MH2O[,] Parse() {
-			return processMH2Os();
-		}
-
-		/// <summary>
-		/// Procceses each MCNK in the ADT passed to it.
-		/// </summary>
-		/// <returns>Return All MH2O chunks</returns>
-		private MH2O[,] processMH2Os() {
-			var _MH2OMatrix = new MH2O[16,16];
-			long ofsMH2O = AbsoluteStart;
-			var _MH20Header = new MH20Header[256];
-			if(ofsMH2O != 0) {
-				//ofsMH2O += 8;
-				Reader.BaseStream.Position = ofsMH2O;
-				for(int i = 0; i < 256; i++) {
-					_MH20Header[i].ofsData1 = Reader.ReadUInt32();
-					_MH20Header[i].used = Reader.ReadUInt32();
-					_MH20Header[i].ofsData2 = Reader.ReadUInt32();
-				}
+			Reader.BaseStream.Position = AbsoluteStart;
+			var result = new MH2O[16,16];
+			var mh2oHeader = new MH2OHeader[256];
+			for(int i = 0; i < 256; i++) {
+				mh2oHeader[i].ofsData1 = Reader.ReadUInt32();
+				mh2oHeader[i].used = Reader.ReadUInt32();
+				mh2oHeader[i].ofsData2 = Reader.ReadUInt32();
 			}
 			for(int y = 0; y < 16; y++) {
 				for(int x = 0; x < 16; x++) {
-					_MH2OMatrix[x, y] = processMH20(_MH20Header[y * 16 + x], ofsMH2O);
+					result[x, y] = processMH20(mh2oHeader[y * 16 + x], AbsoluteStart);
 				}
 			}
-			return _MH2OMatrix;
+			return result;
 		}
 
 		/// <summary>
@@ -54,18 +42,16 @@ namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 		/// <param name="Header">MH20 Header Chunk</param>
 		/// <param name="ofsMH20">MH20 OFFset</param>
 		/// <returns>MH2O Filled with information</returns>
-		private MH2O processMH20(MH20Header Header, long ofsMH20) {
-			var currentMH2O = new MH2O();
-			//SearchChunk(br, "MH2O");
+		private MH2O processMH20(MH2OHeader Header, long ofsMH20) {
 			if(Header.used == 0) {
-				currentMH2O.used = false;
-				return currentMH2O;
+				return new MH2O { used = false };
 			}
 
-
 			Reader.BaseStream.Position = ofsMH20 + Header.ofsData1 + 2;
+
+			var currentMH2O = new MH2O();
 			currentMH2O.used = true;
-			currentMH2O.type = (MH2O.FluidType)Reader.ReadUInt16();
+			currentMH2O.type = ((MH2O.FluidType)Reader.ReadUInt16());
 			currentMH2O.heightLevel1 = Reader.ReadSingle();
 			currentMH2O.heightLevel2 = Reader.ReadSingle();
 			currentMH2O.xOffset = Reader.ReadByte();
@@ -76,48 +62,48 @@ namespace MPQNav.MPQ.ADT.Chunks.Parsers {
 			UInt32 ofsData2a = Reader.ReadUInt32();
 			UInt32 ofsData2b = Reader.ReadUInt32();
 
-			int HeightMapLen = (currentMH2O.width + 1) * (currentMH2O.height + 1);
 
-			currentMH2O.heights = new float[HeightMapLen];
+			currentMH2O.RenderBitMap = ReadRenderBitMap(currentMH2O, ofsData2a, ofsMH20 + ofsData2a, ofsData2b - ofsData2a);
 
-
-			currentMH2O.RenderBitMap = new byte[currentMH2O.height];
-			if(ofsData2a != 0) {
-				Reader.BaseStream.Position = ofsMH20 + ofsData2a;
-				for(int i = 0; i < currentMH2O.height; i++) {
-					if(i < (ofsData2b - ofsData2a)) {
-						currentMH2O.RenderBitMap[i] = Reader.ReadByte();
-					}
-					else {
-						currentMH2O.RenderBitMap[i] = 0x00;
-					}
-				}
-			}
-			else {
-				currentMH2O.RenderBitMap = new byte[currentMH2O.height];
-			}
-
-			if(ofsData2b != 0) {
-				Reader.BaseStream.Position = ofsMH20 + ofsData2b;
-				for(int i = 0; i < HeightMapLen; i++) {
-					currentMH2O.heights[i] = Reader.ReadSingle();
-					if(currentMH2O.heights[i] == 0) {
-						currentMH2O.heights[i] = currentMH2O.heightLevel1;
-					}
-				}
-			}
-			else {
-				for(int i = 0; i < HeightMapLen; i++) {
-					currentMH2O.heights[i] = currentMH2O.heightLevel1;
-				}
-			}
+			currentMH2O.heights = ReadHeights(currentMH2O, ofsData2b, (currentMH2O.width + 1) * (currentMH2O.height + 1), ofsMH20 + ofsData2b);
 
 			return currentMH2O;
 		}
 
-		#region Nested type: MH20Header
+		private byte[] ReadRenderBitMap(MH2O currentMH2O, uint ofsData2a, long offset, uint size) {
+			var map = new byte[currentMH2O.height];
+			if(ofsData2a != 0) {
+				Reader.BaseStream.Position = offset;
+				for(int i = 0; i < currentMH2O.height; i++) {
+					map[i] = i < size ? Reader.ReadByte() : (byte)0x00;
+				}
+			}
+			return map;
+		}
 
-		private struct MH20Header {
+		private float[] ReadHeights(MH2O currentMH2O, uint ofsData2b, int HeightMapLen, long offset) {
+			var heights = new float[HeightMapLen];
+			if(ofsData2b != 0) {
+				Reader.BaseStream.Position = offset;
+				for(int i = 0; i < HeightMapLen; i++) {
+					var height = Reader.ReadSingle();
+					if(height == 0) {
+						height = currentMH2O.heightLevel1;
+					}
+					heights[i] = height;
+				}
+			}
+			else {
+				for(int i = 0; i < HeightMapLen; i++) {
+					heights[i] = currentMH2O.heightLevel1;
+				}
+			}
+			return heights;
+		}
+
+		#region Nested type: MH2OHeader
+
+		private struct MH2OHeader {
 			public UInt32 ofsData1;
 			public UInt32 ofsData2;
 			public UInt32 used;
