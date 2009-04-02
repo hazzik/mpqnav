@@ -4,12 +4,12 @@ using System.IO;
 using MPQNav.Util;
 
 namespace MPQNav.MPQ.WMO.Chunks.Parsers {
-	internal class MOVIChunkParser : ChunkParser<MOVI> {
+	internal class MOVIChunkParser : ChunkParser<int[]> {
 		public MOVIChunkParser(BinaryReader reader, long absoluteStart)
 			: base("MOVI", reader, absoluteStart) {
 		}
 
-		public override MOVI Parse() {
+		public override int[] Parse() {
 			Reader.BaseStream.Position = AbsoluteStart;
 
 			var result = new List<int>();
@@ -22,7 +22,7 @@ namespace MPQNav.MPQ.WMO.Chunks.Parsers {
 				result.Add(one);
 			}
 
-			return new MOVI { Indices = result.ToArray() };
+			return result.ToArray();
 		}
 	}
 }

@@ -271,9 +271,9 @@ namespace MPQNav.ADT {
 			var wmoSub = new WMO.WMO_Sub();
 
 			using(var reader = new BinaryReader(File.OpenRead(path))) {
-				wmoSub._MOVI = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
-				wmoSub._MOVT = new MOVTChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition).Parse();
-				wmoSub._MONR = new MONRChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MONR").StartPosition).Parse();
+				wmoSub._MOVI.Indices = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
+				wmoSub._MOVT.Vertices = new MOVTChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition).Parse();
+				wmoSub._MONR.Normals = new MONRChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MONR").StartPosition).Parse();
 			}
 
 			return wmoSub;

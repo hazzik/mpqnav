@@ -5,12 +5,12 @@ using Microsoft.Xna.Framework;
 using MPQNav.Util;
 
 namespace MPQNav.MPQ.WMO.Chunks.Parsers {
-	internal class MONRChunkParser : ChunkParser<MONR> {
+	internal class MONRChunkParser : ChunkParser<IList<Vector3>> {
 		public MONRChunkParser(BinaryReader reader, long absoluteStart)
 			: base("MONR", reader, absoluteStart) {
 		}
 
-		public override MONR Parse() {
+		public override IList<Vector3> Parse() {
 			Reader.BaseStream.Position = AbsoluteStart;
 
 			var result = new List<Vector3>();
@@ -21,7 +21,7 @@ namespace MPQNav.MPQ.WMO.Chunks.Parsers {
 				result.Add(new Vector3(vect_x, vect_y, vect_z));
 			}
 
-			return new MONR { Normals = result.ToArray() };
+			return result;
 		}
 	}
 }
