@@ -2,11 +2,6 @@ using System;
 using System.Collections.Generic;
 
 namespace MPQNav.MPQ.ADT {
-	public interface ITriangleList {
-		IList<int> Indices { get; }
-		IList<VertexPositionNormalColored> Vertices { get; }
-	}
-
 	public class TriangleList : ITriangleList {
 		private IList<int> _indices = new List<int>();
 		private IList<VertexPositionNormalColored> _vertices = new List<VertexPositionNormalColored>();
