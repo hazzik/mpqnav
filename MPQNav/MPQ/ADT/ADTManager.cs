@@ -98,11 +98,11 @@ namespace MPQNav.ADT {
 				triangleListCollection.Add(a.TriangeList);
 				triangleListCollection.Add(a.TriangeListH2O);
 				// Handle the WMOs
-				foreach(WMO w in a.WMOs) {
+				foreach(Model w in a.WMOs) {
 					triangleListCollection.Add(w.TriangleList);
 				}
 				// Handle the M2s
-				foreach(M2 m in a.M2s) {
+				foreach(Model m in a.M2s) {
 					triangleListCollection.Add(m.TriangleList);
 				}
 			}

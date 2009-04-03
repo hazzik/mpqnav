@@ -44,10 +44,10 @@ namespace MPQNav.ADT {
 
 		#endregion
 
-		private readonly IList<WMO> _wmos = new List<WMO>();
-		private readonly IList<M2> _m2s = new List<M2>();
+		private readonly IList<Model> _wmos = new List<Model>();
+		private readonly IList<Model> _m2s = new List<Model>();
 
-		public IList<WMO> WMOs {
+		public IList<Model> WMOs {
 			get { return _wmos; }
 		}
 
@@ -55,7 +55,7 @@ namespace MPQNav.ADT {
 
 		public TriangleList TriangeList { get; set; }
 
-		public IList<M2> M2s {
+		public IList<Model> M2s {
 			get { return _m2s; }
 		}
 
@@ -219,15 +219,14 @@ namespace MPQNav.ADT {
 		public void LoadWMO() {
 			foreach(MODF modf in _MODFList) {
 				var wmo = LoadWMO(modf.FileName);
-				wmo.Transform(modf.Position, modf.Rotation, 1.0f);
-				_wmos.Add(wmo);
+				_wmos.Add(wmo.Transform(modf.Position, modf.Rotation, 1.0f));
 			}
 		}
 
 		/// <summary> Loads WMO from file </summary>
 		/// <param name="fileName">Full name of file of the WMO</param>
 		/// <returns>Loaded WMO</returns>
-		private static WMO LoadWMO(string fileName) {
+		private static Model LoadWMO(string fileName) {
 			var path = MpqNavSettings.MpqPath + fileName;
 			if(!File.Exists(path)) {
 				throw new Exception(String.Format("File does not exist: {0}", path));
@@ -239,18 +238,18 @@ namespace MPQNav.ADT {
 				mohd = new MOHDChunkParser(br, br.BaseStream.Position).Parse();
 			}
 
-			var currentWMO = new WMO();
+			var list = new TriangleListCollection();
 			for(int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++) {
-				currentWMO.WmoSubList.Add(LoadWMOSub(String.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup), wmoGroup));
+				list.Add(LoadWMOSub(String.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup), wmoGroup));
 			}
-			return currentWMO;
+
+			return new Model(list);
 		}
 
 		public void LoadM2() {
 			foreach(MDDF mmdf in _MDDFList) {
 				var m2 = LoadM2(mmdf.FilePath);
-				m2.Transform(mmdf.Position, mmdf.Rotation, mmdf.Scale);
-				_m2s.Add(m2);
+				_m2s.Add(m2.Transform(mmdf.Position, mmdf.Rotation, mmdf.Scale));
 			}
 		}
 
@@ -281,7 +280,7 @@ namespace MPQNav.ADT {
 			}
 		}
 
-		public static M2 LoadM2(string fileName) {
+		public static Model LoadM2(string fileName) {
 			string path = MpqNavSettings.MpqPath + fileName;
 			if(path.Substring(path.Length - 4) == ".mdx") {
 				path = path.Substring(0, path.Length - 4) + ".m2";
@@ -311,14 +310,13 @@ namespace MPQNav.ADT {
 
 				br.BaseStream.Position = ofsBoundingTriangles;
 
-				List<int> tempIndices = ReadTriangleList(br, nBoundingTriangles);
+				var tempIndices = ReadTriangleList(br, nBoundingTriangles);
 
-				return new M2 {
-					TriangleList = new TriangleList {
-						Indices = tempIndices,
-						Vertices = tempVertices,
-					},
-				};
+				var list = new TriangleList {
+				                            	Indices = tempIndices,
+				                            	Vertices = tempVertices,
+				                            };
+				return new Model(list);
 			}
 		}
 

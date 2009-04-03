@@ -93,14 +93,13 @@
     <Compile Include="MPQ\ADT\GraphicsDeviceExtensions.cs" />
     <Compile Include="MPQ\ADT\TriangleListCollection.cs" />
     <Compile Include="MPQ\ADT\TriangleListExtensions.cs" />
-    <Compile Include="MPQ\M2\M2.cs" />
+    <Compile Include="MPQ\M2\Model.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MONRChunkParser.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MOVIChunkParser.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MOVTChunkParser.cs" />
     <Compile Include="MPQ\WMO\Chunks\MOHD.cs" />
     <Compile Include="MPQ\WMO\Chunks\Parsers\MOHDChunkParser.cs" />
     <Compile Include="MPQ\WMO\TriangleList.cs" />
-    <Compile Include="MPQ\WMO\WMO.cs" />
     <Compile Include="ParserBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
