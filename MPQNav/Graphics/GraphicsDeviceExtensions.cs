@@ -1,9 +1,8 @@
 using System;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
-using MPQNav.Graphics;
 
-namespace MPQNav.ADT {
+namespace MPQNav.Graphics {
 	public static class GraphicsDeviceExtensions {
 		public static void DrawTriangleList(this GraphicsDevice device, ITriangleList list) {
 			device.DrawUserIndexedPrimitives(
