@@ -25,11 +25,11 @@ namespace MPQNav.Util {
 
 			adt._MCNKArray = mcnk;
 
-			var mwmos = new MWMOChunkParser(Reader, mhdr.OffsMapObejcts + mhdr.Base).Parse();
+			var mwmos = new StringArrayChunkParser("MWMO", Reader, mhdr.OffsMapObejcts + mhdr.Base).Parse();
 
 			adt._MODFList = new MODFChunkParser(Reader, mhdr.OffsObjectsDef + mhdr.Base, mwmos).Parse();
 
-			var mmdxs = new MMDXChunkParser(Reader, mhdr.OffsModels + mhdr.Base).Parse();
+			var mmdxs = new StringArrayChunkParser("MMDX", Reader, mhdr.OffsModels + mhdr.Base).Parse();
 
 			adt._MDDFList = new MDDFChunkParser(Reader, mhdr.OffsDoodsDef + mhdr.Base, mmdxs).Parse();
 

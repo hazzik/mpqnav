@@ -1,17 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using MPQNav.Util;
 
 namespace MPQNav.Chunks.Parsers {
-	internal class MMDXChunkParser : ChunkParser<string[]> {
-		public MMDXChunkParser(BinaryReader br, long pAbsoluteStart)
-			: base("MMDX", br, pAbsoluteStart) {
+	internal class StringArrayChunkParser : ChunkParser<string[]> {
+		public StringArrayChunkParser(string name, BinaryReader br, long pAbsoluteStart)
+			: base(name, br, pAbsoluteStart) {
 		}
 
-		/// <summary>
-		/// Parse MMDX element from file stream
-		/// </summary>
 		public override string[] Parse() {
 			Reader.BaseStream.Position = AbsoluteStart;
 

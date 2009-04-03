@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chunks\Parsers\StringArrayChunkParser.cs" />
     <Compile Include="Collision\2D\Rectangle.cs" />
     <Compile Include="Collision\3D\AABB.cs" />
     <Compile Include="Collision\Collider.cs" />
@@ -106,10 +107,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Util\ADTChunkFileParser.cs" />
-    <Compile Include="Chunks\Parsers\MMDXChunkParser.cs" />
     <Compile Include="Chunks\Parsers\MDDFChunkParser.cs" />
     <Compile Include="Chunks\Parsers\MVERChunkParser.cs" />
-    <Compile Include="Chunks\Parsers\MWMOChunkParser.cs" />
     <Compile Include="Chunks\Parsers\MCINChunkParser.cs" />
     <Compile Include="Chunks\Parsers\MCNKChunkParser.cs" />
     <Compile Include="Chunks\Parsers\MODFChunkParser.cs" />
