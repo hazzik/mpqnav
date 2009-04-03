@@ -6,11 +6,11 @@ using MPQNav.Util;
 
 namespace MPQNav.Chunks.Parsers {
 	internal class MODFChunkParser : ChunkParser<List<MODF>> {
-		private readonly string[] _mwmos;
+		private readonly string[] _names;
 
-		public MODFChunkParser(BinaryReader br, long pAbsoluteStart, string[] mwmos)
+		public MODFChunkParser(BinaryReader br, long pAbsoluteStart, string[] names)
 			: base("MODF", br, pAbsoluteStart) {
-			_mwmos = mwmos;
+			_names = names;
 		}
 
 		/// <summary>
@@ -22,7 +22,7 @@ namespace MPQNav.Chunks.Parsers {
 			int bytesRead = 0;
 			while(bytesRead < Size) {
 				var lMODF = new MODF {
-				                     	FileName = _mwmos[(int)Reader.ReadUInt32()],
+				                     	FileName = _names[(int)Reader.ReadUInt32()],
 				                     	UniqId = Reader.ReadUInt32(),
 				                     	Position = new Vector3(Reader.ReadSingle(),
 				                     	                       Reader.ReadSingle(),

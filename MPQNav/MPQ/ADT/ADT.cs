@@ -86,7 +86,7 @@ namespace MPQNav.ADT {
 									float x_pos = x - (c * offset_x);
 									float z_pos = z - (r * offset_z);
 									if(((r >= mh2O.yOffset) && ((r - mh2O.yOffset) <= mh2O.height)) &&
-									   ((c >= mh2O.xOffset) && ((c - mh2O.xOffset) <= mh2O.width))) {
+										((c >= mh2O.xOffset) && ((c - mh2O.xOffset) <= mh2O.width))) {
 										y_pos = MH2OHeightMap[r - mh2O.yOffset, c - mh2O.xOffset]; // +_MH2O.heightLevel1;
 										var position = new Vector3(x_pos, y_pos, z_pos);
 
@@ -118,9 +118,9 @@ namespace MPQNav.ADT {
 				}
 			}
 			return new TriangleList {
-			                        	Indices = indices,
-			                        	Vertices = vertices,
-			                        };
+				Indices = indices,
+				Vertices = vertices,
+			};
 		}
 
 		private static Color GetColor(MH2O.FluidType fluidType) {
@@ -144,7 +144,7 @@ namespace MPQNav.ADT {
 				for(int Mx = 0; Mx < 16; Mx++) {
 					MCNK lMCNK = _MCNKArray[Mx, My];
 
-					var HolesMap = new bool[4,4];
+					var HolesMap = new bool[4, 4];
 					if(lMCNK.holes > 0) {
 						HolesMap = lMCNK.GetHolesMap();
 					}
@@ -180,7 +180,7 @@ namespace MPQNav.ADT {
 								indices.Add(vertices.Count + (row * (8 + 1) + col + 1));
 							}
 
-							#endregion
+					#endregion
 						}
 					}
 
@@ -209,9 +209,9 @@ namespace MPQNav.ADT {
 				}
 			}
 			return new TriangleList {
-			                        	Indices = indices,
-			                        	Vertices = vertices,
-			                        };
+				Indices = indices,
+				Vertices = vertices,
+			};
 		}
 
 		public void LoadWMO() {
@@ -299,48 +299,26 @@ namespace MPQNav.ADT {
 				uint ofsBoundingTriangles = br.ReadUInt32();
 				uint nBoundingVertices = br.ReadUInt32();
 				uint ofsBoundingVertices = br.ReadUInt32();
+				uint nBoundingNormals = br.ReadUInt32();
+				uint ofsBoundingNormals = br.ReadUInt32();
+			
+				var indices = new IndicesParser(br, ofsBoundingTriangles, nBoundingTriangles).Parse();
 
-				br.BaseStream.Position = ofsBoundingVertices;
+				var vectors = new VectorsListParser(br, ofsBoundingVertices, nBoundingVertices).Parse();
 
-				List<Vector3> vectors = ReadVectors(br, nBoundingVertices);
-				List<VertexPositionNormalColored> tempVertices =
-					vectors.Select(v1 => new VertexPositionNormalColored(v1, Color.Red, Vector3.Up)).ToList();
+				var normals = new VectorsListParser(br, ofsBoundingNormals, nBoundingNormals).Parse();
 
-				br.BaseStream.Position = ofsBoundingTriangles;
-
-				var tempIndices = ReadTriangleList(br, nBoundingTriangles);
+				var vertices = new List<VertexPositionNormalColored>();
+				for(var i = 0; i < vectors.Count; i++) {
+					vertices.Add(new VertexPositionNormalColored(vectors[i], Color.Red, Vector3.Up));
+				}
 
 				var list = new TriangleList {
-				                            	Indices = tempIndices,
-				                            	Vertices = tempVertices,
+				                            	Indices = indices,
+				                            	Vertices = vertices,
 				                            };
 				return new Model(list);
 			}
-		}
-
-		private static List<int> ReadTriangleList(BinaryReader br, uint nBoundingTriangles) {
-			var tempIndices = new List<int>();
-			for(int v = 0; v < nBoundingTriangles; v = v + 3) {
-				Int16 int1 = br.ReadInt16();
-				Int16 int2 = br.ReadInt16();
-				Int16 int3 = br.ReadInt16();
-
-				tempIndices.Add(int3);
-				tempIndices.Add(int2);
-				tempIndices.Add(int1);
-			}
-			return tempIndices;
-		}
-
-		private static List<Vector3> ReadVectors(BinaryReader br, uint count) {
-			var vectors = new List<Vector3>();
-			for(int v = 0; v < count; v++) {
-				float x = br.ReadSingle() * -1;
-				float z = br.ReadSingle();
-				float y = br.ReadSingle();
-				vectors.Add(new Vector3(x, y, z));
-			}
-			return vectors;
 		}
 	}
 }

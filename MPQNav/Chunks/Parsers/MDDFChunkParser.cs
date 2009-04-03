@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
-using MPQNav.Collision._2D;
 using MPQNav.Util;
 
 namespace MPQNav.Chunks.Parsers {
 	internal class MDDFChunkParser : ChunkParser<MDDF[]> {
-		private readonly string[] _mmdxs;
+		private readonly string[] _names;
 
-		public MDDFChunkParser(BinaryReader br, long pAbsoluteStart, string[] mmdxs)
+		public MDDFChunkParser(BinaryReader br, long pAbsoluteStart, string[] names)
 			: base("MDDF", br, pAbsoluteStart) {
-			_mmdxs = mmdxs;
+			_names = names;
 		}
 
 		/// <summary>
@@ -23,10 +22,14 @@ namespace MPQNav.Chunks.Parsers {
 			int bytesRead = 0;
 			while(bytesRead < Size) {
 				var lMDDF = new MDDF {
-				                     	FilePath = _mmdxs[(int)Reader.ReadUInt32()],
+				                     	FilePath = _names[(int)Reader.ReadUInt32()],
 				                     	UniqId = Reader.ReadUInt32(),
-				                     	Position = new Vector3(Reader.ReadSingle(), Reader.ReadSingle(), Reader.ReadSingle()),
-				                     	Rotation = new Vector3(Reader.ReadSingle(), Reader.ReadSingle(), Reader.ReadSingle()),
+				                     	Position = new Vector3(Reader.ReadSingle(),
+				                     	                       Reader.ReadSingle(),
+				                     	                       Reader.ReadSingle()),
+				                     	Rotation = new Vector3(Reader.ReadSingle(),
+				                     	                       Reader.ReadSingle(),
+				                     	                       Reader.ReadSingle()),
 				                     	Scale = (Reader.ReadUInt32() / 1024f)
 				                     };
 				bytesRead += 36; // 36 total bytes

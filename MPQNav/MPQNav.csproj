@@ -102,6 +102,8 @@
     <Compile Include="Chunks\MOHD.cs" />
     <Compile Include="Chunks\Parsers\MOHDChunkParser.cs" />
     <Compile Include="Graphics\TriangleList.cs" />
+    <Compile Include="MPQ\ADT\IndicesParser.cs" />
+    <Compile Include="MPQ\ADT\VectorsListParser.cs" />
     <Compile Include="ParserBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
