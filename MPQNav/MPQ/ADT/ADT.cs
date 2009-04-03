@@ -4,13 +4,13 @@ using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MPQNav.Collision._3D;
 using MPQNav.Graphics;
 using MPQNav.MPQ.ADT.Chunks;
 using MPQNav.MPQ.ADT.Chunks.Parsers;
 using MPQNav.MPQ.WMO.Chunks;
 using MPQNav.MPQ.WMO.Chunks.Parsers;
 using MPQNav.Util;
+using Model=MPQNav.Graphics.Model;
 
 namespace MPQNav.ADT {
 	internal class ADT {
