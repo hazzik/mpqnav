@@ -120,6 +120,13 @@ namespace MPQNav.ADT {
 			float pos_z = -(position.Z - 17066.666666666656f);
 			return new Vector3(pos_x, pos_y, pos_z);
 		}
+
+		public static Matrix CreateTransform(Vector3 rotation, float scale) {
+			return Matrix.CreateRotationX(MathHelper.ToRadians(rotation.Z)) *
+			       Matrix.CreateRotationY(MathHelper.ToRadians(rotation.Y - 90)) *
+			       Matrix.CreateRotationZ(MathHelper.ToRadians(-rotation.X)) *
+			       Matrix.CreateScale(scale);
+		}
 	}
 
 	/// <summary>

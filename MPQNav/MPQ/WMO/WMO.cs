@@ -23,15 +23,7 @@ namespace MPQNav.MPQ.ADT {
 		}
 
 		public void Transform(Vector3 position, Vector3 rotation, float scale) {
-			Vector3 origin = ADTManager.CreateOrigin(position);
-
-			Vector3 rotation1 = rotation;
-			Matrix scaleMatrix = Matrix.CreateScale(scale);
-			Matrix rotateX = Matrix.CreateRotationX(MathHelper.ToRadians(rotation1.Z));
-			Matrix rotateY = Matrix.CreateRotationY(MathHelper.ToRadians(rotation1.Y - 90));
-			Matrix rotateZ = Matrix.CreateRotationZ(MathHelper.ToRadians(-rotation1.X));
-
-			_triangleList = GetTriangleList().Transform(origin, rotateX * rotateY * rotateZ * scaleMatrix);
+			_triangleList = GetTriangleList().Transform(ADTManager.CreateOrigin(position), ADTManager.CreateTransform(rotation, scale));
 		}
 
 		private ITriangleList GetTriangleList() {

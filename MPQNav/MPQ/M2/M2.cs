@@ -12,14 +12,11 @@ namespace MPQNav.ADT {
 		}
 
 		public void Transform(Vector3 position, Vector3 rotation, float scale) {
-			var origin = ADTManager.CreateOrigin(position);
+			_triangleList = GetTriangleList().Transform(ADTManager.CreateOrigin(position), ADTManager.CreateTransform(rotation, scale));
+		}
 
-			Matrix rotateX = Matrix.CreateRotationX(MathHelper.ToRadians(rotation.Z));
-			Matrix rotateY = Matrix.CreateRotationY(MathHelper.ToRadians(rotation.Y - 90));
-			Matrix rotateZ = Matrix.CreateRotationZ(MathHelper.ToRadians(-rotation.X));
-			Matrix scaleMatrix = Matrix.CreateScale(scale);
-
-			_triangleList = _triangleList.Transform(origin, rotateX * rotateY * rotateZ * scaleMatrix);
+		private ITriangleList GetTriangleList() {
+			return _triangleList;
 		}
 	}
 }
