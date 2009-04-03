@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using MPQNav.Util;
 
-namespace MPQNav.MPQ.ADT.Chunks.Parsers {
+namespace MPQNav.Chunks.Parsers {
 	internal class MVERChunkParser : ChunkParser<int> {
 		public MVERChunkParser(BinaryReader reader, long absoluteStart)
 			: base("MVER", reader, absoluteStart) {

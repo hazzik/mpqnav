@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace MPQNav.MPQ.ADT.Chunks {
+namespace MPQNav.Chunks {
 	/// <summary>
 	/// Class for the MCNK chunk (vertex information for the ADT)
 	/// </summary>

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using MPQNav.ADT;
 using MPQNav.Util;
 
-namespace MPQNav.MPQ.ADT.Chunks.Parsers {
+namespace MPQNav.Chunks.Parsers {
 	/// <summary>
 	/// MCNK Chunk perser
 	/// </summary>

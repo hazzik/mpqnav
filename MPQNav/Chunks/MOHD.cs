@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace MPQNav.MPQ.WMO.Chunks {
+namespace MPQNav.Chunks {
 	internal class MOHD {
 		public uint TexturesCount { get; set; }
 		public uint GroupsCount { get; set; }

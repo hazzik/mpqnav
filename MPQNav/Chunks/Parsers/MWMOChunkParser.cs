@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using MPQNav.Util;
 
-namespace MPQNav.MPQ.ADT.Chunks.Parsers {
+namespace MPQNav.Chunks.Parsers {
 	internal class MWMOChunkParser : ChunkParser<string[]> {
 		public MWMOChunkParser(BinaryReader br, long pAbsoluteStart)
 			: base("MWMO", br, pAbsoluteStart) {

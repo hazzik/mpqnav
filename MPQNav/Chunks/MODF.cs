@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace MPQNav.MPQ.ADT.Chunks {
+namespace MPQNav.Chunks {
 	/// <summary>
 	/// MODF Class - WMO Placement Information
 	/// </summary>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MPQNav.MPQ.ADT.Chunks {
+namespace MPQNav.Chunks {
 	/// <summary>
 	/// MH20 Chunk - Fluid information for the MCNK
 	/// </summary>

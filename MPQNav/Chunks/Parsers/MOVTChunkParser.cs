@@ -4,7 +4,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using MPQNav.Util;
 
-namespace MPQNav.MPQ.WMO.Chunks.Parsers {
+namespace MPQNav.Chunks.Parsers {
 	internal class MOVTChunkParser : ChunkParser<IList<Vector3>> {
 		public MOVTChunkParser(BinaryReader reader, long absoluteStart)
 			: base("MOVT", reader, absoluteStart) {

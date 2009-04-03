@@ -4,7 +4,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using MPQNav.Util;
 
-namespace MPQNav.MPQ.ADT.Chunks.Parsers {
+namespace MPQNav.Chunks.Parsers {
 	internal class MODFChunkParser : ChunkParser<List<MODF>> {
 		private readonly string[] _mwmos;
 

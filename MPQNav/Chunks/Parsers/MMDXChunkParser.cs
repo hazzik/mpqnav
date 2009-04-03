@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using MPQNav.Util;
 
-namespace MPQNav.MPQ.ADT.Chunks.Parsers {
+namespace MPQNav.Chunks.Parsers {
 	internal class MMDXChunkParser : ChunkParser<string[]> {
 		public MMDXChunkParser(BinaryReader br, long pAbsoluteStart)
 			: base("MMDX", br, pAbsoluteStart) {
