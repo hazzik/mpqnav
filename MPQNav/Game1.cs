@@ -218,7 +218,7 @@ namespace MPQNav {
 
 			foreach(EffectPass pass in basicEffect.CurrentTechnique.Passes) {
 				pass.Begin();
-				graphics.GraphicsDevice.RenderState.FillMode = FillMode.WireFrame;
+				//graphics.GraphicsDevice.RenderState.FillMode = FillMode.WireFrame;
 				Render();
 				graphics.GraphicsDevice.RenderState.FillMode = FillMode.Solid;
 				pass.End();

@@ -190,8 +190,8 @@ namespace MPQNav.ADT {
 					const float offset_x = (533.33333f / 16) / 8;
 					const float offset_z = (533.33333f / 16) / 8;
 
-					float[,] LowResMap = lMCNK._MCVT.GetLowResMapMatrix();
-					Vector3[,] LowResNormal = lMCNK._MCNR.GetLowResNormalMatrix();
+					var LowResMap = lMCNK._MCVT.GetLowResMapMatrix();
+					var LowResNormal = lMCNK._MCNR.GetLowResNormalMatrix();
 
 					for(int r = 0; r < 9; r++) {
 						for(int c = 0; c < 9; c++) {
@@ -199,16 +199,13 @@ namespace MPQNav.ADT {
 							float z_pos = lMCNK.z - (r * offset_z);
 							float y_pos = LowResMap[r, c] + lMCNK.y;
 
-							Color _clr = Color.Green;
 
-							Vector3 theNormal = LowResNormal[r, c];
-							float cosAngle = Vector3.Dot(Vector3.Up, theNormal);
+							var normal = LowResNormal[r, c];
+							float cosAngle = Vector3.Dot(Vector3.Up, normal);
 							float angle = MathHelper.ToDegrees((float)Math.Acos(cosAngle));
-							if(angle > 50.0) {
-								_clr = Color.Brown;
-							}
+
 							var position = new Vector3(x_pos, y_pos, z_pos);
-							vertices.Add(new VertexPositionNormalColored(position, _clr, Vector3.Up));
+							vertices.Add(new VertexPositionNormalColored(position, angle > 50.0 ? Color.Brown : Color.Green, normal));
 						}
 					}
 				}
