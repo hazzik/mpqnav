@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MPQNav.MPQ.ADT {
+namespace MPQNav.Graphics {
 	public class TriangleList : ITriangleList {
 		private IList<int> _indices = new List<int>();
 		private IList<VertexPositionNormalColored> _vertices = new List<VertexPositionNormalColored>();

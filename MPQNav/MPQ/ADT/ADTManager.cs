@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
-using MPQNav.MPQ.ADT;
+using MPQNav.Graphics;
 using MPQNav.Util;
 
 namespace MPQNav.ADT {

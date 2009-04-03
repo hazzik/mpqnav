@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
-using MPQNav.MPQ.ADT;
+using MPQNav.Graphics;
 
 namespace MPQNav.ADT {
 	public static class GraphicsDeviceExtensions {

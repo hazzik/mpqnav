@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using MPQNav.MPQ.ADT;
 
-namespace MPQNav.ADT {
+namespace MPQNav.Graphics {
 	internal class TriangleListCollection : ITriangleList {
 		private readonly IList<int> _indices = new List<int>();
 		private readonly IList<ITriangleList> _lists = new List<ITriangleList>();

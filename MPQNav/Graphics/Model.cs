@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using MPQNav.ADT;
 
-namespace MPQNav.MPQ.ADT {
+namespace MPQNav.Graphics {
 	internal class Model {
 		private readonly ITriangleList _triangleList = new TriangleList();
 

@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MPQNav.Collision._3D;
-using MPQNav.MPQ.ADT;
+using MPQNav.Graphics;
 using MPQNav.MPQ.ADT.Chunks;
 using MPQNav.MPQ.ADT.Chunks.Parsers;
 using MPQNav.MPQ.WMO.Chunks;
