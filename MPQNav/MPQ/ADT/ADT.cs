@@ -243,8 +243,6 @@ namespace MPQNav.ADT {
 			}
 
 			var currentWMO = new WMO();
-			currentWMO.AABB = new AABB(mohd.BoundingBox1, mohd.BoundingBox2);
-			currentWMO.TotalGroups = (int)mohd.GroupsCount;
 			for(int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++) {
 				currentWMO.WmoSubList.Add(LoadWMOSub(String.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup), wmoGroup));
 			}

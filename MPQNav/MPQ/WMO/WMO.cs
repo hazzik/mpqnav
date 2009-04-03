@@ -2,30 +2,14 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MPQNav.ADT;
-using MPQNav.Collision._3D;
 
 namespace MPQNav.MPQ.ADT {
 	/// <summary>
 	/// Class for the WMO Group File
 	/// </summary>
 	internal class WMO {
-		private ITriangleList _triangleList = new TriangleList();
 		private readonly IList<ITriangleList> _wmoSubList = new List<ITriangleList>();
-
-		/// <summary>
-		/// The Orientated Bounding Box for this WMO
-		/// </summary>
-		public OBB OOB { get; set; }
-
-		/// <summary>
-		/// AABB For the WMO
-		/// </summary>
-		public AABB AABB { get; set; }
-
-		/// <summary>
-		/// Total number of groups for the WMO
-		/// </summary>
-		public int TotalGroups { get; set; }
+		private ITriangleList _triangleList = new TriangleList();
 
 		/// <summary>
 		/// List containg all the WMO Sub-Chunks for this WMO Group File
@@ -39,7 +23,7 @@ namespace MPQNav.MPQ.ADT {
 		}
 
 		public void Transform(Vector3 position, Vector3 rotation, float scale) {
-			var origin = ADTManager.CreateOrigin(position);
+			Vector3 origin = ADTManager.CreateOrigin(position);
 
 			Vector3 rotation1 = rotation;
 			Matrix scaleMatrix = Matrix.CreateScale(scale);
@@ -48,8 +32,6 @@ namespace MPQNav.MPQ.ADT {
 			Matrix rotateZ = Matrix.CreateRotationZ(MathHelper.ToRadians(-rotation1.X));
 
 			_triangleList = GetTriangleList().Transform(origin, rotateX * rotateY * rotateZ * scaleMatrix);
-
-			OOB = new OBB(AABB.center, AABB.extents, rotateY);
 		}
 
 		private ITriangleList GetTriangleList() {
