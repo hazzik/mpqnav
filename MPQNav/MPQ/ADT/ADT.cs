@@ -306,7 +306,7 @@ namespace MPQNav.ADT {
 
 				var vectors = new VectorsListParser(br, ofsBoundingVertices, nBoundingVertices).Parse();
 
-				var normals = new VectorsListParser(br, ofsBoundingNormals, nBoundingNormals).Parse();
+				//var normals = new VectorsListParser(br, ofsBoundingNormals, nBoundingNormals).Parse();
 
 				var vertices = new List<VertexPositionNormalColored>();
 				for(var i = 0; i < vectors.Count; i++) {

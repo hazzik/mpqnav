@@ -27,9 +27,10 @@ namespace MPQNav.ADT {
 			Reader.BaseStream.Position = AbsoluteStart;
 			var vectors = new List<Vector3>();
 			for(int v = 0; v < _verticesCount; v++) {
-				vectors.Add(new Vector3(Reader.ReadSingle() * -1,
-				                        Reader.ReadSingle(),
-				                        Reader.ReadSingle()));
+				var x = Reader.ReadSingle() * -1;
+				var z = Reader.ReadSingle();
+				var y = Reader.ReadSingle();
+				vectors.Add(new Vector3(x, y, z));
 			}
 			return vectors;
 		}
