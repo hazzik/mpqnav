@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MPQNav.IO;
 
 namespace MPQNav.Util {
 	internal abstract class ChunkParser<T> : ParserBase<T> {

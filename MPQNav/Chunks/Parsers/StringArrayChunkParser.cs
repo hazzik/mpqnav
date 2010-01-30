@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using MPQNav.IO;
 using MPQNav.Util;
 
 namespace MPQNav.Chunks.Parsers {

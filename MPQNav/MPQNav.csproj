@@ -119,7 +119,7 @@
     <Compile Include="Chunks\Parsers\MCINChunkParser.cs" />
     <Compile Include="Chunks\Parsers\MCNKChunkParser.cs" />
     <Compile Include="Chunks\Parsers\MODFChunkParser.cs" />
-    <Compile Include="Util\BinaryReaderExtensions.cs" />
+    <Compile Include="IO\BinaryReaderExtensions.cs" />
     <Compile Include="Util\ChunkParser.cs" />
     <Compile Include="Util\FileChunk.cs" />
     <Compile Include="Chunks\Parsers\MHDRChunkParser.cs" />
