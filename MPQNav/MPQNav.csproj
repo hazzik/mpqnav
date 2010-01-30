@@ -80,11 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chunks\Parsers\StringArrayChunkParser.cs" />
-    <Compile Include="Collision\2D\Rectangle.cs" />
-    <Compile Include="Collision\3D\AABB.cs" />
-    <Compile Include="Collision\Collider.cs" />
-    <Compile Include="Collision\3D\OBB.cs" />
-    <Compile Include="Collision\QuadTree.cs" />
     <Compile Include="Console\KeyBindings.cs" />
     <Compile Include="Console\MpqConsole.cs" />
     <Compile Include="Console\XnaConsole.cs" />
@@ -99,7 +94,6 @@
     <Compile Include="Chunks\MH2O.cs" />
     <Compile Include="Chunks\MHDR.cs" />
     <Compile Include="Chunks\MODF.cs" />
-    <Compile Include="Collision\2D\Traingle.cs" />
     <Compile Include="MPQ\ADT\ADT.cs" />
     <Compile Include="MPQ\ADT\ADTManager.cs" />
     <Compile Include="Graphics\GraphicsDeviceExtensions.cs" />
