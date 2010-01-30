@@ -5,7 +5,7 @@ namespace MPQNav.IO
 {
     public class MpqFileInfo : IFileInfo
     {
-        private MpqArchive mpqArchive;
+        private readonly MpqArchive mpqArchive;
 
         public MpqFileInfo(string mpqPath)
         {
@@ -22,12 +22,6 @@ namespace MPQNav.IO
         public bool Exists(string file)
         {
             return mpqArchive.FileExists(file);
-        }
-
-        public void Dispose()
-        {
-            mpqArchive.Dispose();
-            mpqArchive = null;
         }
 
         #endregion

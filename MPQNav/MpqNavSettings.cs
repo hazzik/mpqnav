@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Specialized;
 using System.Configuration;
 
@@ -20,5 +21,10 @@ namespace MPQNav {
 		public static int DefaultMapY {
 			get { return int.Parse(_settings["defaultMapY"]); }
 		}
+
+	    public static bool UseMpq
+	    {
+	        get { return bool.Parse(_settings["useMpq"]); }
+	    }
 	}
 }

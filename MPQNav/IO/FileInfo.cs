@@ -1,7 +1,6 @@
 ﻿using System.IO;
-using MPQNav.IO;
 
-namespace MPQNav.ADT
+namespace MPQNav.IO
 {
     public class FileInfo : IFileInfo
     {
@@ -22,10 +21,6 @@ namespace MPQNav.ADT
         public bool Exists(string file)
         {
             return File.Exists(mpqPath + file);
-        }
-
-        public void Dispose()
-        {
         }
 
         #endregion
