@@ -337,7 +337,7 @@ namespace MPQNav {
 			view = Matrix.CreateLookAt(cameraPosition, avatarPosition, new Vector3(0.0f, 1.0f, 0.0f));
 
 			Viewport viewport = graphics.GraphicsDevice.Viewport;
-			float aspectRatio = (float)viewport.Width / (float)viewport.Height;
+			float aspectRatio = viewport.Width / (float)viewport.Height;
 
 			proj = Matrix.CreatePerspectiveFieldOfView(viewAngle, aspectRatio, nearClip, farClip);
 		}

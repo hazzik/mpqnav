@@ -3,138 +3,144 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using MPQNav.Graphics;
+using MPQNav.IO;
 using MPQNav.Util;
 
-namespace MPQNav.ADT {
-	/// <summary>
-	/// The ADTManager is responsible for handling all the different ADTs that we are going to be loading up.
-	/// </summary>
-	internal class ADTManager {
-		#region variables
+namespace MPQNav.ADT
+{
+    /// <summary>
+    /// The ADTManager is responsible for handling all the different ADTs that we are going to be loading up.
+    /// </summary>
+    internal class ADTManager
+    {
+        #region variables
 
-		private const string AdtPath = "World\\Maps\\";
+        private const string AdtPath = "World\\Maps\\";
 
-		/// <summary>
-		/// List of all ADTs managed by this ADT manager
-		/// </summary>
-		private readonly List<ADT> _ADTs = new List<ADT>();
+        /// <summary>
+        /// List of all ADTs managed by this ADT manager
+        /// </summary>
+        private readonly List<ADT> _ADTs = new List<ADT>();
 
-		/// <summary>
-		/// Continent of the ADT Manager
-		/// </summary>
-		private readonly string _continent;
+        /// <summary>
+        /// Continent of the ADT Manager
+        /// </summary>
+        private readonly string _continent;
 
-		private ITriangleList _triangleList;
+        private ITriangleList _triangleList;
 
-		/// <summary>
-		/// Boolean variable representing if all the rendering data has been cached.
-		/// </summary>
-		private Boolean renderCached;
+        /// <summary>
+        /// Boolean variable representing if all the rendering data has been cached.
+        /// </summary>
+        private Boolean renderCached;
 
-		#endregion
+        #endregion
 
-		#region constructors
+        #region constructors
 
-		/// <summary>
-		/// Creates a new instance of the ADT manager.
-		/// </summary>
-		/// <param name="c">Continent of the ADT</param>
-		/// <example>ADTManager myADTManager = new ADTManager(continent.Azeroth, "C:\\mpq\\");</example>
-		public ADTManager(string c) {
-			_continent = c;
-		}
+        /// <summary>
+        /// Creates a new instance of the ADT manager.
+        /// </summary>
+        /// <param name="c">Continent of the ADT</param>
+        /// <example>ADTManager myADTManager = new ADTManager(continent.Azeroth, "C:\\mpq\\");</example>
+        public ADTManager(string c)
+        {
+            _continent = c;
+        }
 
-		#endregion
+        #endregion
 
-		public ITriangleList TriangleList {
-			get {
-				if(!renderCached) {
-					_triangleList = BuildTriangleList();
-				}
-				return _triangleList;
-			}
-		}
+        public ITriangleList TriangleList
+        {
+            get
+            {
+                if (!renderCached)
+                {
+                    _triangleList = BuildTriangleList();
+                }
+                return _triangleList;
+            }
+        }
 
-		/// <summary>
-		/// Loads an ADT into the manager.
-		/// </summary>
-		/// <param name="x">X coordiate of the ADT in the 64 x 64 Grid</param>
-		/// <param name="y">Y coordinate of the ADT in the 64 x 64 grid</param>
-		public void loadADT(int x, int y) {
-			string file = GetAdtFileName(x, y);
+        /// <summary>
+        /// Loads an ADT into the manager.
+        /// </summary>
+        /// <param name="x">X coordiate of the ADT in the 64 x 64 Grid</param>
+        /// <param name="y">Y coordinate of the ADT in the 64 x 64 grid</param>
+        public void loadADT(int x, int y)
+        {
+            ADT currentADT;
+            var fileInfo = FileInfoFactory.Create();
+            string file = GetAdtFileName(x, y, fileInfo);
 
-			ADT currentADT;
-			using(var reader = new BinaryReader(File.OpenRead(file))) {
-				currentADT = new ADTChunkFileParser(reader).Parse();
-			}
+            using (var reader = new BinaryReader(fileInfo.OpenRead(file)))
+            {
+                currentADT = new ADTChunkFileParser(reader).Parse();
+            }
 
-			currentADT.LoadWMO();
+            currentADT.LoadWMO();
 
-			currentADT.LoadM2();
+            currentADT.LoadM2();
 
-			renderCached = false;
-			currentADT.TriangeList = currentADT.GenerateVertexAndIndices();
-			currentADT.TriangeListH2O = currentADT.GenerateVertexAndIndicesH2O();
-			_ADTs.Add(currentADT);
-		}
+            renderCached = false;
+            currentADT.TriangeList = currentADT.GenerateVertexAndIndices();
+            currentADT.TriangeListH2O = currentADT.GenerateVertexAndIndicesH2O();
+            _ADTs.Add(currentADT);
+        }
 
-		private string GetAdtFileName(int x, int y) {
-			string dir = MpqNavSettings.MpqPath + AdtPath + _continent;
-			if(!Directory.Exists(dir)) {
-				throw new Exception("Continent data missing");
-			}
-			string file = String.Format("{0}{1}{2}\\{2}_{3}_{4}.adt", MpqNavSettings.MpqPath, AdtPath, _continent, x, y);
-			if(!File.Exists(file)) {
-				throw new Exception(String.Format("ADT Doesn't exist: {0}", file));
-			}
-			return file;
-		}
 
-		public ITriangleList BuildTriangleList() {
-			// Cycle through each ADT
-			var triangleListCollection = new TriangleListCollection();
-			foreach(ADT a in _ADTs) {
-				// Handle the ADTs
-				triangleListCollection.Add(a.TriangeList);
-				triangleListCollection.Add(a.TriangeListH2O);
-				// Handle the WMOs
-				foreach(Model w in a.WMOs) {
-					triangleListCollection.Add(w.TriangleList);
-				}
-				// Handle the M2s
-				foreach(Model m in a.M2s) {
-					triangleListCollection.Add(m.TriangleList);
-				}
-			}
+        private string GetAdtFileName(int x, int y, IFileInfo fileInfo)
+        {
+            string file = String.Format("{0}{1}\\{1}_{2}_{3}.adt", AdtPath, _continent, x, y);
+            if (!fileInfo.Exists(file))
+            {
+                throw new Exception(String.Format("ADT Doesn't exist: {0}", file));
+            }
+            return file;
+        }
 
-			ITriangleList list = triangleListCollection.Optimize();
+        public ITriangleList BuildTriangleList()
+        {
+            // Cycle through each ADT
+            var triangleListCollection = new TriangleListCollection();
+            foreach (ADT a in _ADTs)
+            {
+                // Handle the ADTs
+                triangleListCollection.Add(a.TriangeList);
+                triangleListCollection.Add(a.TriangeListH2O);
+                // Handle the WMOs
+                foreach (Model w in a.WMOs)
+                {
+                    triangleListCollection.Add(w.TriangleList);
+                }
+                // Handle the M2s
+                foreach (Model m in a.M2s)
+                {
+                    triangleListCollection.Add(m.TriangleList);
+                }
+            }
 
-			renderCached = true;
+            ITriangleList list = triangleListCollection.Optimize();
 
-			return list;
-		}
+            renderCached = true;
 
-		public static Vector3 CreateOrigin(Vector3 position) {
-			float pos_x = -(position.X - 17066.666666666656f);
-			float pos_y = position.Y;
-			float pos_z = -(position.Z - 17066.666666666656f);
-			return new Vector3(pos_x, pos_y, pos_z);
-		}
+            return list;
+        }
 
-		public static Matrix CreateTransform(Vector3 rotation, float scale) {
-			return Matrix.CreateRotationX(MathHelper.ToRadians(rotation.Z)) *
-			       Matrix.CreateRotationY(MathHelper.ToRadians(rotation.Y - 90)) *
-			       Matrix.CreateRotationZ(MathHelper.ToRadians(-rotation.X)) *
-			       Matrix.CreateScale(scale);
-		}
-	}
+        public static Vector3 CreateOrigin(Vector3 position)
+        {
+            float pos_x = -(position.X - 17066.666666666656f);
+            float pos_y = position.Y;
+            float pos_z = -(position.Z - 17066.666666666656f);
+            return new Vector3(pos_x, pos_y, pos_z);
+        }
 
-	/// <summary>
-	/// Enumeration of the different continents available.
-	/// </summary>
-	public enum ContinentType {
-		Azeroth,
-		Kalimdor,
-		Outland
-	}
+        public static Matrix CreateTransform(Vector3 rotation, float scale)
+        {
+            return Matrix.CreateRotationX(MathHelper.ToRadians(rotation.Z))*
+                   Matrix.CreateRotationY(MathHelper.ToRadians(rotation.Y - 90))*
+                   Matrix.CreateRotationZ(MathHelper.ToRadians(-rotation.X))*
+                   Matrix.CreateScale(scale);
+        }
+    }
 }

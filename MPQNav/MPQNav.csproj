@@ -46,6 +46,10 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.84.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86">
       <Private>False</Private>
       <SpecificVersion>True</SpecificVersion>
@@ -53,6 +57,11 @@
     <Reference Include="Microsoft.Xna.Framework.Game, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
       <Private>False</Private>
       <SpecificVersion>True</SpecificVersion>
+    </Reference>
+    <Reference Include="MpqTool, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <ExecutableExtension>.exe</ExecutableExtension>
+      <HintPath>..\lib\MpqTool.exe</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <Private>False</Private>
@@ -80,6 +89,7 @@
     <Compile Include="Console\MpqConsole.cs" />
     <Compile Include="Console\XnaConsole.cs" />
     <Compile Include="Graphics\ITriangleList.cs" />
+    <Compile Include="IO\FileInfoFactory.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="Maps.cs" />
     <Compile Include="MpqNavSettings.cs" />
@@ -102,7 +112,10 @@
     <Compile Include="Chunks\MOHD.cs" />
     <Compile Include="Chunks\Parsers\MOHDChunkParser.cs" />
     <Compile Include="Graphics\TriangleList.cs" />
+    <Compile Include="IO\IFileInfo.cs" />
+    <Compile Include="IO\FileInfo.cs" />
     <Compile Include="MPQ\ADT\IndicesParser.cs" />
+    <Compile Include="IO\MpqFileInfo.cs" />
     <Compile Include="MPQ\ADT\VectorsListParser.cs" />
     <Compile Include="ParserBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

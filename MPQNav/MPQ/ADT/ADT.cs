@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MPQNav.Chunks;
 using MPQNav.Chunks.Parsers;
 using MPQNav.Graphics;
+using MPQNav.IO;
 using MPQNav.Util;
 using Model=MPQNav.Graphics.Model;
 
@@ -224,27 +225,33 @@ namespace MPQNav.ADT {
 		/// <summary> Loads WMO from file </summary>
 		/// <param name="fileName">Full name of file of the WMO</param>
 		/// <returns>Loaded WMO</returns>
-		private static Model LoadWMO(string fileName) {
-			var path = MpqNavSettings.MpqPath + fileName;
-			if(!File.Exists(path)) {
-				throw new Exception(String.Format("File does not exist: {0}", path));
-			}
+		private static Model LoadWMO(string fileName)
+		{
+		    var path = fileName;
+		    MOHD mohd;
+		    var fileInfo = FileInfoFactory.Create();
+		    if (fileInfo.Exists(path) == false)
+		    {
+		        throw new Exception(String.Format("File does not exist: {0}", path));
+		    }
 
-			MOHD mohd;
-			using(var br = new BinaryReader(File.OpenRead(path))) {
-				int version = new MVERChunkParser(br, br.BaseStream.Position).Parse();
-				mohd = new MOHDChunkParser(br, br.BaseStream.Position).Parse();
-			}
+		    using (var br = new BinaryReader(fileInfo.OpenRead(path)))
+		    {
+		        int version = new MVERChunkParser(br, br.BaseStream.Position).Parse();
+		        mohd = new MOHDChunkParser(br, br.BaseStream.Position).Parse();
+		    }
 
-			var list = new TriangleListCollection();
-			for(int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++) {
-				list.Add(LoadWMOSub(String.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup), wmoGroup));
-			}
+		    var list = new TriangleListCollection();
+		    for (int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++)
+		    {
+		        list.Add(LoadWMOSub(String.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup),
+		                            wmoGroup));
+		    }
 
-			return new Model(list);
+		    return new Model(list);
 		}
 
-		public void LoadM2() {
+	    public void LoadM2() {
 			foreach(MDDF mmdf in _MDDFList) {
 				var m2 = LoadM2(mmdf.FilePath);
 				_m2s.Add(m2.Transform(mmdf.Position, mmdf.Rotation, mmdf.Scale));
@@ -257,68 +264,78 @@ namespace MPQNav.ADT {
 		/// <param name="wmoGroup">Current index in the WMO Group</param>
 		/// <param name="fileName">Full Filename of the WMO_Sub</param>
 		/// <returns></returns>
-		public static ITriangleList LoadWMOSub(string fileName, int wmoGroup) {
-			var path = MpqNavSettings.MpqPath + fileName;
-			if(!File.Exists(path)) {
-				throw new Exception(String.Format("File does not exist: {0}", path));
-			}
+		public static ITriangleList LoadWMOSub(string fileName, int wmoGroup)
+		{
+		    var path = fileName;
+		    var fileInfo = FileInfoFactory.Create();
+		    if (fileInfo.Exists(path) == false)
+		    {
+		        throw new Exception(String.Format("File does not exist: {0}", path));
+		    }
 
-			using(var reader = new BinaryReader(File.OpenRead(path))) {
-				var indices = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
-				var vectors = new MOVTChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition).Parse();
-				var normals = new MONRChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MONR").StartPosition).Parse();
-				var vertices = new List<VertexPositionNormalColored>();
-				for(var i = 0; i < vectors.Count; i++) {
-					vertices.Add(new VertexPositionNormalColored(vectors[i], Color.Yellow, normals[i]));
-				}
-				return new TriangleList {
-					Indices = indices,
-					Vertices = vertices,
-				};
-			}
+		    using (var reader = new BinaryReader(fileInfo.OpenRead(path)))
+		    {
+		        var indices = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
+		        var vectors = new MOVTChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition).Parse();
+		        var normals = new MONRChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MONR").StartPosition).Parse();
+		        var vertices = new List<VertexPositionNormalColored>();
+		        for (var i = 0; i < vectors.Count; i++)
+		        {
+		            vertices.Add(new VertexPositionNormalColored(vectors[i], Color.Yellow, normals[i]));
+		        }
+		        return new TriangleList
+		                   {
+		                       Indices = indices,
+		                       Vertices = vertices,
+		                   };
+		    }
 		}
 
-		public static Model LoadM2(string fileName) {
-			string path = MpqNavSettings.MpqPath + fileName;
+	    public static Model LoadM2(string fileName) {
+			string path = fileName;
 			if(path.Substring(path.Length - 4) == ".mdx") {
 				path = path.Substring(0, path.Length - 4) + ".m2";
 			}
-			if(!File.Exists(path)) {
-				throw new Exception(String.Format("File does not exist: {0}", path));
-			}
+	        var fileInfo = FileInfoFactory.Create();
+		    {
+		        if (!fileInfo.Exists(path))
+		        {
+		            throw new Exception(String.Format("File does not exist: {0}", path));
+		        }
 
-			using(var br = new BinaryReader(File.OpenRead(path))) {
-				br.BaseStream.Position = 60; //wotlk
-				uint numberOfVerts = br.ReadUInt32();
-				uint vertsOffset = br.ReadUInt32();
-				uint numberOfViews = br.ReadUInt32();
-				//UInt32 viewsOffset = br.ReadUInt32(); //now in skins
+		        using (var br = new BinaryReader(fileInfo.OpenRead(path)))
+		        {
+		            br.BaseStream.Position = 60; //wotlk
+		            uint numberOfVerts = br.ReadUInt32();
+		            uint vertsOffset = br.ReadUInt32();
+		            uint numberOfViews = br.ReadUInt32();
+		            //UInt32 viewsOffset = br.ReadUInt32(); //now in skins
 
-				br.BaseStream.Position = 216; //wotlk
-				uint nBoundingTriangles = br.ReadUInt32();
-				uint ofsBoundingTriangles = br.ReadUInt32();
-				uint nBoundingVertices = br.ReadUInt32();
-				uint ofsBoundingVertices = br.ReadUInt32();
-				uint nBoundingNormals = br.ReadUInt32();
-				uint ofsBoundingNormals = br.ReadUInt32();
+		            br.BaseStream.Position = 216; //wotlk
+		            uint nBoundingTriangles = br.ReadUInt32();
+		            uint ofsBoundingTriangles = br.ReadUInt32();
+		            uint nBoundingVertices = br.ReadUInt32();
+		            uint ofsBoundingVertices = br.ReadUInt32();
+		            uint nBoundingNormals = br.ReadUInt32();
+		            uint ofsBoundingNormals = br.ReadUInt32();
 			
-				var indices = new IndicesParser(br, ofsBoundingTriangles, nBoundingTriangles).Parse();
+		            var indices = new IndicesParser(br, ofsBoundingTriangles, nBoundingTriangles).Parse();
 
-				var vectors = new VectorsListParser(br, ofsBoundingVertices, nBoundingVertices).Parse();
+		            var vectors = new VectorsListParser(br, ofsBoundingVertices, nBoundingVertices).Parse();
 
-				//var normals = new VectorsListParser(br, ofsBoundingNormals, nBoundingNormals).Parse();
+		            //var normals = new VectorsListParser(br, ofsBoundingNormals, nBoundingNormals).Parse();
 
-				var vertices = new List<VertexPositionNormalColored>();
-				for(var i = 0; i < vectors.Count; i++) {
-					vertices.Add(new VertexPositionNormalColored(vectors[i], Color.Red, Vector3.Up));
-				}
+		            var vertices = vectors
+		                .Select(t => new VertexPositionNormalColored(t, Color.Red, Vector3.Up))
+		                .ToList();
 
-				var list = new TriangleList {
-				                            	Indices = indices,
-				                            	Vertices = vertices,
-				                            };
-				return new Model(list);
-			}
+		            var list = new TriangleList {
+		                                            Indices = indices,
+		                                            Vertices = vertices,
+		                                        };
+		            return new Model(list);
+		        }
+		    }
 		}
 	}
 }
