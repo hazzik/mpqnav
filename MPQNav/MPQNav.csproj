@@ -88,7 +88,7 @@
     <Compile Include="Console\KeyBindings.cs" />
     <Compile Include="Console\MpqConsole.cs" />
     <Compile Include="Console\XnaConsole.cs" />
-    <Compile Include="Graphics\ITriangleList.cs" />
+    <Compile Include="Graphics\TriangleList.cs" />
     <Compile Include="IO\FileInfoFactory.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="Maps.cs" />
@@ -104,14 +104,12 @@
     <Compile Include="MPQ\ADT\ADTManager.cs" />
     <Compile Include="Graphics\GraphicsDeviceExtensions.cs" />
     <Compile Include="Graphics\TriangleListCollection.cs" />
-    <Compile Include="Graphics\TriangleListExtensions.cs" />
     <Compile Include="Graphics\Model.cs" />
     <Compile Include="Chunks\Parsers\MONRChunkParser.cs" />
     <Compile Include="Chunks\Parsers\MOVIChunkParser.cs" />
     <Compile Include="Chunks\Parsers\MOVTChunkParser.cs" />
     <Compile Include="Chunks\MOHD.cs" />
     <Compile Include="Chunks\Parsers\MOHDChunkParser.cs" />
-    <Compile Include="Graphics\TriangleList.cs" />
     <Compile Include="IO\IFileInfo.cs" />
     <Compile Include="IO\FileInfo.cs" />
     <Compile Include="MPQ\ADT\IndicesParser.cs" />

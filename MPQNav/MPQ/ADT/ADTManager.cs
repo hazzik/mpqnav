@@ -27,7 +27,7 @@ namespace MPQNav.ADT
         /// </summary>
         private readonly string _continent;
 
-        private ITriangleList _triangleList;
+        private TriangleList _triangleList;
 
         /// <summary>
         /// Boolean variable representing if all the rendering data has been cached.
@@ -50,7 +50,7 @@ namespace MPQNav.ADT
 
         #endregion
 
-        public ITriangleList TriangleList
+        public TriangleList TriangleList
         {
             get
             {
@@ -99,7 +99,7 @@ namespace MPQNav.ADT
             return file;
         }
 
-        public ITriangleList BuildTriangleList()
+        public TriangleList BuildTriangleList()
         {
             // Cycle through each ADT
             var triangleListCollection = new TriangleListCollection();
@@ -120,27 +120,11 @@ namespace MPQNav.ADT
                 }
             }
 
-            ITriangleList list = triangleListCollection.Optimize();
+            TriangleList list = triangleListCollection.Optimize();
 
             renderCached = true;
 
             return list;
-        }
-
-        public static Vector3 CreateOrigin(Vector3 position)
-        {
-            float pos_x = -(position.X - 17066.666666666656f);
-            float pos_y = position.Y;
-            float pos_z = -(position.Z - 17066.666666666656f);
-            return new Vector3(pos_x, pos_y, pos_z);
-        }
-
-        public static Matrix CreateTransform(Vector3 rotation, float scale)
-        {
-            return Matrix.CreateRotationX(MathHelper.ToRadians(rotation.Z))*
-                   Matrix.CreateRotationY(MathHelper.ToRadians(rotation.Y - 90))*
-                   Matrix.CreateRotationZ(MathHelper.ToRadians(-rotation.X))*
-                   Matrix.CreateScale(scale);
         }
     }
 }

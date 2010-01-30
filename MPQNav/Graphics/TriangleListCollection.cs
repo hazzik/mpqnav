@@ -3,16 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace MPQNav.Graphics {
-	internal class TriangleListCollection : ICollection<ITriangleList>, ITriangleList {
+	internal class TriangleListCollection :TriangleList, ICollection<TriangleList> {
 		private readonly IList<int> _indices = new List<int>();
-		private readonly IList<ITriangleList> _lists = new List<ITriangleList>();
+		private readonly IList<TriangleList> _lists = new List<TriangleList>();
 		private readonly IList<VertexPositionNormalColored> _vertices = new List<VertexPositionNormalColored>();
 		private bool _durty;
 		private int _offset;
 
 		#region ICollection<ITriangleList> Members
 
-		public void Add(ITriangleList triangeList) {
+		public void Add(TriangleList triangeList) {
 			_lists.Add(triangeList);
 			_durty = true;
 		}
@@ -22,15 +22,15 @@ namespace MPQNav.Graphics {
 			_durty = true;
 		}
 
-		public bool Contains(ITriangleList item) {
+		public bool Contains(TriangleList item) {
 			return _lists.Contains(item);
 		}
 
-		public void CopyTo(ITriangleList[] array, int arrayIndex) {
+		public void CopyTo(TriangleList[] array, int arrayIndex) {
 			_lists.CopyTo(array, arrayIndex);
 		}
 
-		public bool Remove(ITriangleList item) {
+		public bool Remove(TriangleList item) {
 			if(_lists.Remove(item)) {
 				_durty = true;
 				return true;
@@ -50,7 +50,7 @@ namespace MPQNav.Graphics {
 			return GetEnumerator();
 		}
 
-		IEnumerator<ITriangleList> IEnumerable<ITriangleList>.GetEnumerator() {
+		IEnumerator<TriangleList> IEnumerable<TriangleList>.GetEnumerator() {
 			return GetEnumerator();
 		}
 
@@ -58,7 +58,7 @@ namespace MPQNav.Graphics {
 
 		#region ITriangleList Members
 
-		public IList<VertexPositionNormalColored> Vertices {
+		public override IList<VertexPositionNormalColored> Vertices {
 			get {
 				lock(this) {
 					if(_durty) {
@@ -69,7 +69,7 @@ namespace MPQNav.Graphics {
 			}
 		}
 
-		public IList<int> Indices {
+        public override IList<int> Indices {
 			get {
 				lock(this) {
 					if(_durty) {
@@ -82,14 +82,14 @@ namespace MPQNav.Graphics {
 
 		#endregion
 
-		public IEnumerator<ITriangleList> GetEnumerator() {
+		public IEnumerator<TriangleList> GetEnumerator() {
 			return _lists.GetEnumerator();
 		}
 
 		private void JoinAll() {
 			_vertices.Clear();
 			_indices.Clear();
-			foreach(ITriangleList list in _lists) {
+			foreach(TriangleList list in _lists) {
 				for(int v = 0; v < list.Vertices.Count; v++) {
 					_vertices.Add(list.Vertices[v]);
 				}
