@@ -327,27 +327,35 @@ namespace MPQNav.ADT {
 
 	    private TriangleList triangleList;
 
-	    public TriangleList GetTriangleList()
-        {
-            if (triangleList == null)
-            {
-                var col = new TriangleListCollection();
-                // Handle the ADTs
-                col.Add(triangeList);
-                col.Add(triangeListH2O);
-                // Handle the WMOs
-                foreach (Model w in wmos)
-                {
-                    col.Add(w.TriangleList);
-                }
-                // Handle the M2s
-                foreach (Model m in m2S)
-                {
-                    col.Add(m.TriangleList);
-                }
-                triangleList = col.Optimize();
-            }
-	        return triangleList;
-        }
+	    public TriangleList TriangleList
+	    {
+	        get
+	        {
+	            if (triangleList == null)
+	            {
+	                triangleList = BuildTriangleList();
+	            }
+	            return triangleList;
+	        }
+	    }
+
+	    private TriangleList BuildTriangleList()
+	    {
+	        var col = new TriangleListCollection();
+	        // Handle the ADTs
+	        col.Add(triangeList);
+	        col.Add(triangeListH2O);
+	        // Handle the WMOs
+	        foreach (Model w in wmos)
+	        {
+	            col.Add(w.TriangleList);
+	        }
+	        // Handle the M2s
+	        foreach (Model m in m2S)
+	        {
+	            col.Add(m.TriangleList);
+	        }
+	        return col.Optimize();
+	    }
 	}
 }

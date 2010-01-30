@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using MPQNav.Graphics;
 using MPQNav.IO;
@@ -14,20 +13,12 @@ namespace MPQNav.ADT
     {
         private const string AdtPath = "World\\Maps\\";
 
-        /// <summary>
-        /// List of all ADTs managed by this ADT manager
-        /// </summary>
-        private readonly List<ADT> adts = new List<ADT>();
-
-        /// <summary>
-        /// Continent of the ADT Manager
-        /// </summary>
         private readonly string continent;
 
-        private TriangleList triangleList;
+        private readonly TriangleListCollection triangleList = new TriangleListCollection();
 
         /// <summary>
-        /// Creates a new instance of the ADT manager.
+        /// Creates a new instance of the map.
         /// </summary>
         /// <param name="continent">Continent of the ADT</param>
         /// <example>Map map = new Map(continent.Azeroth);</example>
@@ -38,7 +29,7 @@ namespace MPQNav.ADT
 
         public TriangleList TriangleList
         {
-            get { return triangleList ?? (triangleList = BuildTriangleList()); }
+            get { return triangleList; }
         }
 
         /// <summary>
@@ -48,17 +39,17 @@ namespace MPQNav.ADT
         /// <param name="y">Y coordinate of the ADT in the 64 x 64 grid</param>
         public void LoadADT(int x, int y)
         {
-            triangleList = null;
             ADT adt = ReadADT(x, y);
 
             adt.Load();
-            adts.Add(adt);
+
+            triangleList.Add(adt.TriangleList);
         }
 
         private ADT ReadADT(int x, int y)
         {
             string file = GetAdtFileName(x, y);
-            var fileInfo = FileInfoFactory.Create();
+            IFileInfo fileInfo = FileInfoFactory.Create();
             if (fileInfo.Exists(file) == false)
                 throw new Exception(String.Format("ADT Doesn't exist: {0}", file));
 
@@ -71,18 +62,6 @@ namespace MPQNav.ADT
         private string GetAdtFileName(int x, int y)
         {
             return String.Format("{0}{1}\\{1}_{2}_{3}.adt", AdtPath, continent, x, y);
-        }
-
-        private TriangleList BuildTriangleList()
-        {
-            // Cycle through each ADT
-            var triangleListCollection = new TriangleListCollection();
-            foreach (ADT a in adts)
-            {
-                triangleListCollection.Add(a.GetTriangleList());
-            }
-
-            return triangleListCollection.Optimize();
         }
     }
 }
