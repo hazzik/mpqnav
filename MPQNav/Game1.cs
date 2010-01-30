@@ -70,7 +70,7 @@ namespace MPQNav {
 
 		private BasicEffect basicEffect;
 
-		private ADT.ADTManager manager;
+		private ADT.Map manager;
 
 		/// <summary>
 		/// Console used to execute commands while the game is running.
@@ -101,9 +101,9 @@ namespace MPQNav {
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
-			manager = new ADTManager(MpqNavSettings.DefaultContinent);
+			manager = new Map(MpqNavSettings.DefaultContinent);
 
-			manager.loadADT(MpqNavSettings.DefaultMapX, MpqNavSettings.DefaultMapY);
+			manager.LoadADT(MpqNavSettings.DefaultMapX, MpqNavSettings.DefaultMapY);
 
 			var renderVerticies = manager.TriangleList.Vertices.ToArray();
 			var renderIndices = manager.TriangleList.Indices.ToArray();
@@ -119,10 +119,10 @@ namespace MPQNav {
 		public void DoCommand() {
 			if(console.Command.commandCode.Equals(MpqConsole.ConsoleCommandStruct.CommandCode.Load)) {
 				String command = console.Command.commandData;
-				int map_x = int.Parse(command.Split(" ".ToCharArray())[0]);
-				int map_y = int.Parse(command.Split(" ".ToCharArray())[1]);
+				int map_x = int.Parse(command.Split(' ')[0]);
+				int map_y = int.Parse(command.Split(' ')[1]);
 				console.WriteLine("Loading map:" + map_x + " " + map_y);
-				manager.loadADT(map_x, map_y);
+				manager.LoadADT(map_x, map_y);
 			}
 		}
 

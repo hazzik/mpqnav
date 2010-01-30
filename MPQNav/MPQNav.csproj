@@ -95,7 +95,7 @@
     <Compile Include="Chunks\MHDR.cs" />
     <Compile Include="Chunks\MODF.cs" />
     <Compile Include="MPQ\ADT\ADT.cs" />
-    <Compile Include="MPQ\ADT\ADTManager.cs" />
+    <Compile Include="MPQ\ADT\Map.cs" />
     <Compile Include="Graphics\GraphicsDeviceExtensions.cs" />
     <Compile Include="Graphics\TriangleListCollection.cs" />
     <Compile Include="Graphics\Model.cs" />

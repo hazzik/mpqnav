@@ -18,50 +18,42 @@ namespace MPQNav.ADT {
 		/// <summary>
 		/// Array of MCNK chunks which give the ADT vertex information for this ADT
 		/// </summary>
-		public MCNK[,] _MCNKArray;
+		public MCNK[,] MCNKArray;
 
 		/// <summary>
 		/// List of MDDF Chunks which are placement information for M2s
 		/// </summary>
-		public MDDF[] _MDDFList = new MDDF[0];
+		public MDDF[] MDDFList = new MDDF[0];
 
 		/// <summary>
 		/// Array of MH20 chunks which give the ADT FLUID vertex information for this ADT
 		/// </summary>
-		public MH2O[,] _MH2OArray;
+		public MH2O[,] MH2OArray;
 
 		/// <summary>
 		/// List of MODF Chunks which are placement information for WMOs
 		/// </summary>
-		public List<MODF> _MODFList = new List<MODF>();
+		public List<MODF> MODFList = new List<MODF>();
 
 		/// <summary>
 		/// Version of the ADT
 		/// </summary>
 		/// <example></example>
-		public Int32 _Version;
+		public Int32 Version;
 
 		#endregion
 
-		private readonly IList<Model> _wmos = new List<Model>();
-		private readonly IList<Model> _m2s = new List<Model>();
+		private readonly IList<Model> wmos = new List<Model>();
+		private readonly IList<Model> m2S = new List<Model>();
 
-		public IList<Model> WMOs {
-			get { return _wmos; }
-		}
+	    private TriangleList triangeListH2O;
 
-		public TriangleList TriangeListH2O { get; set; }
+	    private TriangleList triangeList;
 
-		public TriangleList TriangeList { get; set; }
-
-		public IList<Model> M2s {
-			get { return _m2s; }
-		}
-
-		public TriangleList GenerateVertexAndIndicesH2O() {
+	    private TriangleList GenerateVertexAndIndicesH2O() {
 			var vertices = new List<VertexPositionNormalColored>();
 			var indices = new List<int>();
-			if(_MH2OArray != null) {
+			if(MH2OArray != null) {
 				float offset_x = (533.33333f / 16) / 8;
 				float offset_z = (533.33333f / 16) / 8;
 
@@ -73,9 +65,9 @@ namespace MPQNav.ADT {
 						bool[,] MH2ORenderMap;
 
 						_TempVertexCounter = VertexCounter;
-						float x = _MCNKArray[Mx, My].x;
-						float z = _MCNKArray[Mx, My].z;
-						MH2O mh2O = _MH2OArray[Mx, My];
+						float x = MCNKArray[Mx, My].x;
+						float z = MCNKArray[Mx, My].z;
+						MH2O mh2O = MH2OArray[Mx, My];
 
 						float y_pos = mh2O.heightLevel1;
 						if(mh2O.used) {
@@ -133,14 +125,14 @@ namespace MPQNav.ADT {
 			return Color.Green;
 		}
 
-		public TriangleList GenerateVertexAndIndices() {
+	    private TriangleList GenerateVertexAndIndices() {
 			var vertices = new List<VertexPositionNormalColored>();
 			var indices = new List<int>();
 
 
 			for(int My = 0; My < 16; My++) {
 				for(int Mx = 0; Mx < 16; Mx++) {
-					MCNK lMCNK = _MCNKArray[Mx, My];
+					MCNK lMCNK = MCNKArray[Mx, My];
 
 					var HolesMap = new bool[4, 4];
 					if(lMCNK.holes > 0) {
@@ -209,10 +201,10 @@ namespace MPQNav.ADT {
 			return new TriangleList( indices, vertices);
 		}
 
-		public void LoadWMO() {
-			foreach(MODF modf in _MODFList) {
+	    private void LoadWMO() {
+			foreach(MODF modf in MODFList) {
 				var wmo = LoadWMO(modf.FileName);
-				_wmos.Add(wmo.Transform(modf.Position, modf.Rotation, 1.0f));
+				wmos.Add(wmo.Transform(modf.Position, modf.Rotation, 1.0f));
 			}
 		}
 
@@ -245,10 +237,10 @@ namespace MPQNav.ADT {
 		    return new Model(list);
 		}
 
-	    public void LoadM2() {
-			foreach(MDDF mmdf in _MDDFList) {
+	    private void LoadM2() {
+			foreach(MDDF mmdf in MDDFList) {
 				var m2 = LoadM2(mmdf.FilePath);
-				_m2s.Add(m2.Transform(mmdf.Position, mmdf.Rotation, mmdf.Scale));
+				m2S.Add(m2.Transform(mmdf.Position, mmdf.Rotation, mmdf.Scale));
 			}
 		}
 
@@ -258,14 +250,12 @@ namespace MPQNav.ADT {
 		/// <param name="wmoGroup">Current index in the WMO Group</param>
 		/// <param name="fileName">Full Filename of the WMO_Sub</param>
 		/// <returns></returns>
-		public static TriangleList LoadWMOSub(string fileName, int wmoGroup)
+		private static TriangleList LoadWMOSub(string fileName, int wmoGroup)
 		{
 		    var path = fileName;
 		    var fileInfo = FileInfoFactory.Create();
 		    if (fileInfo.Exists(path) == false)
-		    {
 		        throw new Exception(String.Format("File does not exist: {0}", path));
-		    }
 
 		    using (var reader = new BinaryReader(fileInfo.OpenRead(path)))
 		    {
@@ -281,7 +271,7 @@ namespace MPQNav.ADT {
 		    }
 		}
 
-	    public static Model LoadM2(string fileName)
+	    private static Model LoadM2(string fileName)
 	    {
 	        string path = fileName;
 	        if (path.Substring(path.Length - 4) == ".mdx")
@@ -324,5 +314,40 @@ namespace MPQNav.ADT {
 	            return new Model(list);
 	        }
 	    }
+
+	    public void Load()
+	    {
+	        LoadWMO();
+
+	        LoadM2();
+            
+	        triangeList = GenerateVertexAndIndices();
+	        triangeListH2O = GenerateVertexAndIndicesH2O();
+	    }
+
+	    private TriangleList triangleList;
+
+	    public TriangleList GetTriangleList()
+        {
+            if (triangleList == null)
+            {
+                var col = new TriangleListCollection();
+                // Handle the ADTs
+                col.Add(triangeList);
+                col.Add(triangeListH2O);
+                // Handle the WMOs
+                foreach (Model w in wmos)
+                {
+                    col.Add(w.TriangleList);
+                }
+                // Handle the M2s
+                foreach (Model m in m2S)
+                {
+                    col.Add(m.TriangleList);
+                }
+                triangleList = col.Optimize();
+            }
+	        return triangleList;
+        }
 	}
 }

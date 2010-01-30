@@ -15,7 +15,7 @@ namespace MPQNav.Util {
 			var adt = new ADT.ADT();
 
 			var mver = new MVERChunkParser(Reader, 0).Parse();
-			adt._Version = mver;
+			adt.Version = mver;
 
 			var mhdr = new MHDRChunkParser(Reader, Reader.BaseStream.Position).Parse();
 
@@ -23,19 +23,19 @@ namespace MPQNav.Util {
 
 			var mcnk = new MCNKChunkParser(Reader, mcins[0].Offset, mcins).Parse();
 
-			adt._MCNKArray = mcnk;
+			adt.MCNKArray = mcnk;
 
 			var mwmos = new StringArrayChunkParser("MWMO", Reader, mhdr.OffsMapObejcts + mhdr.Base).Parse();
 
-			adt._MODFList = new MODFChunkParser(Reader, mhdr.OffsObjectsDef + mhdr.Base, mwmos).Parse();
+			adt.MODFList = new MODFChunkParser(Reader, mhdr.OffsObjectsDef + mhdr.Base, mwmos).Parse();
 
 			var mmdxs = new StringArrayChunkParser("MMDX", Reader, mhdr.OffsModels + mhdr.Base).Parse();
 
-			adt._MDDFList = new MDDFChunkParser(Reader, mhdr.OffsDoodsDef + mhdr.Base, mmdxs).Parse();
+			adt.MDDFList = new MDDFChunkParser(Reader, mhdr.OffsDoodsDef + mhdr.Base, mmdxs).Parse();
 
 			var mh2os = mhdr.OffsMH2O != 0 ? new MH2OChunkParser(Reader, mhdr.OffsMH2O + mhdr.Base).Parse() : null;
 
-			adt._MH2OArray = mh2os;
+			adt.MH2OArray = mh2os;
 
 			return adt;
 		}
