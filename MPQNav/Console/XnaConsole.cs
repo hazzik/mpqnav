@@ -53,18 +53,18 @@ namespace XnaConsole {
 		private int consoleXSize, consoleYSize;
 		private int cursorOffset;
 		private int cursorPos;
-		private string InputBuffer;
+		private string inputBuffer;
 		private int lineWidth;
-		private string OutputBuffer;
+		private string outputBuffer;
 
 		#endregion
 
 		#region State and timing management stuff
 
-		private KeyboardState CurrentKeyState;
-		private KeyboardState LastKeyState;
-		private ConsoleState State;
-		private double StateStartTime;
+		private KeyboardState currentKeyState;
+		private KeyboardState lastKeyState;
+		private ConsoleState state;
+		private double stateStartTime;
 
 		#endregion
 
@@ -80,11 +80,10 @@ namespace XnaConsole {
 			device = game.GraphicsDevice;
 			spriteBatch = new SpriteBatch(device);
 			this.font = font;
-			background = new Texture2D(device, 1, 1, 1, TextureUsage.None,
-			                           SurfaceFormat.Color);
-			background.SetData(new Color[1] { new Color(50, 50, 50, 100) });
+			background = new Texture2D(device, 1, 1, false, SurfaceFormat.Color);
+			background.SetData(new[] { new Color(50, 50, 50, 100) });
 
-			InputBuffer = "";
+			inputBuffer = "";
 			history = new History();
 
 			WriteLine("### ");
@@ -96,9 +95,9 @@ namespace XnaConsole {
 			lineWidth = (int)(consoleXSize / font.MeasureString("a").X) - 2;
 			//calculate number of letters that fit on a line, using "a" as example character
 
-			State = ConsoleState.Closed;
-			StateStartTime = 0;
-			LastKeyState = CurrentKeyState = Keyboard.GetState();
+			state = ConsoleState.Closed;
+			stateStartTime = 0;
+			lastKeyState = currentKeyState = Keyboard.GetState();
 			firstInterval = 500f;
 			repeatInterval = 50f;
 
@@ -115,7 +114,7 @@ namespace XnaConsole {
 		/// </summary>
 		/// <returns>Boolean value representing if the console is open</returns>
 		public bool IsOpen() {
-			if(State.Equals(ConsoleState.Open) || State.Equals(ConsoleState.Open)) {
+			if(state.Equals(ConsoleState.Open) || state.Equals(ConsoleState.Open)) {
 				return true;
 			}
 			return false;
@@ -166,7 +165,7 @@ namespace XnaConsole {
 		/// </summary>
 		/// <param name="str"></param>
 		public void Write(string str) {
-			OutputBuffer += str;
+			outputBuffer += str;
 		}
 
 		/// <summary>
@@ -181,7 +180,7 @@ namespace XnaConsole {
 		/// Clears the output.
 		/// </summary>
 		public void Clear() {
-			OutputBuffer = "";
+			outputBuffer = "";
 		}
 
 		/// <summary>
@@ -198,7 +197,7 @@ namespace XnaConsole {
 		/// <param name="callback"></param>
 		public void Prompt(string str, InputHandler callback) {
 			Write(str);
-			string[] lines = WrapLine(OutputBuffer, lineWidth).ToArray();
+			string[] lines = WrapLine(outputBuffer, lineWidth).ToArray();
 			input = callback;
 			cursorOffset = lines[lines.Length - 1].Length;
 		}
@@ -207,8 +206,8 @@ namespace XnaConsole {
 		/// Opens the console
 		/// </summary>
 		public void Open() {
-			if(State == ConsoleState.Closed) {
-				State = ConsoleState.Opening;
+			if(state == ConsoleState.Closed) {
+				state = ConsoleState.Opening;
 				Visible = true;
 			}
 		}
@@ -218,28 +217,28 @@ namespace XnaConsole {
 		/// </summary>
 		/// <param name="gameTime">Not Sure</param>
 		public override void Update(GameTime gameTime) {
-			double now = gameTime.TotalRealTime.TotalSeconds;
+			double now = gameTime.TotalGameTime.TotalSeconds;
 			double elapsedTime = gameTime.ElapsedGameTime.TotalMilliseconds; //time since last update call
 
 			//get keyboard state
-			LastKeyState = CurrentKeyState;
-			CurrentKeyState = Keyboard.GetState();
+			lastKeyState = currentKeyState;
+			currentKeyState = Keyboard.GetState();
 
 			#region Closing & Opening states management
 
-			if(State == ConsoleState.Closing) {
-				if(now - StateStartTime > AnimationTime) {
-					State = ConsoleState.Closed;
-					StateStartTime = now;
+			if(state == ConsoleState.Closing) {
+				if(now - stateStartTime > AnimationTime) {
+					state = ConsoleState.Closed;
+					stateStartTime = now;
 				}
 
 				return;
 			}
 
-			if(State == ConsoleState.Opening) {
-				if(now - StateStartTime > AnimationTime) {
-					State = ConsoleState.Open;
-					StateStartTime = now;
+			if(state == ConsoleState.Opening) {
+				if(now - stateStartTime > AnimationTime) {
+					state = ConsoleState.Open;
+					stateStartTime = now;
 				}
 
 				return;
@@ -249,11 +248,11 @@ namespace XnaConsole {
 
 			#region Closed state management
 
-			if(State == ConsoleState.Closed) {
+			if(state == ConsoleState.Closed) {
 				if(IsKeyPressed(Keys.Escape)) //this opens the console
 				{
-					State = ConsoleState.Opening;
-					StateStartTime = now;
+					state = ConsoleState.Opening;
+					stateStartTime = now;
 					Visible = true;
 				}
 				else {
@@ -263,12 +262,12 @@ namespace XnaConsole {
 
 			#endregion
 
-			if(State == ConsoleState.Open) {
+			if(state == ConsoleState.Open) {
 				#region initialize closing animation if user presses ` or ~
 
 				if(IsKeyPressed(Keys.Escape)) {
-					State = ConsoleState.Closing;
-					StateStartTime = now;
+					state = ConsoleState.Closing;
+					stateStartTime = now;
 					return;
 				}
 
@@ -276,41 +275,41 @@ namespace XnaConsole {
 
 				//execute current line with the interpreter
 				if(IsKeyPressed(Keys.Enter)) {
-					if(InputBuffer.Length > 0) {
-						history.Add(InputBuffer); //add command to history
+					if(inputBuffer.Length > 0) {
+						history.Add(inputBuffer); //add command to history
 					}
-					WriteLine(InputBuffer);
+					WriteLine(inputBuffer);
 
-					input(InputBuffer);
+					input(inputBuffer);
 
-					InputBuffer = "";
+					inputBuffer = "";
 					cursorPos = 0;
 				}
 				//erase previous letter when backspace is pressed
 				if(KeyPressWithRepeat(Keys.Back, elapsedTime)) {
 					if(cursorPos > 0) {
-						InputBuffer = InputBuffer.Remove(cursorPos - 1, 1);
+						inputBuffer = inputBuffer.Remove(cursorPos - 1, 1);
 						cursorPos--;
 					}
 				}
 				//delete next letter when delete is pressed
 				if(KeyPressWithRepeat(Keys.Delete, elapsedTime)) {
-					if(InputBuffer.Length != 0) {
-						InputBuffer = InputBuffer.Remove(cursorPos, 1);
+					if(inputBuffer.Length != 0) {
+						inputBuffer = inputBuffer.Remove(cursorPos, 1);
 					}
 				}
 				//cycle backwards through the command history
 				if(KeyPressWithRepeat(Keys.Up, elapsedTime)) {
-					InputBuffer = history.Previous();
-					cursorPos = InputBuffer.Length;
+					inputBuffer = history.Previous();
+					cursorPos = inputBuffer.Length;
 				}
 				//cycle forwards through the command history
 				if(KeyPressWithRepeat(Keys.Down, elapsedTime)) {
-					InputBuffer = history.Next();
-					cursorPos = InputBuffer.Length;
+					inputBuffer = history.Next();
+					cursorPos = inputBuffer.Length;
 				}
 				//move the cursor to the right
-				if(KeyPressWithRepeat(Keys.Right, elapsedTime) && cursorPos != InputBuffer.Length) {
+				if(KeyPressWithRepeat(Keys.Right, elapsedTime) && cursorPos != inputBuffer.Length) {
 					cursorPos++;
 				}
 				//move the cursor left
@@ -323,7 +322,7 @@ namespace XnaConsole {
 				}
 				//move the cursor to the end of the line
 				if(IsKeyPressed(Keys.End)) {
-					cursorPos = InputBuffer.Length;
+					cursorPos = inputBuffer.Length;
 				}
 				//get a letter from input
 				string nextChar = GetStringFromKeyState(elapsedTime);
@@ -331,12 +330,12 @@ namespace XnaConsole {
 				//only add it if it isn't null
 				if(nextChar != "") {
 					//if the cursor is at the end of the line, add the letter to the end
-					if(InputBuffer.Length == cursorPos) {
-						InputBuffer += nextChar;
+					if(inputBuffer.Length == cursorPos) {
+						inputBuffer += nextChar;
 					}
 						//otherwise insert it where the cursor is
 					else {
-						InputBuffer = InputBuffer.Insert(cursorPos, nextChar);
+						inputBuffer = inputBuffer.Insert(cursorPos, nextChar);
 					}
 					cursorPos += nextChar.Length;
 				}
@@ -363,9 +362,9 @@ namespace XnaConsole {
 		/// <param name="now">Current time</param>
 		/// <returns>Not Sure</returns>
 		public string DrawCursor(double now) {
-			int spaces = (InputBuffer.Length > 0 && cursorPos > 0)
+			int spaces = (inputBuffer.Length > 0 && cursorPos > 0)
 			             	?
-			             		Render(InputBuffer.Substring(0, cursorPos))[0].Length + cursorOffset
+			             		Render(inputBuffer.Substring(0, cursorPos))[0].Length + cursorOffset
 			             	:
 			             		cursorOffset;
 			return new String(' ', spaces) + (((int)(now / CursorBlinkTime) % 2 == 0) ? "_" : "");
@@ -376,13 +375,13 @@ namespace XnaConsole {
 		/// </summary>
 		/// <param name="gameTime">gameTime</param>
 		public override void Draw(GameTime gameTime) {
-			game.GraphicsDevice.RenderState.FillMode = FillMode.Solid;
+			game.GraphicsDevice.RasterizerState = new RasterizerState {FillMode = FillMode.Solid};
 			//don't draw the console if it's closed
-			if(State == ConsoleState.Closed) {
+			if(state == ConsoleState.Closed) {
 				Visible = false;
 			}
 
-			double now = gameTime.TotalRealTime.TotalSeconds;
+			double now = gameTime.TotalGameTime.TotalSeconds;
 
 			#region Console size & dimension management
 
@@ -395,18 +394,18 @@ namespace XnaConsole {
 			int consoleYOffset = 10;
 
 			//run the opening animation
-			if(State == ConsoleState.Opening) {
+			if(state == ConsoleState.Opening) {
 				int startPosition = 0 - consoleYOffset - consoleYSize;
 				int endPosition = consoleYOffset;
 				consoleYOffset =
-					(int)MathHelper.Lerp(startPosition, endPosition, (float)(now - StateStartTime) / (float)AnimationTime);
+					(int)MathHelper.Lerp(startPosition, endPosition, (float)(now - stateStartTime) / (float)AnimationTime);
 			}
 				//run the closing animation
-			else if(State == ConsoleState.Closing) {
+			else if(state == ConsoleState.Closing) {
 				int startPosition = consoleYOffset;
 				int endPosition = 0 - consoleYOffset - consoleYSize;
 				consoleYOffset =
-					(int)MathHelper.Lerp(startPosition, endPosition, (float)(now - StateStartTime) / (float)AnimationTime);
+					(int)MathHelper.Lerp(startPosition, endPosition, (float)(now - stateStartTime) / (float)AnimationTime);
 			}
 			//calculate the number of letters that fit on a line
 			lineWidth = (int)(consoleXSize / font.MeasureString("a").X) - 2;
@@ -414,7 +413,7 @@ namespace XnaConsole {
 
 			#endregion
 
-			spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
+		    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
 			#region Background Drawing
 
@@ -431,7 +430,7 @@ namespace XnaConsole {
 			                       Color.White);
 
 			int j = 0;
-			List<string> lines = Render(OutputBuffer + InputBuffer);
+			List<string> lines = Render(outputBuffer + inputBuffer);
 			//show them in the proper order, because we're drawing from the bottom
 			foreach(string str in lines) {
 				//draw each line at an offset determined by the line height and line count
@@ -447,20 +446,22 @@ namespace XnaConsole {
 			spriteBatch.End();
 
 			//reset depth buffer to normal status, so as not to mess up 3d code
-			game.GraphicsDevice.RenderState.DepthBufferEnable = true;
-			game.GraphicsDevice.RenderState.FillMode = FillMode.WireFrame;
+			game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+
+
+		    game.GraphicsDevice.RasterizerState = new RasterizerState {FillMode = FillMode.WireFrame};  
 		}
 
 		#region keyboard status management
 
 		//check if the key has just been pressed
 		private bool IsKeyPressed(Keys key) {
-			return CurrentKeyState.IsKeyDown(key) && !LastKeyState.IsKeyDown(key);
+			return currentKeyState.IsKeyDown(key) && !lastKeyState.IsKeyDown(key);
 		}
 
 		//check if a key is pressed, and repeat it at the default repeat rate
 		private bool KeyPressWithRepeat(Keys key, double elapsedTime) {
-			if(CurrentKeyState.IsKeyDown(key)) {
+			if(currentKeyState.IsKeyDown(key)) {
 				if(IsKeyPressed(key)) {
 					return true; //if the key has just been pressed, it automatically counts
 				}
@@ -483,8 +484,8 @@ namespace XnaConsole {
 		/// <param name="elapsedTime"></param>
 		/// <returns></returns>
 		private string GetStringFromKeyState(double elapsedTime) {
-			bool shiftPressed = CurrentKeyState.IsKeyDown(Keys.LeftShift) || CurrentKeyState.IsKeyDown(Keys.RightShift);
-			bool altPressed = CurrentKeyState.IsKeyDown(Keys.LeftAlt) || CurrentKeyState.IsKeyDown(Keys.RightAlt);
+			bool shiftPressed = currentKeyState.IsKeyDown(Keys.LeftShift) || currentKeyState.IsKeyDown(Keys.RightShift);
+			bool altPressed = currentKeyState.IsKeyDown(Keys.LeftAlt) || currentKeyState.IsKeyDown(Keys.RightAlt);
 
 			foreach(KeyBinding binding in KeyboardHelper.AmericanBindings) {
 				if(KeyPressWithRepeat(binding.Key, elapsedTime)) {

@@ -1,7 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPQNav", "MPQNav\MPQNav.csproj", "{22DC5134-193C-4D61-BAE8-BE012D149098}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPQNavContent", "MPQNav\Content\MPQNavContent.contentproj", "{1AAB5F97-9296-4D09-A127-628C0033E793}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

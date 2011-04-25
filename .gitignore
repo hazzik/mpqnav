@@ -1,4 +1,8 @@
-
 *.user
 *.suo
 /_ReSharper.*/
+/MPQNav/Content/obj/*
+/MPQNav/Content/bin/*
+/MPQNav/bin/*
+/MPQNav/obj/*
+*.cachefile
