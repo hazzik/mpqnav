@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MPQNav.Chunks;
 using MPQNav.Chunks.Parsers;
 using MPQNav.Graphics;
@@ -13,9 +12,7 @@ using Model=MPQNav.Graphics.Model;
 
 namespace MPQNav.ADT {
 	internal class ADT {
-		#region Variables
-
-		/// <summary>
+	    /// <summary>
 		/// Array of MCNK chunks which give the ADT vertex information for this ADT
 		/// </summary>
 		public MCNK[,] MCNKArray;
@@ -41,10 +38,8 @@ namespace MPQNav.ADT {
 		/// <example></example>
 		public Int32 Version;
 
-		#endregion
-
-		private readonly IList<Model> wmos = new List<Model>();
-		private readonly IList<Model> m2S = new List<Model>();
+	    private IList<Model> wmos = new List<Model>();
+		private IList<Model> m2S = new List<Model>();
 
 	    private TriangleList triangeListH2O;
 
@@ -201,12 +196,13 @@ namespace MPQNav.ADT {
 			return new TriangleList( indices, vertices);
 		}
 
-	    private void LoadWMO() {
-			foreach(MODF modf in MODFList) {
-				var wmo = LoadWMO(modf.FileName);
-				wmos.Add(wmo.Transform(modf.Position, modf.Rotation, 1.0f));
-			}
-		}
+	    private void LoadWMO()
+	    {
+	        wmos = (from modf in MODFList
+	                let wmo = LoadWMO(modf.FileName)
+	                select wmo.Transform(modf.Position, modf.Rotation, 1.0f))
+	            .ToList();
+	    }
 
 		/// <summary> Loads WMO from file </summary>
 		/// <param name="fileName">Full name of file of the WMO</param>
@@ -217,9 +213,7 @@ namespace MPQNav.ADT {
 		    MOHD mohd;
 		    var fileInfo = FileInfoFactory.Create();
 		    if (fileInfo.Exists(path) == false)
-		    {
 		        throw new Exception(String.Format("File does not exist: {0}", path));
-		    }
 
 		    using (var br = new BinaryReader(fileInfo.OpenRead(path)))
 		    {
@@ -230,27 +224,26 @@ namespace MPQNav.ADT {
 		    var list = new TriangleListCollection();
 		    for (int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++)
 		    {
-		        list.Add(LoadWMOSub(String.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup),
-		                            wmoGroup));
+		        list.Add(LoadWMOSub(String.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup)));
 		    }
 
 		    return new Model(list);
 		}
 
-	    private void LoadM2() {
-			foreach(MDDF mmdf in MDDFList) {
-				var m2 = LoadM2(mmdf.FilePath);
-				m2S.Add(m2.Transform(mmdf.Position, mmdf.Rotation, mmdf.Scale));
-			}
-		}
+	    private void LoadM2()
+	    {
+	        m2S = (from mmdf in MDDFList
+	               let m2 = LoadM2(mmdf.FilePath)
+	               select m2.Transform(mmdf.Position, mmdf.Rotation, mmdf.Scale))
+	            .ToList();
+	    }
 
-		/// <summary>
-		/// Gets a WMO_Sub from the WMO Group file
-		/// </summary>
-		/// <param name="wmoGroup">Current index in the WMO Group</param>
-		/// <param name="fileName">Full Filename of the WMO_Sub</param>
-		/// <returns></returns>
-		private static TriangleList LoadWMOSub(string fileName, int wmoGroup)
+	    /// <summary>
+	    /// Gets a WMO_Sub from the WMO Group file
+	    /// </summary>
+	    /// <param name="fileName">Full Filename of the WMO_Sub</param>
+	    /// <returns></returns>
+	    private static TriangleList LoadWMOSub(string fileName)
 		{
 		    var path = fileName;
 		    var fileInfo = FileInfoFactory.Create();
@@ -329,14 +322,7 @@ namespace MPQNav.ADT {
 
 	    public TriangleList TriangleList
 	    {
-	        get
-	        {
-	            if (triangleList == null)
-	            {
-	                triangleList = BuildTriangleList();
-	            }
-	            return triangleList;
-	        }
+	        get { return triangleList ?? (triangleList = BuildTriangleList()); }
 	    }
 
 	    private TriangleList BuildTriangleList()
