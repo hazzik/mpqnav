@@ -43,7 +43,9 @@ namespace MPQNav.ADT
 
             adt.Load();
 
-            triangleList.Add(adt.TriangleList);
+        	var triangeList = adt.TriangleList;
+
+        	triangleList.Add(triangeList);
         }
 
         private ADT ReadADT(int x, int y)

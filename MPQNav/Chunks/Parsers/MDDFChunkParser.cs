@@ -22,7 +22,7 @@ namespace MPQNav.Chunks.Parsers {
 			int bytesRead = 0;
 			while(bytesRead < Size) {
 				var lMDDF = new MDDF {
-				                     	FilePath = _names[(int)Reader.ReadUInt32()],
+				                     	FileName = _names[(int)Reader.ReadUInt32()],
 				                     	UniqId = Reader.ReadUInt32(),
 				                     	Position = new Vector3(Reader.ReadSingle(),
 				                     	                       Reader.ReadSingle(),

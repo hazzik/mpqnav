@@ -1,11 +1,12 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using MPQNav.ADT;
 
 namespace MPQNav.Chunks {
 	/// <summary>
 	/// MDDF Chunk Class - Placement information for M2 Models
 	/// </summary>
-	public class MDDF {
+	public class MDDF : IModelDescriptor {
 		///<summary>
 		///</summary>
 		public MDDF() {
@@ -13,7 +14,7 @@ namespace MPQNav.Chunks {
 		}
 
 		/// <summary> Filename of the M2 </summary>
-		public string FilePath { get; set; }
+		public string FileName { get; set; }
 
 		/// <summary> Unique ID of the M2 in this ADT </summary>
 		public uint UniqId { get; set; }
@@ -22,7 +23,7 @@ namespace MPQNav.Chunks {
 		public Vector3 Position { get; set; }
 
 		/// <summary> Rotation of the M2 </summary>
-		public Vector3 Rotation;
+		public Vector3 Rotation { get; set; }
 
 		/// <summary> Scale factor of the M2 </summary>
 		public float Scale { get; set; }

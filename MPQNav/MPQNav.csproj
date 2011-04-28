@@ -128,6 +128,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MPQ\ADT\IModelDescriptor.cs" />
     <Compile Include="Chunks\Parsers\StringArrayChunkParser.cs" />
     <Compile Include="Console\KeyBindings.cs" />
     <Compile Include="Console\MpqConsole.cs" />
@@ -144,6 +145,8 @@
     <Compile Include="Chunks\MHDR.cs" />
     <Compile Include="Chunks\MODF.cs" />
     <Compile Include="MPQ\ADT\ADT.cs" />
+    <Compile Include="MPQ\ADT\IModelLoader.cs" />
+    <Compile Include="MPQ\ADT\M2Loader.cs" />
     <Compile Include="MPQ\ADT\Map.cs" />
     <Compile Include="Graphics\GraphicsDeviceExtensions.cs" />
     <Compile Include="Graphics\TriangleListCollection.cs" />
@@ -158,6 +161,7 @@
     <Compile Include="MPQ\ADT\IndicesParser.cs" />
     <Compile Include="IO\MpqFileInfo.cs" />
     <Compile Include="MPQ\ADT\VectorsListParser.cs" />
+    <Compile Include="MPQ\ADT\WmoLoader.cs" />
     <Compile Include="ParserBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
