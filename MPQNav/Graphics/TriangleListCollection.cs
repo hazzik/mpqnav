@@ -9,9 +9,7 @@ namespace MPQNav.Graphics {
 		private readonly IList<VertexPositionNormalColored> _vertices = new List<VertexPositionNormalColored>();
 		private bool _durty;
 
-	    #region ICollection<ITriangleList> Members
-
-		public void Add(TriangleList triangeList) {
+	    public void Add(TriangleList triangeList) {
 			_lists.Add(triangeList);
 			_durty = true;
 		}
@@ -53,9 +51,7 @@ namespace MPQNav.Graphics {
 			return GetEnumerator();
 		}
 
-		#endregion
-
-		#region ITriangleList Members
+	    #region ITriangleList Members
 
 		public override IList<VertexPositionNormalColored> Vertices {
 			get {
@@ -88,14 +84,14 @@ namespace MPQNav.Graphics {
 		private void JoinAll() {
 			_vertices.Clear();
 			_indices.Clear();
-		    var offset = 0;
-			foreach(TriangleList list in _lists) {
-				for(int v = 0; v < list.Vertices.Count; v++) {
-					_vertices.Add(list.Vertices[v]);
-				}
-				for(int i = 0; i < list.Indices.Count; i++) {
-					_indices.Add(list.Indices[i] + offset);
-				}
+			var offset = 0;
+			foreach(var list in _lists) {
+				foreach (var vertex in list.Vertices)
+					_vertices.Add(vertex);
+
+				foreach (var index in list.Indices)
+					_indices.Add(index + offset);
+
 				offset = _vertices.Count;
 			}
 			_durty = false;
