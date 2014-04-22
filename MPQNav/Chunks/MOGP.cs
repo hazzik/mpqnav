@@ -8,5 +8,6 @@ namespace MPQNav.Chunks
         public int[] indices;
         public IList<Vector3> vectors;
         public IList<Vector3> normals;
+        public IList<Vector2> textures;
     }
 }

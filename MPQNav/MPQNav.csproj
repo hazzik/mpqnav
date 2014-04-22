@@ -128,6 +128,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chunks\Parsers\Vector2ChunkParser.cs" />
     <Compile Include="IO\CascFileInfo.cs" />
     <Compile Include="MPQ\ADT\IModelDescriptor.cs" />
     <Compile Include="Chunks\Parsers\StringArrayChunkParser.cs" />
@@ -151,9 +152,8 @@
     <Compile Include="Graphics\GraphicsDeviceExtensions.cs" />
     <Compile Include="Graphics\TriangleListCollection.cs" />
     <Compile Include="Graphics\Model.cs" />
-    <Compile Include="Chunks\Parsers\MONRChunkParser.cs" />
     <Compile Include="Chunks\Parsers\MOVIChunkParser.cs" />
-    <Compile Include="Chunks\Parsers\MOVTChunkParser.cs" />
+    <Compile Include="Chunks\Parsers\Vector3ChunkParser.cs" />
     <Compile Include="Chunks\MOHD.cs" />
     <Compile Include="Chunks\Parsers\MOHDChunkParser.cs" />
     <Compile Include="IO\IFileInfo.cs" />

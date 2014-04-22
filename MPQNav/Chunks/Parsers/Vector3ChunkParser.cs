@@ -5,9 +5,9 @@ using MPQNav.Util;
 
 namespace MPQNav.Chunks.Parsers
 {
-    internal class MOVTChunkParser : ChunkParser<IList<Vector3>>
+    internal class Vector3ChunkParser : ChunkParser<IList<Vector3>>
     {
-        public MOVTChunkParser(uint size)
+        public Vector3ChunkParser(uint size)
             : base(size)
         {
         }
@@ -18,10 +18,10 @@ namespace MPQNav.Chunks.Parsers
             var end = reader.BaseStream.Position + Size;
             while (reader.BaseStream.Position < end)
             {
-                float vect_x = (reader.ReadSingle()*-1);
-                float vect_z = reader.ReadSingle();
-                float vect_y = reader.ReadSingle();
-                result.Add(new Vector3(vect_x, vect_y, vect_z));
+                float x = (reader.ReadSingle()*-1);
+                float z = reader.ReadSingle();
+                float y = reader.ReadSingle();
+                result.Add(new Vector3(x, y, z));
             }
 
             return result;

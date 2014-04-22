@@ -26,10 +26,13 @@ namespace MPQNav.Chunks.Parsers
                         result.indices = new MOVIChunkParser(size).Parse(r);
                         break;
                     case "MOVT":
-                        result.vectors = new MOVTChunkParser(size).Parse(r);
+                        result.vectors = new Vector3ChunkParser(size).Parse(r);
                         break;
                     case "MONR":
-                        result.normals = new MONRChunkParser(size).Parse(r);
+                        result.normals = new Vector3ChunkParser(size).Parse(r);
+                        break;
+                    case "MOTV" :
+                        result.textures = new Vector2ChunkParser(size).Parse(r);
                         break;
                 }
             }
