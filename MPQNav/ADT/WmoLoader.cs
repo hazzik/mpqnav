@@ -9,7 +9,7 @@ using MPQNav.IO;
 
 namespace MPQNav.ADT
 {
-	internal class WmoLoader : IModelLoader
+    internal class WmoLoader : IModelLoader
 	{
 		public Model Load(IModelDescriptor modf)
 		{

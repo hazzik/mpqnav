@@ -51,27 +51,28 @@ namespace MPQNav.ADT
 
         private ADT ReadADT(int x, int y)
         {
-            string file = GetAdtFileName(x, y);
+            var fileName = GetAdtFileName(x, y);
+            string mainFile = fileName + ".adt";
             IFileInfo fileInfo = FileInfoFactory.Create();
-            if (fileInfo.Exists(file) == false)
-                throw new Exception(String.Format("ADT Doesn't exist: {0}", file));
+            if (fileInfo.Exists(mainFile) == false)
+                throw new Exception(String.Format("ADT Doesn't exist: {0}", mainFile));
 
             var adt = new ADT
             {
                 MCNKArray = new MCNK[16, 16]
             };
 
-            using (var reader = new BinaryReader(fileInfo.OpenRead(file)))
+            using (var reader = new BinaryReader(fileInfo.OpenRead(mainFile)))
             {
                 ADTChunkFileParser.Parse(reader, adt, true);
-            }  
-            
+            }
+
             var additionalfiles = new[]
             {
-                Path.GetDirectoryName(file)+"\\"+Path.GetFileNameWithoutExtension(file) + "_obj0.adt",
-                Path.GetDirectoryName(file)+"\\"+Path.GetFileNameWithoutExtension(file) + "_obj1.adt",
-               Path.GetDirectoryName(file)+"\\"+ Path.GetFileNameWithoutExtension(file) + "_tex0.adt",
-                Path.GetDirectoryName(file)+"\\"+Path.GetFileNameWithoutExtension(file) + "_tex1.adt",
+                fileName + "_obj0.adt",
+                fileName + "_obj1.adt",
+                fileName + "_tex0.adt",
+                fileName + "_tex1.adt",
             };
 
             foreach (var s in additionalfiles)
@@ -90,7 +91,7 @@ namespace MPQNav.ADT
 
         private string GetAdtFileName(int x, int y)
         {
-            return String.Format("{0}{1}\\{1}_{2}_{3}.adt", AdtPath, continent, x, y);
+            return String.Format("{0}{1}\\{1}_{2}_{3}", AdtPath, continent, x, y);
         }
     }
 }
