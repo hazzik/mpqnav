@@ -128,6 +128,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IO\CascFileInfo.cs" />
     <Compile Include="MPQ\ADT\IModelDescriptor.cs" />
     <Compile Include="Chunks\Parsers\StringArrayChunkParser.cs" />
     <Compile Include="Console\KeyBindings.cs" />
@@ -135,7 +136,6 @@
     <Compile Include="Console\XnaConsole.cs" />
     <Compile Include="Graphics\TriangleList.cs" />
     <Compile Include="IO\FileInfoFactory.cs" />
-    <Compile Include="IParser.cs" />
     <Compile Include="Maps.cs" />
     <Compile Include="MpqNavSettings.cs" />
     <Compile Include="Chunks\MDDF.cs" />
@@ -162,7 +162,7 @@
     <Compile Include="IO\MpqFileInfo.cs" />
     <Compile Include="MPQ\ADT\VectorsListParser.cs" />
     <Compile Include="MPQ\ADT\WmoLoader.cs" />
-    <Compile Include="ParserBase.cs" />
+    <Compile Include="IParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
@@ -220,6 +220,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\CASCExplorer\CASCExplorer\CASCExplorer.csproj">
+      <Project>{cb208f91-b1e8-4319-b4c0-2f4e15a4bfbc}</Project>
+      <Name>CASCExplorer</Name>
+    </ProjectReference>
     <ProjectReference Include="Content\MPQNavContent.contentproj">
       <Project>{1AAB5F97-9296-4D09-A127-628C0033E793}</Project>
       <Name>MPQNavContent %28Content%29</Name>

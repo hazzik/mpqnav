@@ -11,6 +11,10 @@
 
         private static IFileInfo CreateInternal()
         {
+            if (MpqNavSettings.UseCasc)
+            {
+                 return new CascFileInfo();
+            }
             if (MpqNavSettings.UseMpq)
             {
                 return new MpqFileInfo(MpqNavSettings.MpqPath);

@@ -5,8 +5,7 @@ namespace MPQNav.Chunks {
 	/// Contains offsets (relative to 0x14) for some other chunks that appear in the file. Since the file follows a well-defined structure, this is redundant information.
 	/// </summary>
 	internal class MHDR {
-		public uint Base { get; set; }
-		/*000h*/
+	    /*000h*/
 		public uint Pad { get; set; }
 		/*004h*/
 		public uint OffsInfo { get; set; }

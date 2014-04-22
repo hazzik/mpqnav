@@ -6,22 +6,23 @@ using MPQNav.Util;
 
 namespace MPQNav.Chunks.Parsers {
 	internal class MONRChunkParser : ChunkParser<IList<Vector3>> {
-		public MONRChunkParser(BinaryReader reader, long absoluteStart)
-			: base("MONR", reader, absoluteStart) {
+		public MONRChunkParser(uint size)
+			: base(size) {
 		}
 
-		public override IList<Vector3> Parse() {
-			Reader.BaseStream.Position = AbsoluteStart;
+		public override IList<Vector3> Parse(BinaryReader reader) {
+			var vectors = new List<Vector3>();
 
-			var result = new List<Vector3>();
-			while(Reader.BaseStream.Position < AbsoluteStart + Size) {
-				float vect_x = (Reader.ReadSingle() * -1);
-				float vect_z = Reader.ReadSingle();
-				float vect_y = Reader.ReadSingle();
-				result.Add(new Vector3(vect_x, vect_y, vect_z));
-			}
+		    var end = reader.BaseStream.Position + Size;
+		    while (reader.BaseStream.Position < end)
+		    {
+		        float vect_x = (reader.ReadSingle()*-1);
+		        float vect_z = reader.ReadSingle();
+		        float vect_y = reader.ReadSingle();
+		        vectors.Add(new Vector3(vect_x, vect_y, vect_z));
+		    }
 
-			return result;
+		    return vectors;
 		}
 	}
 }

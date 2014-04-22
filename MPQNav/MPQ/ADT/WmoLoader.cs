@@ -6,7 +6,6 @@ using MPQNav.Chunks;
 using MPQNav.Chunks.Parsers;
 using MPQNav.Graphics;
 using MPQNav.IO;
-using MPQNav.Util;
 
 namespace MPQNav.ADT
 {
@@ -24,15 +23,27 @@ namespace MPQNav.ADT
 		private static Model LoadWMO(string fileName)
 		{
 			var path = fileName;
-			MOHD mohd;
+			MOHD mohd = null;
 			var fileInfo = FileInfoFactory.Create();
 			if (fileInfo.Exists(path) == false)
 				throw new Exception(String.Format("File does not exist: {0}", path));
 
 			using (var br = new BinaryReader(fileInfo.OpenRead(path)))
 			{
-				int version = new MVERChunkParser(br, br.BaseStream.Position).Parse();
-				mohd = new MOHDChunkParser(br, br.BaseStream.Position).Parse();
+			    while (br.BaseStream.Position < br.BaseStream.Length)
+			    {
+			        var name = br.ReadStringReversed(4);
+			        var size = br.ReadUInt32();
+			        switch (name)
+			        {
+			            case "MVER":
+			                int version = new MVERChunkParser(size).Parse(br);
+			                break;
+			            case "MOHD":
+			                mohd = new MOHDChunkParser(size).Parse(br);
+			                break;
+			        }
+			    }
 			}
 
 			var list = new TriangleListCollection();
@@ -44,12 +55,13 @@ namespace MPQNav.ADT
 			return new Model(list);
 		}
 
-		/// <summary>
-		/// Gets a WMO_Sub from the WMO Group file
-		/// </summary>
-		/// <param name="fileName">Full Filename of the WMO_Sub</param>
-		/// <returns></returns>
-		private static TriangleList LoadWMOSub(string fileName)
+	    /// <summary>
+	    /// Gets a WMO_Sub from the WMO Group file
+	    /// </summary>
+	    /// <param name="fileName">Full Filename of the WMO_Sub</param>
+	    /// <param name="size"></param>
+	    /// <returns></returns>
+	    private static TriangleList LoadWMOSub(string fileName)
 		{
 			var path = fileName;
 			var fileInfo = FileInfoFactory.Create();
@@ -58,10 +70,27 @@ namespace MPQNav.ADT
 
 			using (var reader = new BinaryReader(fileInfo.OpenRead(path)))
 			{
-				var indices = new MOVIChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVI").StartPosition).Parse();
-				var vectors = new MOVTChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MOVT").StartPosition).Parse();
-				var normals = new MONRChunkParser(reader, FileChunkHelper.SearchChunk(reader, "MONR").StartPosition).Parse();
-				var vertices = new List<VertexPositionNormalColored>();
+			    var name = reader.ReadStringReversed(4);
+			    var size = reader.ReadUInt32();
+			    int[] indices = null;
+			    IList<Vector3> vectors = null;
+			    IList<Vector3> normals = null;
+			    while (reader.BaseStream.Position < reader.BaseStream.Length)
+			    {
+			        switch (name)
+			        {
+			            case "MOVI":
+                            indices = new MOVIChunkParser(size).Parse(reader);
+			                break;
+			            case "MOVT":
+                            vectors = new MOVTChunkParser(size).Parse(reader);
+			                break;
+			            case "MONR":
+                            normals = new MONRChunkParser(size).Parse(reader);
+			                break;
+			        }
+			    }
+			    var vertices = new List<VertexPositionNormalColored>();
 				for (var i = 0; i < vectors.Count; i++)
 				{
 					vertices.Add(new VertexPositionNormalColored(vectors[i], Color.Yellow, normals[i]));

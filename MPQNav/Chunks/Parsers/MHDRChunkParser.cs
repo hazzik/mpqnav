@@ -4,36 +4,30 @@ using MPQNav.Util;
 
 namespace MPQNav.Chunks.Parsers {
 	internal class MHDRChunkParser : ChunkParser<MHDR> {
-		public MHDRChunkParser(BinaryReader br, long pAbsoluteStart)
-			: base("MHDR", br, pAbsoluteStart) {
+		public MHDRChunkParser(uint size)
+			: base(size) {
 		}
 
-		/// <summary>
-		/// Parse MHDR element from file stream
-		/// </summary>
-		public override MHDR Parse() {
-			//long pMHDRData = br.BaseStream.Position;
-			Reader.BaseStream.Position = AbsoluteStart;
-			var mhdr = new MHDR {
-			                    	Base = ((UInt32)AbsoluteStart),
-			                    	Pad = Reader.ReadUInt32(),
-			                    	OffsInfo = Reader.ReadUInt32(),
-			                    	OffsTex = Reader.ReadUInt32(),
-			                    	OffsModels = Reader.ReadUInt32(),
-			                    	OffsModelsIds = Reader.ReadUInt32(),
-			                    	OffsMapObejcts = Reader.ReadUInt32(),
-			                    	OffsMapObejctsIds = Reader.ReadUInt32(),
-			                    	OffsDoodsDef = Reader.ReadUInt32(),
-			                    	OffsObjectsDef = Reader.ReadUInt32(),
-			                    	OffsFlightBoundary = Reader.ReadUInt32(),
-			                    	OffsMH2O = Reader.ReadUInt32(),
-			                    	Pad3 = Reader.ReadUInt32(),
-			                    	Pad4 = Reader.ReadUInt32(),
-			                    	Pad5 = Reader.ReadUInt32(),
-			                    	Pad6 = Reader.ReadUInt32(),
-			                    	Pad7 = Reader.ReadUInt32()
-			                    };
-			return mhdr;
+		public override MHDR Parse(BinaryReader reader) {
+		    return new MHDR
+			{
+			    Pad = reader.ReadUInt32(),
+			    OffsInfo = reader.ReadUInt32(),
+			    OffsTex = reader.ReadUInt32(),
+			    OffsModels = reader.ReadUInt32(),
+			    OffsModelsIds = reader.ReadUInt32(),
+			    OffsMapObejcts = reader.ReadUInt32(),
+			    OffsMapObejctsIds = reader.ReadUInt32(),
+			    OffsDoodsDef = reader.ReadUInt32(),
+			    OffsObjectsDef = reader.ReadUInt32(),
+			    OffsFlightBoundary = reader.ReadUInt32(),
+			    OffsMH2O = reader.ReadUInt32(),
+			    Pad3 = reader.ReadUInt32(),
+			    Pad4 = reader.ReadUInt32(),
+			    Pad5 = reader.ReadUInt32(),
+			    Pad6 = reader.ReadUInt32(),
+			    Pad7 = reader.ReadUInt32()
+			};
 		}
 	}
 }

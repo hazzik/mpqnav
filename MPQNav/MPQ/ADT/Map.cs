@@ -57,7 +57,8 @@ namespace MPQNav.ADT
 
             using (var reader = new BinaryReader(fileInfo.OpenRead(file)))
             {
-                return new ADTChunkFileParser(reader).Parse();
+                var parser = new ADTChunkFileParser(reader);
+                return parser.Parse(reader);
             }
         }
 

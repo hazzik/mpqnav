@@ -8,34 +8,32 @@ namespace MPQNav.Chunks.Parsers {
 	internal class MODFChunkParser : ChunkParser<List<MODF>> {
 		private readonly string[] _names;
 
-		public MODFChunkParser(BinaryReader br, long pAbsoluteStart, string[] names)
-			: base("MODF", br, pAbsoluteStart) {
+		public MODFChunkParser(string[] names, uint size)
+			: base(size) {
 			_names = names;
 		}
 
-		/// <summary>
-		/// Parse MODF element from file stream
-		/// </summary>
-		public override List<MODF> Parse() {
-			Reader.BaseStream.Position = AbsoluteStart;
-			var _MODF = new List<MODF>();
+	    /// <summary>
+	    /// Parse MODF element from file stream
+	    /// </summary>
+	    /// <param name="reader"></param>
+	    public override List<MODF> Parse(BinaryReader reader) {
+			var modfs = new List<MODF>();
 			int bytesRead = 0;
-			while(bytesRead < Size) {
-				var lMODF = new MODF {
-				                     	FileName = _names[(int)Reader.ReadUInt32()],
-				                     	UniqId = Reader.ReadUInt32(),
-				                     	Position = new Vector3(Reader.ReadSingle(),
-				                     	                       Reader.ReadSingle(),
-				                     	                       Reader.ReadSingle()),
-				                     	Rotation = new Vector3(Reader.ReadSingle(),
-				                     	                       Reader.ReadSingle(),
-				                     	                       Reader.ReadSingle()),
-				                     };
-				Reader.ReadBytes(32); // 32 bytes
+			while(bytesRead < Size)
+			{
+			    var modf = new MODF
+			    {
+			        FileName = _names[(int) reader.ReadUInt32()],
+			        UniqId = reader.ReadUInt32(),
+			        Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()),
+			        Rotation = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()),
+			    };
+				reader.ReadBytes(32); // 32 bytes
 				bytesRead += 64; // 64 total bytes
-				_MODF.Add(lMODF);
+				modfs.Add(modf);
 			}
-			return _MODF;
+			return modfs;
 		}
 	}
 }

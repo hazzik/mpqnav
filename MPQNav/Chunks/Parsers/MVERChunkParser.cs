@@ -4,12 +4,12 @@ using MPQNav.Util;
 
 namespace MPQNav.Chunks.Parsers {
 	internal class MVERChunkParser : ChunkParser<int> {
-		public MVERChunkParser(BinaryReader reader, long absoluteStart)
-			: base("MVER", reader, absoluteStart) {
+		public MVERChunkParser(uint size)
+			: base(size) {
 		}
 
-		public override int Parse() {
-			return Reader.ReadInt32();
+		public override int Parse(BinaryReader reader) {
+			return reader.ReadInt32();
 		}
 	}
 }

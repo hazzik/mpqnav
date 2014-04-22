@@ -7,29 +7,29 @@ namespace MPQNav.Chunks.Parsers {
 	/// MCIN Chunk perser
 	/// </summary>
 	internal class MCINChunkParser : ChunkParser<MCIN[]> {
-		/// <summary>
-		/// MCINChunkParser Perser
-		/// </summary>
-		/// <param name="br">Binary Stream</param>
-		/// <param name="pAbsoluteStart">The position of MCIN</param>
-		public MCINChunkParser(BinaryReader br, long pAbsoluteStart)
-			: base("MCIN", br, pAbsoluteStart) {
+	    /// <summary>
+	    /// MCINChunkParser Perser
+	    /// </summary>
+	    /// <param name="size"></param>
+	    public MCINChunkParser(uint size)
+			: base(size) {
 		}
 
-		/// <summary>
-		/// Parse all MCIN element from file stream
-		/// </summary>
-		public override MCIN[] Parse() {
-			Reader.BaseStream.Position = AbsoluteStart;
+	    /// <summary>
+	    /// Parse all MCIN element from file stream
+	    /// </summary>
+	    /// <param name="reader"></param>
+	    public override MCIN[] Parse(BinaryReader reader) {
 			var mcins = new MCIN[256];
-			for(var i = 0; i < 256; i++) {
-				var mcin = new MCIN {
-				                    	Offset = Reader.ReadUInt32(),
-				                    	Size = Reader.ReadUInt32(),
-				                    	Flags = Reader.ReadUInt32(),
-				                    	AsyncId = Reader.ReadUInt32()
-				                    };
-				mcins[i] = mcin;
+			for(var i = 0; i < 256; i++)
+			{
+			    mcins[i] = new MCIN
+			    {
+			        Offset = reader.ReadUInt32(),
+			        Size = reader.ReadUInt32(),
+			        Flags = reader.ReadUInt32(),
+			        AsyncId = reader.ReadUInt32()
+			    };
 			}
 			return mcins;
 		}

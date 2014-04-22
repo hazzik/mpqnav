@@ -26,5 +26,10 @@ namespace MPQNav {
 	    {
 	        get { return bool.Parse(_settings["useMpq"]); }
 	    }
+
+	    public static bool UseCasc
+	    {
+	        get { return true; }
+	    }
 	}
 }
