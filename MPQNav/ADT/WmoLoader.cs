@@ -43,6 +43,13 @@ namespace MPQNav.ADT
 			            case "MOHD":
                             mohd = new MOHDChunkParser(size).Parse(r);
 			                break;
+
+                        case "MOTX":
+			                var textures = new StringArrayChunkParser(size).Parse(r);
+                            break;
+                        case "MOMT":
+			                var materials = new MOMTChunkParser(size).Parse(r);
+                            break;
 			        }
 			    }
 			}

@@ -128,6 +128,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ADT\MOMT.cs" />
+    <Compile Include="Chunks\Parsers\MOMTChunkParser.cs" />
     <Compile Include="Chunks\Parsers\Vector2ChunkParser.cs" />
     <Compile Include="IO\CascFileSystem.cs" />
     <Compile Include="ADT\IModelDescriptor.cs" />

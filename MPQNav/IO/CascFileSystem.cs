@@ -12,14 +12,15 @@ namespace MPQNav.IO
         static CascFileSystem()
         {
             CASCConfig.Load();
-            CDNHandler.Initialize(CASCHandler.OnlineMode);
+            CDNHandler cdn = new CDNHandler();
+            cdn.Initialize(CASCHandler.OnlineMode);
             CASCFolder root = new CASCFolder(CASCHandler.Hasher.ComputeHash("root"));
-            handler = new CASCHandler(root, null);
+            handler = new CASCHandler(cdn, null);
         }
 
         public override Stream OpenRead(string file)
         {
-            var hash = GetHash(file);
+            var hash = CASCHandler.Hasher.ComputeHash(file);
             var rootInfos = handler.GetRootInfo(hash);
 
             foreach (var rootInfo in rootInfos)
@@ -27,35 +28,24 @@ namespace MPQNav.IO
                 // only enUS atm
                 if ((rootInfo.Block.Flags & LocaleFlags.enUS) == 0)
                     continue;
-
+                
                 var encInfo = handler.GetEncodingInfo(rootInfo.MD5);
 
                 if (encInfo == null)
                     continue;
 
                 foreach (var key in encInfo.Keys)
-                {
                     return handler.OpenFile(key);
-                }
             }
 
-            //new CASCFile()
-            //CASCHandler.OpenFile()
-            throw new System.NotImplementedException();
-        }
-
-        private static ulong GetHash(string file)
-        {
-            return CASCHandler.FileNames.Where(fileName => string.Equals(fileName.Value, file, StringComparison.InvariantCultureIgnoreCase))
-                .Select(fileName => fileName.Key)
-                .FirstOrDefault();
+            throw new System.NotSupportedException();
         }
 
         public override bool Exists(string file)
         {
-            var value = CASCHandler.FileNames.Any(fileName => string.Equals(fileName.Value, file, StringComparison.InvariantCultureIgnoreCase));
-            return value;
-            //CDNHandler.
+            var hash = CASCHandler.Hasher.ComputeHash(file);
+            var rootInfos = handler.GetRootInfo(hash);
+            return rootInfos != null && rootInfos.Count > 0;
         }
     }
 }

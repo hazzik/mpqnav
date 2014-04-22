@@ -155,6 +155,7 @@ namespace MPQNav {
 			basicEffect.DirectionalLight1.Direction = Vector3.Normalize(new Vector3(-1.0f, -1.0f, 1.0f));
 
 			basicEffect.LightingEnabled = true;
+		    //basicEffect.TextureEnabled = true;
 
 			foreach(EffectPass pass in basicEffect.CurrentTechnique.Passes) {
 				pass.Apply();
