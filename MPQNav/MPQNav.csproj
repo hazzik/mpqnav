@@ -160,6 +160,8 @@
     <Compile Include="IO\FileInfo.cs" />
     <Compile Include="MPQ\ADT\IndicesParser.cs" />
     <Compile Include="IO\MpqFileInfo.cs" />
+    <Compile Include="Chunks\Parsers\MOGPChunkParser.cs" />
+    <Compile Include="Chunks\MOGP.cs" />
     <Compile Include="MPQ\ADT\VectorsListParser.cs" />
     <Compile Include="MPQ\ADT\WmoLoader.cs" />
     <Compile Include="IParser.cs" />

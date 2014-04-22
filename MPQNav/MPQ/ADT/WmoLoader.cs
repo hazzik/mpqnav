@@ -71,9 +71,7 @@ namespace MPQNav.ADT
 
 			using (var reader = new BinaryReader(fileInfo.OpenRead(path)))
 			{
-			    int[] indices = new int[0];
-			    IList<Vector3> vectors = new List<Vector3>();
-			    IList<Vector3> normals = new List<Vector3>();
+			    MOGP mopg = null;
 			    while (reader.BaseStream.Position < reader.BaseStream.Length)
 			    {
 			        var name = reader.ReadStringReversed(4);
@@ -86,29 +84,8 @@ namespace MPQNav.ADT
 			                break;
 
 			            case "MOGP":
-			            {
-			                var header = r.ReadBytes(0x44);
-			                while (r.BaseStream.Position < size)
-			                {
-			                    var name2 = r.ReadStringReversed(4);
-			                    var size2 = r.ReadUInt32();
-			                    var r2 = new BinaryReader(new MemoryStream(r.ReadBytes((int) size2)));
-			                    switch (name2)
-			                    {
-			                        case "MOVI":
-			                            indices = new MOVIChunkParser(size2).Parse(r2);
-			                            break;
-			                        case "MOVT":
-			                            vectors = new MOVTChunkParser(size2).Parse(r2);
-			                            break;
-			                        case "MONR":
-			                            normals = new MONRChunkParser(size2).Parse(r2);
-			                            break;
-
-			                    }
-			                } 
-                            break;
-			            }
+			                mopg = new MOGPChunkParser(size).Parse(r);
+			                break;
 			            default:
 			            {
 			                break;
@@ -116,11 +93,11 @@ namespace MPQNav.ADT
 			        }
 			    }
 			    var vertices = new List<VertexPositionNormalColored>();
-			    for (var i = 0; i < vectors.Count; i++)
+                for (var i = 0; i < mopg.vectors.Count; i++)
 			    {
-			        vertices.Add(new VertexPositionNormalColored(vectors[i], Color.Yellow, normals[i]));
+                    vertices.Add(new VertexPositionNormalColored(mopg.vectors[i], Color.Yellow, mopg.normals[i]));
 			    }
-			    return new TriangleList(indices, vertices);
+                return new TriangleList(mopg.indices, vertices);
 			}
 		}
 	}
