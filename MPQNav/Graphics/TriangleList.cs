@@ -7,28 +7,28 @@ namespace MPQNav.Graphics
     public class TriangleList
     {
         public TriangleList()
-            : this(new List<int>(), new List<VertexPositionNormalColored>())
+            : this(new List<int>(), new List<VertexPositionNormalColorTexture>())
         {
         }
 
-        public TriangleList(IList<int> indices, IList<VertexPositionNormalColored> vertices)
+        public TriangleList(IList<int> indices, IList<VertexPositionNormalColorTexture> vertices)
         {
             Indices = indices;
             Vertices = vertices;
         }
 
         public virtual IList<int> Indices { get; private set; }
-        public virtual IList<VertexPositionNormalColored> Vertices { get; private set; }
+        public virtual IList<VertexPositionNormalColorTexture> Vertices { get; private set; }
 
         public TriangleList Optimize()
         {
-            IList<VertexPositionNormalColored> vertices = Vertices;
+            IList<VertexPositionNormalColorTexture> vertices = Vertices;
             IList<int> indices = Indices;
-            var hash = new Dictionary<VertexPositionNormalColored, int>();
+            var hash = new Dictionary<VertexPositionNormalColorTexture, int>();
             var resultIndices = new List<int>();
             for (int i = 0; i < indices.Count; i++)
             {
-                VertexPositionNormalColored vertex = vertices[indices[i]];
+                VertexPositionNormalColorTexture vertex = vertices[indices[i]];
                 int index;
                 if (!hash.TryGetValue(vertex, out index))
                 {
@@ -50,10 +50,9 @@ namespace MPQNav.Graphics
                        {
                            Indices = Indices,
                            Vertices = Vertices
-                               .Select(v => new VertexPositionNormalColored(
+                               .Select(v => new VertexPositionNormalColorTexture(
                                                 Vector3.Transform(v.Position, matrix) + origin,
-                                                v.Color,
-                                                Vector3.TransformNormal(v.Normal, matrix))).ToList(),
+                                                Vector3.TransformNormal(v.Normal, matrix), v.Color)).ToList(),
                        };
         }
     }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MPQNav.ADT;
 
 namespace MPQNav.Chunks
 {
@@ -8,6 +9,7 @@ namespace MPQNav.Chunks
         public int[] indices;
         public IList<Vector3> vectors;
         public IList<Vector3> normals;
-        public IList<Vector2> textures;
+        public IList<Vector2> TextureCoordinates;
+        public MOPY[] materials;
     }
 }

@@ -6,7 +6,7 @@ namespace MPQNav.Graphics {
 	internal class TriangleListCollection :TriangleList, ICollection<TriangleList> {
 		private readonly IList<int> _indices = new List<int>();
 		private readonly IList<TriangleList> _lists = new List<TriangleList>();
-		private readonly IList<VertexPositionNormalColored> _vertices = new List<VertexPositionNormalColored>();
+		private readonly IList<VertexPositionNormalColorTexture> _vertices = new List<VertexPositionNormalColorTexture>();
 		private bool _durty;
 
 	    public void Add(TriangleList triangeList) {
@@ -53,7 +53,7 @@ namespace MPQNav.Graphics {
 
 	    #region ITriangleList Members
 
-		public override IList<VertexPositionNormalColored> Vertices {
+		public override IList<VertexPositionNormalColorTexture> Vertices {
 			get {
 				lock(this) {
 					if(_durty) {

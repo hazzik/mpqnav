@@ -128,8 +128,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ADT\MOMT.cs" />
+    <Compile Include="Chunks\MOMT.cs" />
     <Compile Include="Chunks\Parsers\MOMTChunkParser.cs" />
+    <Compile Include="Chunks\Parsers\StringDictionaryChunkParser.cs" />
     <Compile Include="Chunks\Parsers\Vector2ChunkParser.cs" />
     <Compile Include="IO\CascFileSystem.cs" />
     <Compile Include="ADT\IModelDescriptor.cs" />
@@ -180,7 +181,7 @@
     <Compile Include="Util\FileChunk.cs" />
     <Compile Include="Chunks\Parsers\MHDRChunkParser.cs" />
     <Compile Include="Chunks\Parsers\MH2OChunkParser.cs" />
-    <Compile Include="VertexPositionNormalColored.cs" />
+    <Compile Include="VertexPositionNormalColorTexture.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

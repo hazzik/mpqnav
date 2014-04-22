@@ -42,7 +42,7 @@ namespace MPQNav.ADT {
 	    private TriangleList triangeList;
 
 	    private TriangleList GenerateVertexAndIndicesH2O() {
-			var vertices = new List<VertexPositionNormalColored>();
+			var vertices = new List<VertexPositionNormalColorTexture>();
 			var indices = new List<int>();
 			if(MH2OArray != null) {
 				float offset_x = (533.33333f / 16) / 8;
@@ -74,7 +74,7 @@ namespace MPQNav.ADT {
 										y_pos = MH2OHeightMap[r - mh2O.yOffset, c - mh2O.xOffset]; // +_MH2O.heightLevel1;
 										var position = new Vector3(x_pos, y_pos, z_pos);
 
-										vertices.Add(new VertexPositionNormalColored(position, clr, Vector3.Up));
+										vertices.Add(new VertexPositionNormalColorTexture(position, Vector3.Up, clr));
 										_TempVertexCounter++;
 									}
 								}
@@ -117,7 +117,7 @@ namespace MPQNav.ADT {
 		}
 
 	    private TriangleList GenerateVertexAndIndices() {
-			var vertices = new List<VertexPositionNormalColored>();
+			var vertices = new List<VertexPositionNormalColorTexture>();
 			var indices = new List<int>();
 
 
@@ -184,7 +184,7 @@ namespace MPQNav.ADT {
 							float angle = MathHelper.ToDegrees((float)Math.Acos(cosAngle));
 
 							var position = new Vector3(x_pos, y_pos, z_pos);
-							vertices.Add(new VertexPositionNormalColored(position, angle > 50.0 ? Color.Brown : Color.Green, normal));
+							vertices.Add(new VertexPositionNormalColorTexture(position, normal, angle > 50.0 ? Color.Brown : Color.Green));
 						}
 					}
 				}

@@ -6,6 +6,7 @@ using MPQNav.Chunks;
 using MPQNav.Chunks.Parsers;
 using MPQNav.Graphics;
 using MPQNav.IO;
+using MPQNav.Util;
 
 namespace MPQNav.ADT
 {
@@ -23,14 +24,16 @@ namespace MPQNav.ADT
 		private static Model LoadWMO(string fileName)
 		{
 			var path = fileName;
-			MOHD mohd = null;
 			var fileInfo = FileSystem.Instance;
 			if (fileInfo.Exists(path) == false)
 				throw new Exception(String.Format("File does not exist: {0}", path));
 
-			using (var br = new BinaryReader(fileInfo.OpenRead(path)))
-			{
-			    while (br.BaseStream.Position < br.BaseStream.Length)
+			MOHD mohd = null;
+		    IDictionary<uint, string> textures = null;
+		    MOMT materials = null;
+		    using (var br = new BinaryReader(fileInfo.OpenRead(path)))
+		    {
+		        while (br.BaseStream.Position < br.BaseStream.Length)
 			    {
 			        var name = br.ReadStringReversed(4);
 			        var size = br.ReadUInt32();
@@ -45,31 +48,33 @@ namespace MPQNav.ADT
 			                break;
 
                         case "MOTX":
-			                var textures = new StringArrayChunkParser(size).Parse(r);
-                            break;
+			                textures = new StringDictionaryChunkParser(size).Parse(r);
+			                break;
                         case "MOMT":
-			                var materials = new MOMTChunkParser(size).Parse(r);
-                            break;
+			                materials = new MOMTChunkParser(size).Parse(r);
+			                break;
 			        }
 			    }
-			}
+		    }
 
-			var list = new TriangleListCollection();
+		    var list = new TriangleListCollection();
 			for (int wmoGroup = 0; wmoGroup < mohd.GroupsCount; wmoGroup++)
 			{
-				list.Add(LoadWMOSub(String.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup)));
+                list.Add(LoadWMOSub(textures, materials, String.Format("{0}_{1:D3}.wmo", fileName.Substring(0, fileName.Length - 4), wmoGroup)));
 			}
 
 			return new Model(list);
 		}
 
-	    /// <summary>
-	    /// Gets a WMO_Sub from the WMO Group file
-	    /// </summary>
-	    /// <param name="fileName">Full Filename of the WMO_Sub</param>
-	    /// <param name="size"></param>
-	    /// <returns></returns>
-	    private static TriangleList LoadWMOSub(string fileName)
+        /// <summary>
+        /// Gets a WMO_Sub from the WMO Group file
+        /// </summary>
+        /// <param name="textures"></param>
+        /// <param name="materials"></param>
+        /// <param name="fileName">Full Filename of the WMO_Sub</param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        private static TriangleList LoadWMOSub(IDictionary<uint, string> textures, MOMT materials, string fileName)
 		{
 			var path = fileName;
 			var fileInfo = FileSystem.Instance;
@@ -79,6 +84,7 @@ namespace MPQNav.ADT
 			using (var reader = new BinaryReader(fileInfo.OpenRead(path)))
 			{
 			    MOGP mopg = null;
+			    MOPY[] mopy;
 			    while (reader.BaseStream.Position < reader.BaseStream.Length)
 			    {
 			        var name = reader.ReadStringReversed(4);
@@ -89,23 +95,50 @@ namespace MPQNav.ADT
 			            case "MVER":
 			                var ver = new MVERChunkParser(size).Parse(r);
 			                break;
-
 			            case "MOGP":
 			                mopg = new MOGPChunkParser(size).Parse(r);
 			                break;
-			            default:
-			            {
-			                break;
-			            }
 			        }
 			    }
-			    var vertices = new List<VertexPositionNormalColored>();
+			    var vertices = new List<VertexPositionNormalColorTexture>();
                 for (var i = 0; i < mopg.vectors.Count; i++)
-			    {
-                    vertices.Add(new VertexPositionNormalColored(mopg.vectors[i], Color.Yellow, mopg.normals[i]));
-			    }
-                return new TriangleList(mopg.indices, vertices);
+                {
+//                    var foo = materials[mopg.materials[i].Material];
+                    vertices.Add(new VertexPositionNormalColorTexture(mopg.vectors[i], mopg.normals[i], Color.Yellow));
+                }
+			    return new TriangleList(mopg.indices, vertices);
 			}
 		}
 	}
+
+    internal class MOPYChunkParser:ChunkParser<MOPY[]>
+    {
+        public MOPYChunkParser(uint size) : base(size)
+        {
+            
+        }
+
+        public override MOPY[] Parse(BinaryReader reader)
+        {
+            var result = new List<MOPY>();
+            var start = reader.BaseStream.Position;
+            var end = start + Size;
+            while (reader.BaseStream.Position < end)
+            {
+                result.Add(new MOPY
+                {
+                    Flags = reader.ReadByte(),
+                    Material = reader.ReadByte(),
+                });
+            }
+            return result.ToArray();
+        }
+    }
+
+    internal class MOPY
+    {
+        public byte Flags { get; set; }
+
+        public byte Material { get; set; }
+    }
 }

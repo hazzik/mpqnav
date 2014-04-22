@@ -32,7 +32,10 @@ namespace MPQNav.Chunks.Parsers
                         result.normals = new Vector3ChunkParser(size).Parse(r);
                         break;
                     case "MOTV" :
-                        result.textures = new Vector2ChunkParser(size).Parse(r);
+                        result.TextureCoordinates = new Vector2ChunkParser(size).Parse(r);
+                        break;
+                    case "MOPY":
+                        result.materials = new MOPYChunkParser(size).Parse(r);
                         break;
                 }
             }

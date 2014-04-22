@@ -52,7 +52,7 @@ namespace MPQNav.ADT
 				//var normals = new VectorsListParser(br, ofsBoundingNormals, nBoundingNormals).Parse();
 
 				var vertices = vectors
-					.Select(t => new VertexPositionNormalColored(t, Color.Red, Vector3.Up))
+					.Select(t => new VertexPositionNormalColorTexture(t, Vector3.Up, Color.Red))
 					.ToList();
 
 				var list = new TriangleList(indices, vertices);
