@@ -5,11 +5,11 @@ using CASCExplorer;
 
 namespace MPQNav.IO
 {
-    class CascFileInfo : IFileInfo
+    class CascFileSystem : FileSystem
     {
         private static readonly CASCHandler handler;
 
-        static CascFileInfo()
+        static CascFileSystem()
         {
             CASCConfig.Load();
             CDNHandler.Initialize(CASCHandler.OnlineMode);
@@ -17,7 +17,7 @@ namespace MPQNav.IO
             handler = new CASCHandler(root, null);
         }
 
-        public Stream OpenRead(string file)
+        public override Stream OpenRead(string file)
         {
             var hash = GetHash(file);
             var rootInfos = handler.GetRootInfo(hash);
@@ -51,7 +51,7 @@ namespace MPQNav.IO
                 .FirstOrDefault();
         }
 
-        public bool Exists(string file)
+        public override bool Exists(string file)
         {
             var value = CASCHandler.FileNames.Any(fileName => string.Equals(fileName.Value, file, StringComparison.InvariantCultureIgnoreCase));
             return value;

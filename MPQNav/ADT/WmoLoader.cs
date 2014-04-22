@@ -24,7 +24,7 @@ namespace MPQNav.ADT
 		{
 			var path = fileName;
 			MOHD mohd = null;
-			var fileInfo = FileInfoFactory.Create();
+			var fileInfo = FileSystem.Instance;
 			if (fileInfo.Exists(path) == false)
 				throw new Exception(String.Format("File does not exist: {0}", path));
 
@@ -65,7 +65,7 @@ namespace MPQNav.ADT
 	    private static TriangleList LoadWMOSub(string fileName)
 		{
 			var path = fileName;
-			var fileInfo = FileInfoFactory.Create();
+			var fileInfo = FileSystem.Instance;
 			if (fileInfo.Exists(path) == false)
 				throw new Exception(String.Format("File does not exist: {0}", path));
 

@@ -53,7 +53,7 @@ namespace MPQNav.ADT
         {
             var fileName = GetAdtFileName(x, y);
             string mainFile = fileName + ".adt";
-            IFileInfo fileInfo = FileInfoFactory.Create();
+            FileSystem fileInfo = FileSystem.Instance;
             if (fileInfo.Exists(mainFile) == false)
                 throw new Exception(String.Format("ADT Doesn't exist: {0}", mainFile));
 

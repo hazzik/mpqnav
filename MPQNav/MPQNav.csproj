@@ -129,14 +129,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chunks\Parsers\Vector2ChunkParser.cs" />
-    <Compile Include="IO\CascFileInfo.cs" />
+    <Compile Include="IO\CascFileSystem.cs" />
     <Compile Include="ADT\IModelDescriptor.cs" />
     <Compile Include="Chunks\Parsers\StringArrayChunkParser.cs" />
     <Compile Include="Console\KeyBindings.cs" />
     <Compile Include="Console\MpqConsole.cs" />
     <Compile Include="Console\XnaConsole.cs" />
     <Compile Include="Graphics\TriangleList.cs" />
-    <Compile Include="IO\FileInfoFactory.cs" />
+    <Compile Include="IO\FileSystem.cs" />
     <Compile Include="Maps.cs" />
     <Compile Include="MpqNavSettings.cs" />
     <Compile Include="Chunks\MDDF.cs" />
@@ -156,10 +156,9 @@
     <Compile Include="Chunks\Parsers\Vector3ChunkParser.cs" />
     <Compile Include="Chunks\MOHD.cs" />
     <Compile Include="Chunks\Parsers\MOHDChunkParser.cs" />
-    <Compile Include="IO\IFileInfo.cs" />
-    <Compile Include="IO\FileInfo.cs" />
+    <Compile Include="IO\DefaultFileSystem.cs" />
     <Compile Include="ADT\IndicesParser.cs" />
-    <Compile Include="IO\MpqFileInfo.cs" />
+    <Compile Include="IO\MpqFileSystem.cs" />
     <Compile Include="Chunks\Parsers\MOGPChunkParser.cs" />
     <Compile Include="Chunks\MOGP.cs" />
     <Compile Include="ADT\VectorsListParser.cs" />

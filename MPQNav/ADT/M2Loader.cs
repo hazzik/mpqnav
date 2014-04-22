@@ -23,7 +23,7 @@ namespace MPQNav.ADT
 			{
 				path = path.Substring(0, path.Length - 4) + ".m2";
 			}
-			var fileInfo = FileInfoFactory.Create();
+			var fileInfo = FileSystem.Instance;
 			if (!fileInfo.Exists(path))
 			{
 				throw new Exception(String.Format("File does not exist: {0}", path));
