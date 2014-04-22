@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using MpqReader;
+using Foole.Mpq;
 
 namespace MPQNav.IO
 {
