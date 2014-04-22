@@ -34,13 +34,14 @@ namespace MPQNav.ADT
 			    {
 			        var name = br.ReadStringReversed(4);
 			        var size = br.ReadUInt32();
+			        var r = new BinaryReader(new MemoryStream(br.ReadBytes((int) size)));
 			        switch (name)
 			        {
 			            case "MVER":
-			                int version = new MVERChunkParser(size).Parse(br);
+                            int version = new MVERChunkParser(size).Parse(r);
 			                break;
 			            case "MOHD":
-			                mohd = new MOHDChunkParser(size).Parse(br);
+                            mohd = new MOHDChunkParser(size).Parse(r);
 			                break;
 			        }
 			    }
@@ -70,32 +71,56 @@ namespace MPQNav.ADT
 
 			using (var reader = new BinaryReader(fileInfo.OpenRead(path)))
 			{
-			    var name = reader.ReadStringReversed(4);
-			    var size = reader.ReadUInt32();
-			    int[] indices = null;
-			    IList<Vector3> vectors = null;
-			    IList<Vector3> normals = null;
+			    int[] indices = new int[0];
+			    IList<Vector3> vectors = new List<Vector3>();
+			    IList<Vector3> normals = new List<Vector3>();
 			    while (reader.BaseStream.Position < reader.BaseStream.Length)
 			    {
+			        var name = reader.ReadStringReversed(4);
+			        var size = reader.ReadUInt32();
+			        var r = new BinaryReader(new MemoryStream(reader.ReadBytes((int) size)));
 			        switch (name)
 			        {
-			            case "MOVI":
-                            indices = new MOVIChunkParser(size).Parse(reader);
+			            case "MVER":
+			                var ver = new MVERChunkParser(size).Parse(r);
 			                break;
-			            case "MOVT":
-                            vectors = new MOVTChunkParser(size).Parse(reader);
+
+			            case "MOGP":
+			            {
+			                var header = r.ReadBytes(0x44);
+			                while (r.BaseStream.Position < size)
+			                {
+			                    var name2 = r.ReadStringReversed(4);
+			                    var size2 = r.ReadUInt32();
+			                    var r2 = new BinaryReader(new MemoryStream(r.ReadBytes((int) size2)));
+			                    switch (name2)
+			                    {
+			                        case "MOVI":
+			                            indices = new MOVIChunkParser(size2).Parse(r2);
+			                            break;
+			                        case "MOVT":
+			                            vectors = new MOVTChunkParser(size2).Parse(r2);
+			                            break;
+			                        case "MONR":
+			                            normals = new MONRChunkParser(size2).Parse(r2);
+			                            break;
+
+			                    }
+			                } 
+                            break;
+			            }
+			            default:
+			            {
 			                break;
-			            case "MONR":
-                            normals = new MONRChunkParser(size).Parse(reader);
-			                break;
+			            }
 			        }
 			    }
 			    var vertices = new List<VertexPositionNormalColored>();
-				for (var i = 0; i < vectors.Count; i++)
-				{
-					vertices.Add(new VertexPositionNormalColored(vectors[i], Color.Yellow, normals[i]));
-				}
-				return new TriangleList(indices, vertices);
+			    for (var i = 0; i < vectors.Count; i++)
+			    {
+			        vertices.Add(new VertexPositionNormalColored(vectors[i], Color.Yellow, normals[i]));
+			    }
+			    return new TriangleList(indices, vertices);
 			}
 		}
 	}

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using CASCExplorer;
@@ -45,14 +46,14 @@ namespace MPQNav.IO
 
         private static ulong GetHash(string file)
         {
-            return CASCHandler.FileNames.Where(fileName => fileName.Value == file)
+            return CASCHandler.FileNames.Where(fileName => string.Equals(fileName.Value, file, StringComparison.InvariantCultureIgnoreCase))
                 .Select(fileName => fileName.Key)
                 .FirstOrDefault();
         }
 
         public bool Exists(string file)
         {
-            var value = CASCHandler.FileNames.ContainsValue(file);
+            var value = CASCHandler.FileNames.Any(fileName => string.Equals(fileName.Value, file, StringComparison.InvariantCultureIgnoreCase));
             return value;
             //CDNHandler.
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MPQNav.Chunks;
 using MPQNav.Graphics;
 using MPQNav.IO;
 using MPQNav.Util;
@@ -55,11 +56,36 @@ namespace MPQNav.ADT
             if (fileInfo.Exists(file) == false)
                 throw new Exception(String.Format("ADT Doesn't exist: {0}", file));
 
+            var adt = new ADT
+            {
+                MCNKArray = new MCNK[16, 16]
+            };
+
             using (var reader = new BinaryReader(fileInfo.OpenRead(file)))
             {
-                var parser = new ADTChunkFileParser(reader);
-                return parser.Parse(reader);
+                ADTChunkFileParser.Parse(reader, adt, true);
+            }  
+            
+            var additionalfiles = new[]
+            {
+                Path.GetDirectoryName(file)+"\\"+Path.GetFileNameWithoutExtension(file) + "_obj0.adt",
+                Path.GetDirectoryName(file)+"\\"+Path.GetFileNameWithoutExtension(file) + "_obj1.adt",
+               Path.GetDirectoryName(file)+"\\"+ Path.GetFileNameWithoutExtension(file) + "_tex0.adt",
+                Path.GetDirectoryName(file)+"\\"+Path.GetFileNameWithoutExtension(file) + "_tex1.adt",
+            };
+
+            foreach (var s in additionalfiles)
+            {
+                if (fileInfo.Exists(s))
+                {
+                    using (var reader = new BinaryReader(fileInfo.OpenRead(s)))
+                    {
+                        ADTChunkFileParser.Parse(reader, adt, false);
+                    }
+                }
             }
+
+            return adt;
         }
 
         private string GetAdtFileName(int x, int y)

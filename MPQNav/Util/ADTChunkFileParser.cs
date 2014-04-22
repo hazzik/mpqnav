@@ -5,64 +5,62 @@ using MPQNav.Chunks.Parsers;
 using MPQNav.IO;
 
 namespace MPQNav.Util {
-	internal class ADTChunkFileParser : IParser<ADT.ADT> {
-		public ADTChunkFileParser(BinaryReader reader)
-			: base() {
-		}
-
+	internal sealed class ADTChunkFileParser {
 	    /// <summary>
 	    /// Digs through an ADT and parses out all the information in it. 
 	    /// </summary>
 	    /// <param name="reader"></param>
-	    public virtual ADT.ADT Parse(BinaryReader Reader)
+	    /// <param name="adt"></param>
+	    /// <param name="readMCNK"></param>
+	    public static ADT.ADT Parse(BinaryReader reader, ADT.ADT adt, bool readMCNK)
 		{
-
-		    var adt = new ADT.ADT
-		    {
-		        MCNKArray = new MCNK[16, 16]
-		    };
-		    string[] mwmos = null;
+	        string[] mwmos = null;
 		    string[] mmdxs = null;
 		    int mcnkIndex = 0;
-		    while (Reader.BaseStream.Position < Reader.BaseStream.Length)
+		    while (reader.BaseStream.Position < reader.BaseStream.Length)
 		    {
-		        var pos = Reader.BaseStream.Position;
-		        var name = Reader.ReadStringReversed(4);
-		        var size = Reader.ReadUInt32();
-		        var reader = new BinaryReader(new MemoryStream(Reader.ReadBytes((int) size)));
+		        var pos = reader.BaseStream.Position;
+		        var name = reader.ReadStringReversed(4);
+		        var size = reader.ReadUInt32();
+		        var r = new BinaryReader(new MemoryStream(reader.ReadBytes((int) size)));
 		        switch (name)
 		        {
 		            case "MVER":
-                        var mver = new MVERChunkParser(size).Parse(reader);
+                        var mver = new MVERChunkParser(size).Parse(r);
 		                adt.Version = mver;
 		                break;
 		            case "MHDR":
-                        var mhdr = new MHDRChunkParser(size).Parse(reader);
+                        var mhdr = new MHDRChunkParser(size).Parse(r);
 		                break;
 		            case "MCIN":
-                        var mcins = new MCINChunkParser(size).Parse(reader);
+                        var mcins = new MCINChunkParser(size).Parse(r);
 		                break;
 		            case "MCNK":
-                        adt.MCNKArray[mcnkIndex % 16, mcnkIndex / 16] = new MCNKChunkParser(size).Parse(reader);
+                        if (readMCNK)
+                            adt.MCNKArray[mcnkIndex % 16, mcnkIndex / 16] = new MCNKChunkParser(size).Parse(r);
 		                mcnkIndex ++;
 		                break;
 		            case "MWMO":
-                        mwmos = new StringArrayChunkParser(size).Parse(reader);
+                        mwmos = new StringArrayChunkParser(size).Parse(r);
 		                break;
 		            case "MODF":
-                        adt.MODFList = new MODFChunkParser(mwmos, size).Parse(reader);
+                        adt.MODFList = new MODFChunkParser(mwmos, size).Parse(r);
 		                break;
 		            case "MMDX":
-                        mmdxs = new StringArrayChunkParser(size).Parse(reader);
+                        mmdxs = new StringArrayChunkParser(size).Parse(r);
 		                break;
 		            case "MDDF":
-                        adt.MDDFList = new MDDFChunkParser(size, mmdxs).Parse(reader);
+                        adt.MDDFList = new MDDFChunkParser(size, mmdxs).Parse(r);
 		                break;
 		            case "MH2O":
-                        adt.MH2OArray = new MH2OChunkParser(size).Parse(reader);
+                        adt.MH2OArray = new MH2OChunkParser(size).Parse(r);
 		                break;
+                    default:
+		            {
+		                break;
+		            }
 		        }
-		        Reader.BaseStream.Position = pos + 0x08 + size;
+		        reader.BaseStream.Position = pos + 0x08 + size;
 		    }
 
 		    return adt;
