@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using System.Linq;
 using CASCExplorer;
 
 namespace MPQNav.IO
@@ -11,11 +9,9 @@ namespace MPQNav.IO
 
         static CascFileSystem()
         {
-            CASCConfig.Load();
-            CDNHandler cdn = new CDNHandler();
-            cdn.Initialize(CASCHandler.OnlineMode);
-            CASCFolder root = new CASCFolder(CASCHandler.Hasher.ComputeHash("root"));
-            handler = new CASCHandler(cdn, null);
+            CASCConfig.Load(CASCHandler.OnlineMode);
+            CDNHandler.Initialize(CASCHandler.OnlineMode);
+            handler = new CASCHandler(null);
         }
 
         public override Stream OpenRead(string file)
