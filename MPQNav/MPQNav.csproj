@@ -222,9 +222,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CASCExplorer\CASCExplorer\CASCExplorer.csproj">
-      <Project>{cb208f91-b1e8-4319-b4c0-2f4e15a4bfbc}</Project>
-      <Name>CASCExplorer</Name>
+    <ProjectReference Include="..\CASCExplorer\CascLib\CascLib.csproj">
+      <Project>{E08E1E48-6585-4137-8405-661C62C10713}</Project>
+      <Name>CascLib</Name>
     </ProjectReference>
     <ProjectReference Include="Content\MPQNavContent.contentproj">
       <Project>{1AAB5F97-9296-4D09-A127-628C0033E793}</Project>

@@ -9,39 +9,17 @@ namespace MPQNav.IO
 
         static CascFileSystem()
         {
-            CASCConfig.Load(CASCHandler.OnlineMode);
-            CDNHandler.Initialize(CASCHandler.OnlineMode);
-            handler = new CASCHandler(null);
+            handler = CASCHandler.OpenOnlineStorage(null);
         }
 
         public override Stream OpenRead(string file)
         {
-            var hash = CASCHandler.Hasher.ComputeHash(file);
-            var rootInfos = handler.GetRootInfo(hash);
-
-            foreach (var rootInfo in rootInfos)
-            {
-                // only enUS atm
-                if ((rootInfo.Block.Flags & LocaleFlags.enUS) == 0)
-                    continue;
-                
-                var encInfo = handler.GetEncodingInfo(rootInfo.MD5);
-
-                if (encInfo == null)
-                    continue;
-
-                foreach (var key in encInfo.Keys)
-                    return handler.OpenFile(key);
-            }
-
-            throw new System.NotSupportedException();
+            return handler.OpenFile(file, LocaleFlags.enUS);
         }
 
         public override bool Exists(string file)
         {
-            var hash = CASCHandler.Hasher.ComputeHash(file);
-            var rootInfos = handler.GetRootInfo(hash);
-            return rootInfos != null && rootInfos.Count > 0;
+            return handler.FileExis(file);
         }
     }
 }
